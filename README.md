@@ -8,8 +8,6 @@ If you like Baucis, [please consider tipping](https://www.gittip.com/wprl/).
 
 The official baucis documentation is being moved to [kun.io/baucis](http://kun.io/baucis) but is still right here for the moment!
 
-Check the [change log](CHANGES.md) for info on all the latest features.
-
 
 
 ## Features
@@ -23,6 +21,9 @@ Check the [change log](CHANGES.md) for info on all the latest features.
  * Query your REST endpoints using HTTP query strings and a JSON syntax based on Mongoose.
  * Mongoose middleware, inheritence, and validation methods are automatically respected.
  * Version your API using semver.
+
+Check the [change log](CHANGES.md) for info on all the latest features.
+
 
 
 ## Examples
