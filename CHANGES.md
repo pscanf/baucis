@@ -1,6 +1,10 @@
 Baucis Change Log
 =================
 
+v0.20.2
+-------
+Fix bug that overwrote Express' parent property.  Please use the `controller.children` property instead.  (Fixes #161.)
+
 v0.20.1
 -------
 Fix publish and some typos.

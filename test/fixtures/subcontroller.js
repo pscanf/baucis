@@ -40,6 +40,14 @@ var fixture = module.exports = {
       next(new Error('request.baucis.controller set incorrectly!'));
     });
 
+    tasks.request(function (request, response, next) {
+      request.baucis.outgoing(function (context, callback) {
+        context.doc.name = 'Changed by Middleware';
+        callback(null, context);
+      });
+      next();
+    });
+
     tasks.query(function (request, response, next) {
       request.baucis.query.where('user', request.params._id);
       next();
@@ -67,12 +75,16 @@ var fixture = module.exports = {
 
         mongoose.model('user').create(
           ['Alice', 'Bob'].map(function (name) { return { name: name } }),
-          function (error) {
+          function (error, alice) {
             if (error) return done(error);
 
             mongoose.model('task').create(
               ['Mow the Lawn', 'Make the Bed', 'Darn the Socks'].map(function (name) { return { name: name } }),
-              done
+              function (error,task) {
+                if (error) return done(error);
+                task.user = alice._id;
+                task.save(done)
+              }
             );
           }
         );

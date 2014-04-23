@@ -29,7 +29,7 @@ var decorator = module.exports = function (model, protected) {
   };
 
   // __Protected Instance Members__
-  var property = protected.property = function (name, initial, action) {
+  var property = protected.property = function (name, initial, action) { // TODO detect if prop already added and throw
     // Initialize the property value.
     properties[name] = initial;
     // Add the property to the controller.
@@ -70,7 +70,7 @@ var decorator = module.exports = function (model, protected) {
 
   // __Property Definitions__
   property('findBy', '_id');
-  property('versions', '*'); // TODO changing is an NOP
+  property('versions', '*'); // TODO changing after activation is an NOP
   property('comments', false);
   property('hints', false);
   property('locking', false);
@@ -123,10 +123,14 @@ var decorator = module.exports = function (model, protected) {
   });
 
   // TODO changing this after release init is an NOP
-  property('parent', undefined, function (parent) {
-    controller.api(parent.api());
-    if (!controller.parentPath()) controller.parentPath(parent.singular());
-    return parent;
+  property('children', [], function (child) {
+    if (!child) throw BaucisError.Configuration('A child controller must be supplied when using the children poperty');
+    if (properties.children.indexOf(child) !== -1) return properties.children;
+    properties.children.push(child);
+    if (!child.parentPath()) child.parentPath(controller.singular());
+    child.api(controller.api());
+    controller.use(child);
+    return properties.children;
   });
 
   multiproperty('operators');

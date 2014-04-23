@@ -1,5 +1,6 @@
 // __Dependencies__
 var BaucisError = require('../BaucisError');
+var Controller = require('../Controller');
 // __Private Module Members__
 // Expands route definitions based on generalized arguments.
 var defineRoutes = function (stage, params) {
@@ -82,7 +83,9 @@ var decorator = module.exports = function (options, protect) {
     var f = stage[definition.method].bind(stage);
     var mount = '';
     if (!controller.path()) controller.path(controller.plural());
-    if (controller.parent()) mount = '/:parentId' + controller.path();
+    if (controller.parent && controller.parent.parent && controller.parent.parent.children) {
+      mount = '/:parentId' + controller.path();
+    }
     if (definition.endpoint === 'instance') mount += '/:id';
     if (!mount) mount = '/';
     return f(mount, definition.middleware);
@@ -112,7 +115,13 @@ var decorator = module.exports = function (options, protect) {
     // Only activate once; can't deactivate.
     if (controller.activated()) return true;
     var t = state ? true : false;
-    if (state) storedDefinitions.forEach(activate);
+    if (state) {
+      controller.children().forEach(function (child) {
+        child.activated(true);
+      });
+      storedDefinitions.forEach(activate);
+    }
+
     return state;
   });
 };

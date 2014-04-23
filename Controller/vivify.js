@@ -4,12 +4,11 @@ var Controller = require('../Controller');
 var BaucisError = require('../BaucisError');
 
 // __Module Definition__
-var decorator = module.exports = function () {
+var decorator = module.exports = function (options, protect) {
   var controller = this;
 
-  controller.embed = function (child) {
-    child.activated(true);
-    controller.use(child);
+  function embed (controller, child) {
+    controller.children(child);
     return controller;
   };
 
@@ -24,7 +23,7 @@ var decorator = module.exports = function () {
       throw BaucisError.Configuration('Only paths that reference another collection can be vivified');
     }
 
-    var child = Controller(ref).parent(controller).path(path);
+    var child = Controller(ref).path(path);
 
     child.request('post', function (request, response, next) {
       request.baucis.incoming(function (context, callback) {
@@ -42,7 +41,7 @@ var decorator = module.exports = function () {
       next();
     });
 
-    controller.embed(child);
+    embed(controller, child);
 
     return child;
   };

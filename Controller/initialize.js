@@ -5,9 +5,14 @@ var BaucisError = require('../BaucisError');
 // __Module Definition__
 var decorator = module.exports = function () {
   var controller = this;
-  // __Set up request.baucis__
+  // Make sure the controller is activated before being requested.
+  controller.use(function (request, response, next) {
+    if (controller.activated()) return next();
+    next(BaucisError.Configuration('The controller "%s" has not been activated', controller.plural()));
+  });
+  // Set up `request.baucis`.
   controller.request(function (request, response, next) {
-    if (request.baucis) return next(BaucisError.Configuration('Baucis request property already created!'));
+    if (request.baucis) return next(BaucisError.Configuration('Baucis request property already created'));
     request.baucis = {};
     request.baucis.api = controller.api();
     request.baucis.controller = controller;
