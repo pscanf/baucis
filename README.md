@@ -2,7 +2,7 @@
 
 Baucis enables you to build scalable REST APIs using the open source tools and standards you and your team already know.  Like Baucis and Philemon of old, the module provides REST to the weary traveler.  [Baucis](https://en.wikipedia.org/wiki/Baucis_and_Philemon) is not the same as [Bacchus](https://en.wikipedia.org/wiki/Dionysus).
 
-Baucis is tested with over 150 Mocha.js tests.  Baucis is used in production by at least one Fortune 500 company.
+Baucis is tested with over 150 Mocha.js tests.  Baucis is used in production by startups, departments, and at least one Fortune 500 company, not to mention hackathons and conferences worldwide.
 
 If you like Baucis, [please consider tipping](https://www.gittip.com/wprl/).
 
