@@ -18,7 +18,7 @@ The official baucis documentation is being moved to [kun.io/baucis](http://kun.i
  * Supports geolocation and full text search.
  * Highly customizable, simple interface.  Can be extended with plugins.
  * Automatically generate interactive Swagger documentation for the API.
- * Query your REST endpoints using HTTP query strings and a JSON syntax based on Mongoose.
+ * Perform rich queries of the API using an expressive JSON syntax via query string.
  * Mongoose middleware, inheritence, and validation methods are automatically respected.
  * Version your API using semver.
 
