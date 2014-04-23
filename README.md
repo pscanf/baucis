@@ -2,7 +2,7 @@
 
 Baucis enables you to build scalable REST APIs using the open source tools and standards you and your team already know.  Like Baucis and Philemon of old, the module provides REST to the weary traveler.  [Baucis](https://en.wikipedia.org/wiki/Baucis_and_Philemon) is not the same as [Bacchus](https://en.wikipedia.org/wiki/Dionysus).
 
-Baucis is tested with over 150 Mocha.js tests.  Baucis is used in production by startups, departments, and at least one Fortune 500 company, not to mention hackathons and conferences worldwide.
+Baucis is tested with over 150 Mocha.js tests.  Baucis is used in production by startups, departments, and at least one Fortune 500 company, not to mention at hackathons and conferences worldwide.
 
 If you like Baucis, [please consider tipping](https://www.gittip.com/wprl/).
 
@@ -400,17 +400,21 @@ Limit the response document count to *n* at maximum.
 
     GET /api/horses?limit=3
 
-### select
-
-Set which fields should be selected for response documents.
-
-    GET /api/phones?select=-id -year
-
 ### sort
 
 Sort response documents by the given criteria. Here's how you'd sort the collection by `name` in ascending order, then by `age` in descending order.
 
     GET /api/cheeses?sort=name -age
+
+### select
+
+Set which fields should be selected for response documents.
+
+    GET /api/phones?select=-_id -year
+    
+It is not permitted to use the `select` query option to select deselected paths.  This is to allow a mechanism for hiding fields from client software.
+
+You can deselect paths in the Mongoose schema definition using `select: false` or in the controller by calling e.g. `controller.select('-foo')`.  Your server middleware will be able to select these fields as usual using `query.select`, while preventing the client from selecting the field.
 
 ### populate
 
@@ -418,6 +422,8 @@ Set which fields should be populated for response documents.  See the Mongoose [
 
     GET /api/boats?populate=captain
     GET /api/cities?populate={ "path": "captain", "match": { "age": "44" } }
+    
+The `select` option of `populate` is disallowed.  Only paths deselected at the model level will be deselected in populate queries.
 
 ### count
 
@@ -442,16 +448,8 @@ Add an index hint to the query (must be enabled per controller).
 Add a comment to a query (must be enabled per controller).
 
     GET /api/wrenches?comment=Something informative
-
-
-----------
-
-It is not permitted to use the `select` query option to select deselected paths.  This is to allow a mechanism for hiding fields from client software.
-
-The `select` option of `populate` is disallowed.  Only paths deselected at the model level will be deselected in populate queries.
-
-You can deselect paths in the schema definition using `select: false` or in the controller by calling e.g. `controller.select('-foo')`.  Your server middleware will be able to select these fields as usual using `query.select`, while preventing the client from selecting the field.
-
+    
+    
 
 ## Plugins
 
