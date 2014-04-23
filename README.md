@@ -21,7 +21,7 @@ Like Baucis and Philemon of old, the module provides REST to the weary traveler.
  * Highly customizable, simple interface.  Can be extended with plugins.
  * Automatically generate interactive Swagger documentation for the API.
  * Query your REST endpoints using HTTP query strings and a JSON syntax based on Mongoose.
- * Mongoose middleware, inheritence, and validation methods are respected.
+ * Mongoose middleware, inheritence, and validation methods are automatically respected.
  * Version your API using semver.
 
 
@@ -75,14 +75,14 @@ Later, make requests:
 | HTTP Verb     | /vegetables   | /vegetables/:id |
 | ------------- | ------------- | --------------- |
 | GET           | Get all documents, or documents that match the query conditions. | Get the addressed document. |
-| POST          | Creates new documents and sends them back.  You may post a single document or an array of documents.      | n/a |
+| POST          | Creates new documents and sends them back.  You can POST a single document or an array of documents.      | n/a |
 | PUT           | n/a | Update the addressed document. |
 | DELETE        | Delete all documents, or documents that match the query conditions. | Delete the addressed object. |
 
 ## baucis.rest
 
 
-`baucis.rest` returns an instance of the controller created to handle the schema's API routes.  Pass in a mongoose a model name:
+`baucis.rest` returns an instance of the controller created to handle the schema's API routes.  Pass in a mongoose model name:
 
     var controller = baucis.rest('robot');
 
