@@ -79,6 +79,8 @@ Later, make requests:
 | POST          | Creates new documents and sends them back.  You can POST a single document or an array of documents.      | n/a |
 | PUT           | n/a | Update the addressed document. |
 | DELETE        | Delete all documents, or documents that match the query conditions. | Delete the addressed object. |
+| HEAD          | Check what headers would be returned for the given query without sending the request body. | Check what headers would be returned for the instance |
+
 
 ## baucis.rest
 
@@ -220,7 +222,7 @@ Later, make requests and set the `API-Version` header to a [semver](http://semve
 ##Streaming
 
 
-As of v0.16.0 baucis takes full advantage of Node streams internally to offer even more performance, especially when dealing with large datasets.  Both outgoing and incoming documents are streamed!
+Baucis takes full advantage of Node streams internally to offer even more performance, especially when dealing with large datasets.  Both outgoing and incoming documents are streamed!
 
 To alter or inspect documents being sent or process, add a through stream that transforms or processes them.  As a shortcut, a map function can be passed in.  It will be used to create a map stream internally.  Here's an example of adding a stream to alter POST'd or PUT'd request bodies:
 
@@ -261,6 +263,8 @@ Passing in through streams is also allowed.  Here's an example using the [throug
       }));
       next();
     });
+
+If `request.baucis.incoming` or `request.baucis.outgoing` is called multiple times, the multiple through streams will be piped together.
 
 Here's an example of how a stream that interacts with outgoing documents may be added:
 
@@ -364,7 +368,16 @@ To customize the swagger definition, simply alter the controler's swagger data d
       ]
     });
 
-##HTTP Headers
+## HTTP Headers
+
+### Request
+
+| Header Field | Notes |
+| ------------ | ----- |
+| API-Version | Set this to a valid semver range to request a specific version or range of versions for the requested controller. |
+| X-Baucis-Update-Operator | Use this to perform updates (that **BYPASS VALIDATION**) using a special update operator such as `$set`, `$push`, or `$pull`.  The fields that may be updated must be whitelisted per controller.
+
+### Response
 
 
 | Header Field | Notes |
@@ -378,11 +391,11 @@ To customize the swagger definition, simply alter the controler's swagger data d
 
 ## Query Options
 
-Use query options from the client to make dynamic requests.
+Use query options from the client to make dynamic requests.  Query options can be mixed as you see fit.
 
 ### conditions
 
-Set the Mongoose query's `find` or `remove` arguments.  This can take full advtange of the MongoDB query syntax, using geolocation, regular expressions, or full text search.
+Set the Mongoose query's `find` or `remove` arguments.  This can take full advtange of the MongoDB query syntax, using geolocation, regular expressions, or full text search.  Special query operators are fine, and in fact geolocation, regular expression, and full text search capabilities are available to your API clients by default!
 
     GET /api/people?conditions={ "location": { "$near": [44, -97] } }
     GET /api/people?articles={ "summary": { "$text": "dog bites man" } }
@@ -400,6 +413,8 @@ Skip sending the first *n* matched documents in the response.  Useful for paging
 Limit the response document count to *n* at maximum.
 
     GET /api/horses?limit=3
+    
+If both limit and skip are used on a request, the response `Link` header will be set with extra relations that give URLs for paging.  
 
 ### sort
 
@@ -412,7 +427,7 @@ Sort response documents by the given criteria. Here's how you'd sort the collect
 Set which fields should be selected for response documents.
 
     GET /api/phones?select=-_id -year
-    
+
 It is not permitted to use the `select` query option to select deselected paths.  This is to allow a mechanism for hiding fields from client software.
 
 You can deselect paths in the Mongoose schema definition using `select: false` or in the controller by calling e.g. `controller.select('-foo')`.  Your server middleware will be able to select these fields as usual using `query.select`, while preventing the client from selecting the field.
@@ -423,7 +438,7 @@ Set which fields should be populated for response documents.  See the Mongoose [
 
     GET /api/boats?populate=captain
     GET /api/cities?populate={ "path": "captain", "match": { "age": "44" } }
-    
+
 The `select` option of `populate` is disallowed.  Only paths deselected at the model level will be deselected in populate queries.
 
 ### count
@@ -450,7 +465,106 @@ Add a comment to a query (must be enabled per controller).
 
     GET /api/wrenches?comment=Something informative
     
+## Errors & Status Codes
+
+Baucis supports a rich array of error responses and status codes. For more information on status codes see [RFC2616](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) the HTTP sepcification.
+
+### 4xx
+
+4xx status codes mean that the client, for example a web browser made a mistake an needs to fix the response.
+
+#### 400 Bad Request
+
+The client made a bad request and should fix the request before trying again.  This is also sent when a deprecated command is used.  
+
+
+    baucis.Error.BadRequest
+    baucis.Error.Deprecated
     
+#### 403 Forbidden
+
+Sent when the requested action is disallowed for a controller.
+    
+    Error.Forbidden;
+    
+#### 404 Not Found
+
+Sent when the query does not match any document, or when the requested resource does not exist.
+    
+    baucis.Error.NotFound
+
+#### 405 Method Not Allowed
+
+The request HTTP method (i.e one of `HEAD`, `GET`, `POST`, `PUT`, `DELETE`) is disabled for this resource.  This can be done by e.g. `controller.methods('post put del', false)`.
+
+    baucis.Error.MethodNotAllowed
+    
+#### 406 Not Acceptable
+
+The `Accept` header specified in the request could not be fulfilled.  By default JSON is supported.  Baucis is pluggable to allow adding formatters for additional content types.
+
+
+    baucis.Error.NotAcceptable
+    
+    
+#### 409 Conflict
+
+If a controller has optimistic locking enabled, baucis will automatically check each updated document's version and give a 409 error if another API client modified the document before the requester was able to send their update.  
+
+In this case, a client could reload the document, present the user with a description of the conflict, and ask them how to procede.
+
+    baucis.Error.LockConflict
+    
+#### 415 Unspported Media Type
+
+The request body content type was not able to be parsed.  By default JSON is supported.  Baucis is pluggable to allow adding parsers for additional content types.
+
+    baucis.Error.UnsupportedMediaType
+    
+#### 422 Unprocessable Entity
+
+This status indicates a validation error ocurred, or that the entity sent to the server was invalid semantically in another way.  
+
+    baucis.Error.ValidationError
+   
+Baucis will send a response body with error 422 that indicates what validation failed for which fields.
+
+      {
+        "name": {
+          "message": "Path `name` is required.");
+          "name": "ValidatorError");
+          "path": "name");
+          "type": "required"
+        },
+        "score": {
+          "message": "Path `score` (-1) is less than minimum allowed value (1).");
+          "name": "ValidatorError");
+          "path": "score");
+          "type": "min");
+          "value": -1);
+        }
+      }
+
+Technically, this error is from [RFC4918](https://tools.ietf.org/html/rfc4918#section-11.2), the WebDAV specification.
+
+    
+### 5xx
+
+Where as `4xx` erros mean the requester messed up, `5xx` errors mean the server messed up :)
+    
+#### 500 Internal Server Error
+
+There was an error in configuration, or the server tried to perform the requested action but failed.
+
+    baucis.Error.Configuration
+    
+#### 501 Not Implemented
+
+The requested functionality is not implemented now, but may be implented in the future.
+
+    baucis.Error.NotImplemented
+
+
 ## Roadmap
 
 ### Q2 2014
@@ -460,7 +574,7 @@ Add a comment to a query (must be enabled per controller).
  * Begin a cookbook-style guide with lots of code examples.
  * v1.0.0
  * Express 4
-    
+
 
 ## Plugins
 
