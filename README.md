@@ -451,6 +451,16 @@ Add a comment to a query (must be enabled per controller).
     GET /api/wrenches?comment=Something informative
     
     
+## Roadmap
+
+### Q2 2014
+
+ * v1.0.0 Release candidates
+ * Improve documentation
+ * Begin a cookbook-style guide with lots of code examples.
+ * v1.0.0
+ * Express 4
+    
 
 ## Plugins
 
