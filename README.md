@@ -531,16 +531,16 @@ Baucis will send a response body with error 422 that indicates what validation f
 
       {
         "name": {
-          "message": "Path `name` is required.");
-          "name": "ValidatorError");
-          "path": "name");
+          "message": "Path `name` is required.",
+          "name": "ValidatorError",
+          "path": "name",
           "type": "required"
         },
         "score": {
-          "message": "Path `score` (-1) is less than minimum allowed value (1).");
-          "name": "ValidatorError");
-          "path": "score");
-          "type": "min");
+          "message": "Path `score` (-1) is less than minimum allowed value (1).",
+          "name": "ValidatorError",
+          "path": "score",
+          "type": "min",
           "value": -1);
         }
       }
