@@ -1,6 +1,27 @@
 // __Dependencies__
 var BaucisError = require('../../BaucisError');
 
+function isDefinedAndNotNull (n) {
+  if (n === null) return false;
+  if (n === undefined) return false;
+  return true;
+}
+
+function isPositiveInteger (n) {
+
+  if (!isDefinedAndNotNull(n)) return false;
+  n = Number(n);
+  if (n < 1) return false;
+  return n === Math.ceil(n);
+}
+
+function isNonNegativeInteger (n) {
+  if (!isDefinedAndNotNull(n)) return false;
+  n = Number(n);
+  if (n < 0) return false;
+  return n === Math.ceil(n);
+}
+
 // __Module Definition__
 var decorator = module.exports = function () {
   var controller = this;
@@ -87,17 +108,33 @@ var decorator = module.exports = function () {
   });
   // Apply incoming request skip.
   this.query(function (request, response, next) {
-    if (request.query.skip) request.baucis.query.skip(request.query.skip);
+    var skip = request.query.skip;
+    if (skip === undefined || skip === null) return next();
+    if (!isNonNegativeInteger(skip)) {
+      return next(BaucisError.BadRequest('Skip must be a non-negative integer if set'));
+    }
+    request.baucis.query.skip(skip);
     next();
   });
   // Apply incoming request limit.
   this.query(function (request, response, next) {
-    if (request.query.limit) request.baucis.query.limit(request.query.limit);
+    var limit = request.query.limit;
+    if (limit === undefined || limit === null) return next();
+    if (!isPositiveInteger(limit)) {
+      return next(BaucisError.BadRequest('Limit must be a positive integer if set'));
+    }
+    request.baucis.query.limit(limit);
     next();
   });
   // Set count flag.
   this.query(function (request, response, next) {
-    if (request.query.count === 'true') request.baucis.count = true;
+    if (!request.query.count) return next();
+    if (request.query.count === 'false') return next();
+    if (request.query.count !== 'true') {
+      return next(BaucisError.BadRequest('Count must be "true" or "false" if set'));
+    }
+
+    request.baucis.count = true;
     next();
   });
   // Check for query comment.

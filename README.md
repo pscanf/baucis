@@ -1,4 +1,4 @@
-# baucis v0.20.2
+# baucis v0.20.4
 
 Baucis enables you to build scalable REST APIs using the open source tools and standards you and your team already know.  Like Baucis and Philemon of old, the module provides REST to the weary traveler.  [Baucis](https://en.wikipedia.org/wiki/Baucis_and_Philemon) is not the same as [Bacchus](https://en.wikipedia.org/wiki/Dionysus).
 
@@ -413,8 +413,8 @@ Skip sending the first *n* matched documents in the response.  Useful for paging
 Limit the response document count to *n* at maximum.
 
     GET /api/horses?limit=3
-    
-If both limit and skip are used on a request, the response `Link` header will be set with extra relations that give URLs for paging.  
+
+If both limit and skip are used on a request, the response `Link` header will be set with extra relations that give URLs for paging.
 
 ### sort
 
@@ -464,7 +464,7 @@ Add an index hint to the query (must be enabled per controller).
 Add a comment to a query (must be enabled per controller).
 
     GET /api/wrenches?comment=Something informative
-    
+
 ## Errors & Status Codes
 
 Baucis supports a rich array of error responses and status codes. For more information on status codes see [RFC2616](http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html) the HTTP sepcification.
@@ -475,22 +475,22 @@ Baucis supports a rich array of error responses and status codes. For more infor
 
 #### 400 Bad Request
 
-The client made a bad request and should fix the request before trying again.  This is also sent when a deprecated command is used.  
+The client made a bad request and should fix the request before trying again.  This is also sent when a deprecated command is used.
 
 
     baucis.Error.BadRequest
     baucis.Error.Deprecated
-    
+
 #### 403 Forbidden
 
 Sent when the requested action is disallowed for a controller.
-    
+
     Error.Forbidden;
-    
+
 #### 404 Not Found
 
 Sent when the query does not match any document, or when the requested resource does not exist.
-    
+
     baucis.Error.NotFound
 
 #### 405 Method Not Allowed
@@ -498,35 +498,35 @@ Sent when the query does not match any document, or when the requested resource 
 The request HTTP method (i.e one of `HEAD`, `GET`, `POST`, `PUT`, `DELETE`) is disabled for this resource.  This can be done by e.g. `controller.methods('post put del', false)`.
 
     baucis.Error.MethodNotAllowed
-    
+
 #### 406 Not Acceptable
 
 The `Accept` header specified in the request could not be fulfilled.  By default JSON is supported.  Baucis is pluggable to allow adding formatters for additional content types.
 
 
     baucis.Error.NotAcceptable
-    
-    
+
+
 #### 409 Conflict
 
-If a controller has optimistic locking enabled, baucis will automatically check each updated document's version and give a 409 error if another API client modified the document before the requester was able to send their update.  
+If a controller has optimistic locking enabled, baucis will automatically check each updated document's version and give a 409 error if another API client modified the document before the requester was able to send their update.
 
 In this case, a client could reload the document, present the user with a description of the conflict, and ask them how to procede.
 
     baucis.Error.LockConflict
-    
+
 #### 415 Unspported Media Type
 
 The request body content type was not able to be parsed.  By default JSON is supported.  Baucis is pluggable to allow adding parsers for additional content types.
 
     baucis.Error.UnsupportedMediaType
-    
+
 #### 422 Unprocessable Entity
 
-This status indicates a validation error ocurred, or that the entity sent to the server was invalid semantically in another way.  
+This status indicates a validation error ocurred, or that the entity sent to the server was invalid semantically in another way.
 
     baucis.Error.ValidationError
-   
+
 Baucis will send a response body with error 422 that indicates what validation failed for which fields.
 
       {
@@ -547,17 +547,17 @@ Baucis will send a response body with error 422 that indicates what validation f
 
 Technically, this error is from [RFC4918](https://tools.ietf.org/html/rfc4918#section-11.2), the WebDAV specification.
 
-    
+
 ### 5xx
 
 Where as `4xx` erros mean the requester messed up, `5xx` errors mean the server messed up :)
-    
+
 #### 500 Internal Server Error
 
 There was an error in configuration, or the server tried to perform the requested action but failed.
 
     baucis.Error.Configuration
-    
+
 #### 501 Not Implemented
 
 The requested functionality is not implemented now, but may be implented in the future.

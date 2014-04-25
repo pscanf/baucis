@@ -1,6 +1,10 @@
 Baucis Change Log
 =================
 
+v0.20.4
+-------
+Check additional opportunities to send 400 Bad Request.
+
 v0.20.3
 -------
 README improvements.

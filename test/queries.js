@@ -242,6 +242,90 @@ describe('Queries', function () {
     });
   });
 
+  it('should send 400 if limit is invalid', function(done) {
+    var options = {
+      url: 'http://localhost:8012/api/minerals?limit=-1',
+      json: true
+    };
+    request.get(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(400);
+      expect(response.headers).not.to.have.property('link');
+      expect(body).to.be('Bad Request: Limit must be a positive integer if set (400).');
+      done();
+    });
+  });
+
+  it('should send 400 if limit is invalid', function(done) {
+    var options = {
+      url: 'http://localhost:8012/api/minerals?limit=0',
+      json: true
+    };
+    request.get(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(400);
+      expect(response.headers).not.to.have.property('link');
+      expect(body).to.be('Bad Request: Limit must be a positive integer if set (400).');
+      done();
+    });
+  });
+
+  it('should send 400 if limit is invalid', function(done) {
+    var options = {
+      url: 'http://localhost:8012/api/minerals?limit=3.6',
+      json: true
+    };
+    request.get(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(400);
+      expect(response.headers).not.to.have.property('link');
+      expect(body).to.be('Bad Request: Limit must be a positive integer if set (400).');
+      done();
+    });
+  });
+
+  it('should send 400 if limit is invalid', function(done) {
+    var options = {
+      url: 'http://localhost:8012/api/minerals?limit= asd  asd ',
+      json: true
+    };
+    request.get(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(400);
+      expect(response.headers).not.to.have.property('link');
+      expect(body).to.be('Bad Request: Limit must be a positive integer if set (400).');
+      done();
+    });
+  });
+
+  it('should send 400 if skip is invalid', function(done) {
+    var options = {
+      url: 'http://localhost:8012/api/minerals?skip=1.1',
+      json: true
+    };
+    request.get(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(400);
+      expect(response.headers).not.to.have.property('link');
+      expect(body).to.be('Bad Request: Skip must be a non-negative integer if set (400).');
+      done();
+    });
+  });
+
+  it('should send 400 if count is invalid', function(done) {
+    var options = {
+      url: 'http://localhost:8012/api/minerals?count=1',
+      json: true
+    };
+    request.get(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(400);
+      expect(response.headers).not.to.have.property('link');
+      expect(body).to.be('Bad Request: Count must be &quot;true&quot; or &quot;false&quot; if set (400).');
+      done();
+    });
+  });
+
   it('should allow adding paging links', function(done) {
     var options = {
       url: 'http://localhost:8012/api/minerals?limit=2',
