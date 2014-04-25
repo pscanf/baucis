@@ -477,7 +477,6 @@ Baucis supports a rich array of error responses and status codes. For more infor
 
 The client made a bad request and should fix the request before trying again.  This is also sent when a deprecated command is used.  
 
-
     baucis.Error.BadRequest
     baucis.Error.Deprecated
     
@@ -485,7 +484,7 @@ The client made a bad request and should fix the request before trying again.  T
 
 Sent when the requested action is disallowed for a controller.
     
-    Error.Forbidden;
+    baucis.Error.Forbidden;
     
 #### 404 Not Found
 
@@ -503,9 +502,7 @@ The request HTTP method (i.e one of `HEAD`, `GET`, `POST`, `PUT`, `DELETE`) is d
 
 The `Accept` header specified in the request could not be fulfilled.  By default JSON is supported.  Baucis is pluggable to allow adding formatters for additional content types.
 
-
     baucis.Error.NotAcceptable
-    
     
 #### 409 Conflict
 
