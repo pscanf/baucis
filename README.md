@@ -582,6 +582,9 @@ The requested functionality is not implemented now, but may be implented in the 
  * [bswagger](https://www.npmjs.org/package/bswagger)
  * [baucis-gform](https://www.npmjs.org/package/baucis-gform)
  * [baucis-patch](https://www.npmjs.org/package/baucis-patch)
+ * [baucis-json](https://www.npmjs.org/package/baucis-json) 
+
+The `baucis-json` plugin is bundled with baucis by default.  It's a good example for writing your own plugins, and for parsing or outputting custom content types.
 
 
 ##Contact
