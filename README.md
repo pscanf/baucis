@@ -547,11 +547,11 @@ Technically, this error is from [RFC4918](https://tools.ietf.org/html/rfc4918#se
     
 ### 5xx
 
-Where as `4xx` erros mean the requester messed up, `5xx` errors mean the server messed up :)
+Where as `4xx` errors mean the requester messed up, `5xx` errors mean the server messed up :)
     
 #### 500 Internal Server Error
 
-There was an error in configuration, or the server tried to perform the requested action but failed.
+This means that baucis is misconfigured, or that the server tried to perform the requested action but failed.
 
     baucis.Error.Configuration
     
