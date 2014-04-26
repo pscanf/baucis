@@ -129,4 +129,19 @@ describe('POST plural', function () {
     });
   });
 
+  it('should handle malformed JSON inside first-level objects but ignore those outside', function (done) {
+      var options = {
+      url: 'http://localhost:8012/api/vegetables/',
+      json: true,
+      body: 'bababa { cacacaca "name": "Garlic Scape" }'
+    };
+    request.post(options, function (error, response, body) {
+      if (error) return done(error);
+
+      expect(response.statusCode).to.equal(400);
+      expect(body).to.be('Bad Request: The body of this request was invalid and could not be parsed. &quot;Unexpected token c&quot; (400).');
+      done();
+    });
+  });
+
 });

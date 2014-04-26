@@ -1,13 +1,12 @@
-# baucis v0.20.4
+# baucis v0.20.5
 
 Baucis enables you to build scalable REST APIs using the open source tools and standards you and your team already know.  Like Baucis and Philemon of old, the module provides REST to the weary traveler.  [Baucis](https://en.wikipedia.org/wiki/Baucis_and_Philemon) is not the same as [Bacchus](https://en.wikipedia.org/wiki/Dionysus).
 
-Baucis is tested with over 150 Mocha.js tests.  Baucis is used in production by startups, departments, and at least one Fortune 500 company, not to mention at hackathons and conferences worldwide.
+Baucis is used in production by startups, departments, and at least one Fortune 500 company, not to mention at hackathons and conferences worldwide.
 
 If you like Baucis, [please consider tipping](https://www.gittip.com/wprl/).
 
 The official baucis documentation is being moved to [kun.io/baucis](http://kun.io/baucis) but is still right here for the moment!
-
 
 
 ## Features
@@ -21,9 +20,15 @@ The official baucis documentation is being moved to [kun.io/baucis](http://kun.i
  * Perform rich queries of the API using an expressive JSON syntax via query string.
  * Mongoose middleware, inheritence, and validation methods are automatically respected.
  * Version your API using semver.
+ * Over 150 Mocha.js tests.
 
+
+### Coming Soon
+
+ * Real time browser/client subscription with EventSource (server sent events)
+ * Web hooks
+ 
 Check the [change log](CHANGES.md) for info on all the latest features.
-
 
 
 ## Examples
@@ -560,8 +565,7 @@ This means that baucis is misconfigured, or that the server tried to perform the
 The requested functionality is not implemented now, but may be implented in the future.
 
     baucis.Error.NotImplemented
-
-
+    
 ## Roadmap
 
 ### Q2 2014
