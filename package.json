@@ -1,8 +1,15 @@
 {
   "name": "baucis",
-  "author": "William Riley-Land <william@kun.io>",
+  "author": { 
+    "name" : "William Riley-Land",
+    "email" : "william@kun.io",
+    "url" : "http://kun.io/wprl"
+  },
+  "contributors": [
+    { "name" : "eguneys" }
+  ],
   "homepage": "https://github.com/wprl/baucis",
-  "version": "0.20.4",
+  "version": "0.20.5",
   "main": "index.js",
   "scripts": {
     "test": "mocha --bail --timeout 5000 --globals vegetables"
@@ -34,7 +41,7 @@
     "semver": "~2.2.1",
     "deco": "~0.10.2",
     "event-stream": "~3.1.1",
-    "baucis-json": "~0.1.0"
+    "baucis-json": "~0.1.1"
   },
   "peerDependencies": {
     "mongoose": "~3.8.1",

@@ -40,6 +40,12 @@ BaucisError.Deprecated = buildConstructor({
   name: 'Bad Request'
 });
 
+BaucisError.SyntaxError = buildConstructor({
+  defaultMessage: 'The body of this request was invalid and could not be parsed',
+  status: 400,
+  name: 'Bad Request'
+});
+
 BaucisError.Forbidden = buildConstructor({
   defaultMessage: 'This action is forbidden',
   status: 403,
