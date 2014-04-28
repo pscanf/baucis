@@ -10,7 +10,9 @@ var Schema = mongoose.Schema;
 var Stores = new Schema({
   name: { type: String, required: true, unique: true },
   tools: [{ type: mongoose.Schema.ObjectId, ref: 'tool' }],
-  mercoledi: Boolean
+  mercoledi: Boolean,
+  voltaic: { type: Boolean, default: true },
+  'hyphenated-field-name': { type: Boolean, default: true }
 });
 
 var Tools = new Schema({
@@ -23,6 +25,7 @@ var Cheese = new Schema({
   name: { type: String, required: true, unique: true },
   color: { type: String, required: true, select: false },
   molds: [ String ],
+  life: { type: Number, default: 42 },
   arbitrary: [{
     goat: Boolean,
     champagne: String,
@@ -32,7 +35,7 @@ var Cheese = new Schema({
 
 var Beans = new Schema({ koji: Boolean });
 var Deans = new Schema({ room: { type: Number, unique: true } });
-var Liens = new Schema({ title: String });
+var Liens = new Schema({ title: { type: String, default: 'Babrius' } });
 var Fiends = new Schema({ average: Number });
 var Unmades = new Schema({ mode: Number });
 
@@ -50,7 +53,7 @@ var fixture = module.exports = {
     mongoose.connect(config.mongo.url);
 
     // Stores controller
-    var stores = baucis.rest('store').findBy('name');
+    var stores = baucis.rest('store').findBy('name').select('-hyphenated-field-name -voltaic');
 
     stores.use('/binfo', function (request, response, next) {
       response.json('Poncho!');
@@ -95,7 +98,7 @@ var fixture = module.exports = {
     baucis.rest('cheese').singular('timeentry').plural('timeentries').findBy('name');
     baucis.rest('bean').methods('get', false);
     baucis.rest('dean').findBy('room').methods('get', false);
-    baucis.rest('lien').methods('del', false);
+    baucis.rest('lien').methods('del', false).select('-title');
     baucis.rest('fiend').singular('mean').locking(true);
     baucis.rest('store').plural('baloo').findBy('name');
     baucis.rest('store').plural('baloo').path('linseed.oil');

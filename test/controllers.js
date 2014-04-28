@@ -56,6 +56,37 @@ describe('Controllers', function () {
     });
   });
 
+  it('should allow deselecting', function (done) {
+    var options = {
+      url: 'http://localhost:8012/api/liens',
+      json: true
+    };
+    request.get(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(200);
+      expect(body[0]).to.have.property('_id');
+      expect(body[0]).to.have.property('__v');
+      expect(body[0]).not.to.have.property('title');
+      done();
+    });
+  });
+
+  it('should allow deselecting hyphenated field names', function (done) {
+    var options = {
+      url: 'http://localhost:8012/api/stores',
+      json: true
+    };
+    request.get(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(200);
+      expect(body[0]).to.have.property('_id');
+      expect(body[0]).to.have.property('__v');
+      expect(body[0]).not.to.have.property('hpyhenated-field-name');
+      expect(body[0]).not.to.have.property('voltaic');
+      done();
+    });
+  });
+
   it('should support select options for POST requests', function (done) {
     var options = {
       url: 'http://localhost:8012/api/cheeses',

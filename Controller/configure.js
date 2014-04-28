@@ -58,6 +58,7 @@ var decorator = module.exports = function (model, protected) {
         items.split(/\s+/g).forEach(function (item) {
           store[item] = action ? action(cargo) : cargo;
         });
+        return controller;
       }
       // Return a list of activated items.
       return Object.keys(store).filter(function (item) {
