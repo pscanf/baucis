@@ -10,7 +10,8 @@ var Schema = mongoose.Schema;
 var Stores = new Schema({
   name: { type: String, required: true, unique: true },
   tools: [{ type: mongoose.Schema.ObjectId, ref: 'tool' }],
-  mercoledi: Boolean
+  mercoledi: Boolean,
+  'hyphenated-field-name': { type: Boolean, select: false }
 });
 
 var Tools = new Schema({
