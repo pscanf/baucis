@@ -110,17 +110,17 @@ var decorator = module.exports = function (options, protect) {
     throw BaucisError.Deprecated('The documents stage of middleware has been deprecated.  Use an outgoing stream instead.')
   };
 
-  protect.property('activated', false, function (state) { // TODO make this protected?
+  protect.property('activated', false, function (state) {
     // Only activate once; can't deactivate.
     if (controller.activated()) return true;
     var t = state ? true : false;
-    if (state) {
+    if (t) {
       controller.children().forEach(function (child) {
         child.activated(true);
       });
       storedDefinitions.forEach(activate);
     }
 
-    return state;
+    return t;
   });
 };
