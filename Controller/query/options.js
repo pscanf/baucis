@@ -1,6 +1,7 @@
 // __Dependencies__
 var BaucisError = require('../../BaucisError');
 
+// __Private Methods__
 function isDefinedAndNotNull (n) {
   if (n === null) return false;
   if (n === undefined) return false;
@@ -8,7 +9,6 @@ function isDefinedAndNotNull (n) {
 }
 
 function isPositiveInteger (n) {
-
   if (!isDefinedAndNotNull(n)) return false;
   n = Number(n);
   if (n < 1) return false;
@@ -43,7 +43,7 @@ var decorator = module.exports = function () {
       next(BaucisError.Forbidden('You may not find distinct values for the requested path'));
       return;
     }
-    var query = controller.model().distinct(distinct, request.baucis.conditions);
+    var query = controller.model().source().distinct(distinct, request.baucis.conditions);
     query.exec(function (error, values) {
       if (error) return next(error);
       request.baucis.documents = values;

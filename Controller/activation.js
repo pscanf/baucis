@@ -82,9 +82,8 @@ var decorator = module.exports = function (options, protect) {
     var stage = protect.controllerForStage[definition.stage];
     var f = stage[definition.method].bind(stage);
     var mount = '';
-    if (!controller.path()) controller.path(controller.plural());
     if (controller.parent && controller.parent.parent && controller.parent.parent.children) {
-      mount = '/:parentId' + controller.path();
+      mount = '/:parentId' + controller.baucisPath();
     }
     if (definition.endpoint === 'instance') mount += '/:id';
     if (!mount) mount = '/';

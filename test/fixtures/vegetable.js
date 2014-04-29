@@ -43,9 +43,9 @@ Vegetable.pre('remove', function (next) {
   next();
 });
 
-mongoose.model('vegetable', Vegetable);
-mongoose.model('fungus', Fungus);
-mongoose.model('mineral', Mineral);
+baucis.model('vegetable', Vegetable);
+baucis.model('fungus', Fungus).plural('fungi');
+baucis.model('mineral', Mineral);
 
 // __Module Definition__
 var fixture = module.exports = {
@@ -55,7 +55,7 @@ var fixture = module.exports = {
     fixture.saveCount = 0;
     fixture.removeCount = 0;
 
-    baucis.rest('fungus').plural('fungi').select('-hyphenated-field-name');
+    baucis.rest('fungus').select('-hyphenated-field-name');
     baucis.rest('mineral').relations(true);
 
     var veggies = fixture.controller = baucis.rest('vegetable');

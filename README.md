@@ -1,4 +1,4 @@
-# baucis v0.20.5
+# baucis v1.0.0-prerelease.1
 
 Baucis enables you to build scalable REST APIs using the open source tools and standards you and your team already know.  Like Baucis and Philemon of old, the module provides REST to the weary traveler.  [Baucis](https://en.wikipedia.org/wiki/Baucis_and_Philemon) is not the same as [Bacchus](https://en.wikipedia.org/wiki/Dionysus).
 
@@ -84,7 +84,7 @@ Later, make requests:
 | POST          | Creates new documents and sends them back.  You can POST a single document or an array of documents.      | n/a |
 | PUT           | n/a | Update the addressed document. |
 | DELETE        | Delete all documents, or documents that match the query conditions. | Delete the addressed object. |
-| HEAD          | Check what headers would be returned for the given query without sending the request body. | Check what headers would be returned for the instance |
+| HEAD          | Check what headers would be sent for the given GET request. | Check what headers would be returned for the instance. |
 
 
 ## baucis.rest
@@ -192,7 +192,7 @@ Used to disable specific HTTP methods for the controller.
 
 ### controller.operators
 
-**BYPASSES VALIDATION** Use this method to enable non-defualt update operators.  The update method can be set using the `X-Baucis-Update-Operator` header field.
+**BYPASSES VALIDATION** Use this method to enable non-defualt update operators.  The update method can be set using the `Update-Operator` header field.
 
     controller.operators('$push $set', 'foo some.path some.other.path');
     controller.operators('$pull', 'another.path');
@@ -565,6 +565,7 @@ This means that baucis is misconfigured, or that the server tried to perform the
 The requested functionality is not implemented now, but may be implented in the future.
 
     baucis.Error.NotImplemented
+
     
 ## Roadmap
 
@@ -572,9 +573,27 @@ The requested functionality is not implemented now, but may be implented in the 
 
  * v1.0.0 Release candidates
  * Improve documentation
+ * Benchmark
+ * Internal refactoring and simplification
  * Begin a cookbook-style guide with lots of code examples.
  * v1.0.0
  * Express 4
+
+
+## Extending Baucis
+
+Baucis can be augmented via incoming and outgoing streams, as well as with decorators.
+
+Add decorators to Controllers and other baucis constructors by using the `decorators` method.  Adding a decorator will affect all subsequently created controllers.  Here's how you could add a tiny plugin that makes all subsequently added controllers check authentication for all PUTs and POSTs.  
+
+  baucis.Controller.decorators(function (options, protect) {
+    var controller = this;
+    controller.request('put post', function (request, response, next) {
+      if (!request.isAuthenticated()) return next(new Error());
+      next();
+    });
+  });
+
 
 
 ## Plugins
@@ -585,11 +604,10 @@ The requested functionality is not implemented now, but may be implented in the 
  * [baucis-patch](https://www.npmjs.org/package/baucis-patch)
  * [baucis-json](https://www.npmjs.org/package/baucis-json)
 
-The `baucis-json` plugin is bundled with baucis by default.  It's a good example for writing your own plugins, and for parsing or outputting custom content types.
+*The `baucis-json` plugin is bundled with baucis by default.  It's a good example for writing your own plugins, and for parsing or formatting custom content types.*
 
 
 ##Contact
-
 
  * @wprl
  * https://linkedin.com/in/willprl

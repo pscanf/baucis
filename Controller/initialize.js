@@ -8,7 +8,7 @@ var decorator = module.exports = function () {
   // Make sure the controller is activated before being requested.
   controller.use(function (request, response, next) {
     if (controller.activated()) return next();
-    next(BaucisError.Configuration('The controller "%s" has not been activated', controller.plural()));
+    next(BaucisError.Configuration('The controller "%s" has not been activated', controller.baucisPath()));
   });
   // Set up `request.baucis`.
   controller.request(function (request, response, next) {

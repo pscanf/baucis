@@ -10,7 +10,9 @@ var Schema = mongoose.Schema;
 var Stores = new Schema({
   name: { type: String, required: true, unique: true },
   tools: [{ type: mongoose.Schema.ObjectId, ref: 'tool' }],
-  mercoledi: Boolean
+  mercoledi: Boolean,
+  voltaic: { type: Boolean, default: true },
+  'hyphenated-field-name': { type: Boolean, default: true }
 });
 
 var Tools = new Schema({
@@ -22,7 +24,9 @@ var Tools = new Schema({
 var Cheese = new Schema({
   name: { type: String, required: true, unique: true },
   color: { type: String, required: true, select: false },
+  bother: { type: Number, required: true, default: 5 },
   molds: [ String ],
+  life: { type: Number, default: 42 },
   arbitrary: [{
     goat: Boolean,
     champagne: String,
@@ -32,25 +36,28 @@ var Cheese = new Schema({
 
 var Beans = new Schema({ koji: Boolean });
 var Deans = new Schema({ room: { type: Number, unique: true } });
-var Liens = new Schema({ title: String });
+var Liens = new Schema({ title: { type: String, default: 'Babrius' } });
 var Fiends = new Schema({ average: Number });
 var Unmades = new Schema({ mode: Number });
 
-mongoose.model('tool', Tools);
-mongoose.model('store', Stores);
-mongoose.model('cheese', Cheese);
-mongoose.model('bean', Beans);
-mongoose.model('dean', Deans);
-mongoose.model('lien', Liens);
-mongoose.model('fiend', Fiends);
-mongoose.model('unmade', Unmades);
+baucis.model('tool', Tools);
+baucis.model('store', Stores);
+baucis.model('cheese', Cheese);
+baucis.model('bean', Beans);
+baucis.model('dean', Deans);
+baucis.model('lien', Liens);
+baucis.model('fiend', Fiends);
+baucis.model('unmade', Unmades);
+baucis.model('timeentry', Cheese).plural('timeentries');
+baucis.model('mean', Fiends);
+baucis.model('bal', Stores).plural('baloo');
 
 var fixture = module.exports = {
   init: function (done) {
     mongoose.connect(config.mongo.url);
 
     // Stores controller
-    var stores = baucis.rest('store').findBy('name');
+    var stores = baucis.rest('store').findBy('name').select('-hyphenated-field-name -voltaic');
 
     stores.use('/binfo', function (request, response, next) {
       response.json('Poncho!');
@@ -92,13 +99,13 @@ var fixture = module.exports = {
     cheesy.operators('$set', 'molds arbitrary.$.champagne');
     cheesy.operators('$pull', 'molds arbitrary.$.llama');
 
-    baucis.rest('cheese').singular('timeentry').plural('timeentries').findBy('name');
+    baucis.rest('timeentry').findBy('name');
     baucis.rest('bean').methods('get', false);
     baucis.rest('dean').findBy('room').methods('get', false);
-    baucis.rest('lien').methods('del', false);
-    baucis.rest('fiend').singular('mean').locking(true);
-    baucis.rest('store').plural('baloo').findBy('name');
-    baucis.rest('store').plural('baloo').path('linseed.oil');
+    baucis.rest('lien').select('-title').methods('del', false);
+    baucis.rest('mean').locking(true);
+    baucis.rest('bal').findBy('name');
+    baucis.rest('bal').baucisPath('linseed.oil');
 
     app = express();
     app.use('/api', baucis());
@@ -113,7 +120,6 @@ var fixture = module.exports = {
     done();
   },
   create: function (done) {
-    // TODO use async
     // clear all first
     mongoose.model('store').remove({}, function (error) {
       if (error) return done(error);

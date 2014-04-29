@@ -1,164 +1,87 @@
 // __Dependencies__
 var mongoose = require('mongoose');
 var semver = require('semver');
-var pluralize = require('mongoose/lib/utils').toCollectionName;
+var Model = require('../Model');
 var BaucisError = require('../BaucisError');
 
 // __Module Definition__
-var decorator = module.exports = function (model, protected) {
+var decorator = module.exports = function (model, protect) {
   var controller = this;
 
-  if (typeof model !== 'string' && !model.schema) {
+  if (typeof model !== 'string' && (!model || !model.schema)) {
     throw BaucisError.Configuration('You must pass in a model or model name');
   }
 
-  // __Private Instance Members__
-  var properties = {};
-  var multi = {
-    methods: {
-      get: true,
-      post: true,
-      put: true,
-      del: true
-    },
-    operators: {
-      $push: false,
-      $pull: false,
-      $set: false
-    }
-  };
-
-  // __Protected Instance Members__
-  var property = protected.property = function (name, initial, action) { // TODO detect if prop already added and throw
-    // Initialize the property value.
-    properties[name] = initial;
-    // Add the property to the controller.
-    controller[name] = function (value) {
-      if (arguments.length === 0) return properties[name];
-      if (action) value = action(value);
-      properties[name] = value;
-      controller.validate();
-      return controller;
-    };
-
-    return controller;
-  };
-
-  var multiproperty = protected.multiproperty = function (name, action) {
-    // Add the property to the controller.
-    controller[name] = function (items, cargo) {
-      var store = multi[name];
-      // If one argument was passed, returned the value for that item.
-      if (arguments.length === 1) {
-        if (items.match(/\s/)) throw new Error();
-        return store[items];
-      }
-      // If two arguments were passed, update the items with the cargo.
-      else if (arguments.length === 2) {
-        items.split(/\s+/g).forEach(function (item) {
-          store[item] = action ? action(cargo) : cargo;
-        });
-      }
-      // Return a list of activated items.
-      return Object.keys(store).filter(function (item) {
-        return store[item];
-      });
-    };
-
-    return controller;
-  };
-
   // __Property Definitions__
-  property('findBy', '_id');
-  property('versions', '*'); // TODO changing after activation is an NOP
-  property('comments', false);
-  property('hints', false);
-  property('locking', false);
-  property('relations', true);
-  property('select', '');
-  property('schema');
-  property('lastModified');
-  property('api'); // TODO changing this is an NOP
-  property('parentPath');
+  protect.property('comments', false);
+  protect.property('hints', false);
+  protect.property('locking', false);
+  protect.property('relations', true);
+  protect.property('select', '');
+  protect.property('lastModified');
+  protect.property('api'); // TODO changing this is an NOP
+  protect.property('parentPath');
 
-  property('model', undefined, function (model) {
-    var name;
-    var definition;
-    // If it's a string, get the model from mongoose.
-    if (typeof model === 'string') {
-      name = model;
-      definition = mongoose.model(name);
+  protect.property('findBy', '_id', function (path) {
+    var findByPath = controller.model().schema().path(path);
+    if (!findByPath.options.unique && !(findByPath.options.index && findByPath.options.index.unique)) {
+      throw BaucisError.Configuration('`findBy` path for model "%s" must be unique', controller.model().singular());
     }
-    // Otherwise, assume it's a model object.
-    else {
-      definition = model;
-      name = model.modelName;
-    }
-    // If the singular name hasn't been set, set it.
-    if (!controller.singular()) controller.singular(name);
-    // Record the new schema.
-    controller.schema(definition.schema);
-
-    return definition;
+    return path;
   });
 
-  property('singular', undefined, function (name) {
-    // If the plural name hasn't yet been set, set it to the pluralized version
-    // of the singular name.
-    if (!name) return name;
-    if (!controller.plural()) controller.plural(pluralize(name));
-    return name;
+  // TODO changing after activation is an NOP
+  protect.property('versions', '*', function (range) {
+    if (semver.validRange(range)) return range;
+    throw BaucisError.Configuration('Controller version range "%s" was not a valid semver range', range);
+  }); 
+
+  // TODO changing after activation is an NOP
+  protect.property('model', undefined, function (m) {
+    var baucis = require('..');
+    if (m instanceof Model) return m;
+    if (typeof m === 'string') return baucis.model(m) || m;
+    return Model(m);
   });
 
   // TODO changing this after activation is a NOP
-  property('plural', undefined, function (name) {
-    if (!name) return name;
-    return name;
-  });
-
-  // TODO changing this after activation is a NOP
-  property('path', undefined, function (path) {
-    if (!path) return path;
-    return '/' + path.replace(/[.]/g, '/');
-  });
+  protect.property(
+    'baucisPath', 
+    function (value) { 
+      if (value === undefined) return '/' + this.model().plural();
+      else return value;
+    },
+    function (path) {
+      if (!path) return path;
+      return '/' + path.replace(/[.]/g, '/');
+    }
+  );
 
   // TODO changing this after release init is an NOP
-  property('children', [], function (child) {
-    if (!child) throw BaucisError.Configuration('A child controller must be supplied when using the children poperty');
-    if (properties.children.indexOf(child) !== -1) return properties.children;
-    properties.children.push(child);
-    if (!child.parentPath()) child.parentPath(controller.singular());
+  protect.property('children', [], function (child) {
+    var children = this.children();
+    if (!child) {
+      throw BaucisError.Configuration('A child controller must be supplied when using the children poperty');
+    }
+    if (children.indexOf(child) !== -1) {
+      throw BaucisError.Configuration('A controller was added as a child to the same parent contorller twice');
+    }
+    if (!child.parentPath()) child.parentPath(controller.model().singular());
     child.api(controller.api());
     controller.use(child);
-    return properties.children;
+    return children.concat(child);
   });
 
-  multiproperty('operators');
-  multiproperty('methods', function (enabled) {
+  protect.multiproperty('operators', false);
+  protect.multiproperty('methods', true, function (enabled) {
     return enabled ? true : false;
   });
-
-  // Check the configuration.
-  controller.validate = function () {
-    var findByPath;
-
-    if (controller.schema() && controller.findBy() && controller.findBy() !== '_id') {
-      findByPath = controller.schema().path(controller.findBy());
-      if (!findByPath.options.unique && !(findByPath.options.index && findByPath.options.index.unique)) {
-        throw BaucisError.Configuration('`findBy` path for model "%s" must be unique', controller.model().modelName);
-      }
-    }
-    if (!semver.validRange(controller.versions())) {
-      throw BaucisError.Configuration('Controller version range "%s" was not a valid semver range', controller.versions());
-    }
-    return controller;
-  };
 
   controller.deselected = function (path) {
     var deselected = [];
     // Store naming, model, and schema.
     // Find deselected paths in the schema.
-    controller.schema().eachPath(function (name, path) {
+    controller.model().schema().eachPath(function (name, path) {
       if (path.options.select === false) deselected.push(name);
     });
     // Add deselected paths from the controller.

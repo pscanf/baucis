@@ -6,14 +6,11 @@ var express = require('express');
 var mongoose = require('mongoose');
 var semver = require('semver');
 var es = require('event-stream');
-var BaucisError = require('./BaucisError');
-var Controller = require('./Controller');
-var Release = require('./Release');
+var BaucisError = require('../BaucisError');
+var Controller = require('../Controller');
+var Release = require('../Release');
 
 // __Private Module Members__
-var parsers = {};
-var formatters = {};
-
 function getMatchingReleases (releases, range) {
   return releases.filter(function (release) {
     return semver.satisfies(release, range);
@@ -36,7 +33,6 @@ var Api = module.exports = deco(function (options) {
     if (matchingReleases.length === 0) {
       throw BaucisError.Configuration('The controller version range "%s" doesn\'t satisfy any API release', range);
     }
-
     // Find overlapping ranges.  A range overlaps if it shares any API release
     // versions with another range.
     var overlapping = Object.keys(controllersFor).filter(function (range) {
@@ -49,10 +45,8 @@ var Api = module.exports = deco(function (options) {
     var ok = overlapping.every(function (range) {
       return controllersFor[range].every(function (otherController) {
         if (controller === otherController) return true;
-        var path = controller.path() || ('/' + controller.plural());
-        var otherPath = otherController.path() || ('/' + otherController.plural());
-        if (path !== otherPath) return true;
-        throw BaucisError.Configuration('Controllers with path "%s" exist more than once in a release that overlaps "%s"', path, range);
+        if (controller.baucisPath() !== otherController.baucisPath()) return true;
+        throw BaucisError.Configuration('Controllers with path "%s" exist more than once in a release that overlaps "%s"', controller.baucisPath(), range);
       });
     });
 
@@ -192,40 +186,11 @@ var Api = module.exports = deco(function (options) {
   api.add = function (controller) {
     controller.api(api);
     apiControllers.push(controller);
-  };
-
-  api.formatters = function (response, callback) {
-    var handlers = {
-      default: function () {
-        callback(BaucisError.NotAcceptable());
-      }
-    };
-    Object.keys(formatters).map(function (mime) {
-      handlers[mime] = formatters[mime](callback);
-    });
-    response.format(handlers);
-  };
-
-  // Adds a formatter for the given mime type.  Needs a function that returns a stream.
-  api.setFormatter = function (mime, f) {
-    formatters[mime] = function (callback) { return function () { callback(null, f) } };
-  };
-
-  api.parser = function (mime) {
-    // Default to JSON when no MIME type is provided.
-    mime = mime || 'application/json';
-    // Not interested in any additional parameters at this point.
-    mime = mime.split(';')[0].trim();
-    var handler = parsers[mime];
-    return handler ? handler() : undefined;
-  };
-
-  // Adds a parser for the given mime type.  Needs a function that returns a stream.
-  api.setParser = function (mime, f) {
-    parsers[mime] = f;
+    return api;
   };
 });
 
 Api.factory(express);
 Api.defaults({ releases: [ '0.0.1' ] });
+Api.decorators(__dirname);
 Api.decorators(deco.builtin.setOptions);
