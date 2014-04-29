@@ -476,7 +476,7 @@ Baucis supports a rich array of error responses and status codes. For more infor
 
 ### 4xx
 
-4xx status codes mean that the client, for example a web browser made a mistake an needs to fix the response.
+4xx status codes mean that the client, for example a web browser made a mistake and needs to fix the response.
 
 #### 400 Bad Request
 
@@ -586,14 +586,13 @@ Baucis can be augmented via incoming and outgoing streams, as well as with decor
 
 Add decorators to Controllers and other baucis constructors by using the `decorators` method.  Adding a decorator will affect all subsequently created controllers.  Here's how you could add a tiny plugin that makes all subsequently added controllers check authentication for all PUTs and POSTs.  
 
-  baucis.Controller.decorators(function (options, protect) {
-    var controller = this;
-    controller.request('put post', function (request, response, next) {
-      if (!request.isAuthenticated()) return next(new Error());
-      next();
+    baucis.Controller.decorators(function (options, protect) {
+      var controller = this;
+      controller.request('put post', function (request, response, next) {
+        if (!request.isAuthenticated()) return next(new Error());
+        next();
+      });
     });
-  });
-
 
 
 ## Plugins
