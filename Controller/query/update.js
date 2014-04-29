@@ -32,8 +32,8 @@ var decorator = module.exports = function (options, protect) {
   controller.query('instance', 'put', function (request, response, next) {
     var parser;
     var count = 0;
-    var operator = request.headers['x-baucis-update-operator'];
-    var versionKey = controller.schema().get('versionKey');
+    var operator = request.headers['update-operator'];
+    var versionKey = controller.model().schema().get('versionKey');
     var pipeline = protect.pipeline();
     // Check if the body was parsed by some external middleware e.g. `express.json`.
     // If so, create a one-document stream from the parsed body.
@@ -56,7 +56,7 @@ var decorator = module.exports = function (options, protect) {
     // special update operator.
     if (!operator) {
       pipeline(function (context, callback) {
-        var query = controller.model().findOne(request.baucis.conditions);
+        var query = controller.model().source().findOne(request.baucis.conditions);
         query.exec(function (error, doc) {
           if (error) return callback(error);
           if (!doc) return callback(BaucisError.NotFound());
@@ -161,7 +161,7 @@ var decorator = module.exports = function (options, protect) {
           request.baucis.conditions[versionKey] = Number(context.incoming[versionKey]);
         }
         // Update the doc using the supplied operator and bypassing validation.
-        controller.model().update(request.baucis.conditions, wrapper, callback);
+        controller.model().source().update(request.baucis.conditions, wrapper, callback);
       });
     }
 

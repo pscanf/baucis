@@ -8,14 +8,14 @@ var Release = module.exports = deco(function (options) {
 
   release.mount = function (controller) {
     controller.activated(true);
-    release.use(controller.path(), controller);
+    release.use(controller.baucisPath(), controller);
   };
 
   if (!Array.isArray(options.controllers) || options.controllers.length === 0) {
     throw BaucisError.Configuration('There are no controllers in release "%s"', options.release);
   }
   // Mount all published controllers for this version.
-  options.controllers.forEach(release.mount.bind(release));
+  options.controllers.forEach(release.mount);
 });
 
 Release.factory(express);

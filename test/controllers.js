@@ -161,7 +161,7 @@ describe('Controllers', function () {
   it('should allow adding a uniqe findBy field 1', function (done) {
     var makeController = function () {
       var rab = new mongoose.Schema({ 'arb': { type: String, unique: true } });
-      mongoose.model('rab', rab);
+      baucis.model('rab', rab);
       baucis.Controller('rab').findBy('arb');
     };
     expect(makeController).not.to.throwException();
@@ -171,7 +171,7 @@ describe('Controllers', function () {
   it('should allow adding a unique findBy field 2', function (done) {
     var makeController = function () {
       var barb = new mongoose.Schema({ 'arb': { type: String, index: { unique: true } } });
-      mongoose.model('barb', barb);
+      baucis.model('barb', barb);
       baucis.Controller('barb').findBy('arb');
     };
     expect(makeController).not.to.throwException();
@@ -513,7 +513,7 @@ describe('Controllers', function () {
       c: String,
       d: String
     });
-    mongoose.model('doozle', doozle);
+    baucis.model('doozle', doozle);
     var controller = baucis.Controller('doozle').select('-d c -a b');
     expect(controller.deselected()).eql([ 'a', 'd' ]);
     done();
@@ -522,7 +522,7 @@ describe('Controllers', function () {
   it('should disallow push mode by default', function (done) {
     var options = {
       url: 'http://localhost:8012/api/stores/Westlake',
-      headers: { 'X-Baucis-Update-Operator': '$push' },
+      headers: { 'Update-Operator': '$push' },
       json: true,
       body: { molds: 'penicillium roqueforti', __v: 0 }
     };
@@ -537,7 +537,7 @@ describe('Controllers', function () {
   it('should disallow pushing to non-whitelisted paths', function (done) {
     var options = {
       url: 'http://localhost:8012/api/cheeses/Huntsman',
-      headers: { 'X-Baucis-Update-Operator': '$push' },
+      headers: { 'Update-Operator': '$push' },
       json: true,
       body: { 'favorite nes game': 'bubble bobble' }
     };
@@ -552,7 +552,7 @@ describe('Controllers', function () {
   it("should allow pushing to an instance document's whitelisted arrays when $push mode is enabled", function (done) {
     var options = {
       url: 'http://localhost:8012/api/cheeses/Huntsman?select=molds',
-      headers: { 'X-Baucis-Update-Operator': '$push' },
+      headers: { 'Update-Operator': '$push' },
       json: true,
       body: { molds: 'penicillium roqueforti' }
     };
@@ -571,7 +571,7 @@ describe('Controllers', function () {
   it('should disallow $pull mode by default', function (done) {
     var options = {
       url: 'http://localhost:8012/api/stores/Westlake',
-      headers: { 'X-Baucis-Update-Operator': '$pull' },
+      headers: { 'Update-Operator': '$pull' },
       json: true,
       body: { molds: 'penicillium roqueforti', __v: 0 }
     };
@@ -586,7 +586,7 @@ describe('Controllers', function () {
   it('should disallow pulling non-whitelisted paths', function (done) {
     var options = {
       url: 'http://localhost:8012/api/cheeses/Huntsman',
-      headers: { 'X-Baucis-Update-Operator': '$pull' },
+      headers: { 'Update-Operator': '$pull' },
       json: true,
       body: { 'favorite nes game': 'bubble bobble' }
     };
@@ -601,7 +601,7 @@ describe('Controllers', function () {
   it("should allow pulling from an instance document's whitelisted arrays when $pull mode is enabled", function (done) {
     var options = {
       url: 'http://localhost:8012/api/cheeses/Huntsman?select=molds',
-      headers: { 'X-Baucis-Update-Operator': '$push' },
+      headers: { 'Update-Operator': '$push' },
       json: true,
       body: { molds: 'penicillium roqueforti' }
     };
@@ -613,7 +613,7 @@ describe('Controllers', function () {
       expect(body.molds).to.have.property('length', 1);
       expect(body.molds).to.eql([ 'penicillium roqueforti' ]);
 
-      options.headers['X-Baucis-Update-Operator'] = '$pull';
+      options.headers['Update-Operator'] = '$pull';
 
       request.put(options, function (error, response, body) {
         if (error) return done(error);
@@ -631,7 +631,7 @@ describe('Controllers', function () {
   it('should disallow push mode by default', function (done) {
     var options = {
       url: 'http://localhost:8012/api/stores/Westlake',
-      headers: { 'X-Baucis-Update-Operator': '$set' },
+      headers: { 'Update-Operator': '$set' },
       json: true,
       body: { molds: 'penicillium roqueforti', __v: 0 }
     };
@@ -646,7 +646,7 @@ describe('Controllers', function () {
   it('should disallow setting non-whitelisted paths', function (done) {
     var options = {
       url: 'http://localhost:8012/api/cheeses/Huntsman',
-      headers: { 'X-Baucis-Update-Operator': '$set' },
+      headers: { 'Update-Operator': '$set' },
       json: true,
       body: { 'favorite nes game': 'bubble bobble' }
     };
@@ -661,7 +661,7 @@ describe('Controllers', function () {
   it("should allow setting an instance document's whitelisted paths when $set mode is enabled", function (done) {
     var options = {
       url: 'http://localhost:8012/api/cheeses/Huntsman?select=molds',
-      headers: { 'X-Baucis-Update-Operator': '$set' },
+      headers: { 'Update-Operator': '$set' },
       json: true,
       body: { molds: ['penicillium roqueforti'] }
     };
@@ -680,7 +680,7 @@ describe('Controllers', function () {
   it("should allow pushing to embedded arrays using positional $", function (done) {
     var options = {
       url: 'http://localhost:8012/api/cheeses/Camembert?select=arbitrary',
-      headers: { 'X-Baucis-Update-Operator': '$push' },
+      headers: { 'Update-Operator': '$push' },
       json: true,
       qs: { conditions: JSON.stringify({ 'arbitrary.goat': true }) },
       body: { 'arbitrary.$.llama': 5 }
@@ -707,7 +707,7 @@ describe('Controllers', function () {
   it("should allow setting embedded fields using positional $", function (done) {
     var options = {
       url: 'http://localhost:8012/api/cheeses/Camembert?select=arbitrary',
-      headers: { 'X-Baucis-Update-Operator': '$set' },
+      headers: { 'Update-Operator': '$set' },
       json: true,
       qs: { conditions: JSON.stringify({ 'arbitrary.goat': false }) },
       body: { 'arbitrary.$.champagne': 'extra dry' }
@@ -728,7 +728,7 @@ describe('Controllers', function () {
   it("should allow pulling from embedded fields using positional $", function (done) {
     var options = {
       url: 'http://localhost:8012/api/cheeses/Camembert?select=arbitrary',
-      headers: { 'X-Baucis-Update-Operator': '$pull' },
+      headers: { 'Update-Operator': '$pull' },
       json: true,
       qs: { conditions: JSON.stringify({ 'arbitrary.goat': true }) },
       body: { 'arbitrary.$.llama': 3 }
@@ -796,7 +796,7 @@ describe('Controllers', function () {
     });
   });
 
-  it ('should allow setting path to non-default', function (done) {
+  it('should allow setting path different from model name', function (done) {
     var options = {
       url: 'http://localhost:8012/api/baloo/?sort=name',
       json: true

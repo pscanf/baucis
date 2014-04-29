@@ -1,5 +1,4 @@
 // __Dependencies__
-var stream = require('stream');
 var es = require('event-stream');
 
 // __Module Definition__

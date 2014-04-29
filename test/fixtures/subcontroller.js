@@ -5,25 +5,25 @@ var config = require('./config');
 
 var app;
 var server;
+var Schema = mongoose.Schema;
 
-var User = new mongoose.Schema({
+var User = new Schema({
   name: String,
-  tasks: [{ type: mongoose.Schema.ObjectId, ref: 'task' }]
+  tasks: [{ type: Schema.ObjectId, ref: 'task' }]
 });
-var Task = new mongoose.Schema({
+var Task = new Schema({
   name: String,
   user: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'User'
   }
 });
 
-mongoose.model('user', User);
-mongoose.model('task', Task);
+baucis.model('user', User);
+baucis.model('task', Task);
 
 var fixture = module.exports = {
   init: function (done) {
-    var Schema = mongoose.Schema;
 
     mongoose.connect(config.mongo.url);
 

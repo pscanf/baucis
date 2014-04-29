@@ -10,9 +10,9 @@ var Party = new Schema({ hobbits: Number, dwarves: Number });
 var Dungeon = new Schema({ treasures: Number });
 var Pumpkin = new Schema({ title: String });
 
-mongoose.model('party', Party);
-mongoose.model('dungeon', Dungeon);
-mongoose.model('pumpkin', Pumpkin);
+baucis.model('party', Party);
+baucis.model('dungeon', Dungeon);
+baucis.model('pumpkin', Pumpkin);
 
 var fixture = module.exports = {
   init: function (done) {
