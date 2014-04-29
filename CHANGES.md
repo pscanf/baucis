@@ -1,8 +1,13 @@
 # Baucis Change Log
 
+## v1.0.0-prerelease.2
+
+Merge to master and make small update to the README.
+
 ## v1.0.0-prerelease.1
 
 Add Model.  Change X-Baucis-Update-Operator to Update-Operator.  Begin refactoring Api into smaller decorators.
+
 
 ## v0.20.5
 
