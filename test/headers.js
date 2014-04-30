@@ -54,7 +54,7 @@ describe('Headers', function () {
     request.post(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(415);
-      expect(body).to.be("Unsupported Media Type: No parser is available for this request's content type (415).");
+      expect(body).to.be("Unsupported Media Type: No parser is available for this request&#39;s content type (415).");
       done();
     });
   });
@@ -74,7 +74,7 @@ describe('Headers', function () {
     });
   });
 
-  it('should set X-Powered-By', function (done) {
+  it('should not set X-Powered-By', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables',
       json: true
@@ -82,7 +82,7 @@ describe('Headers', function () {
     request.head(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(200);
-      expect(response.headers).to.have.property('x-powered-by', 'Baucis');
+      expect(response.headers).not.to.have.property('x-powered-by');
       done();
     });
   });

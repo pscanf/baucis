@@ -481,8 +481,8 @@ describe('Controllers', function () {
   it('should allow specifying instance or collection middleware', function (done) {
     var controller = baucis.Controller('store');
     var register = function () {
-      controller.request('collection', 'get put head del post', function () {});
-      controller.request('instance', 'get put head del post', function () {});
+      controller.request('collection', 'get put head delete post', function () {});
+      controller.request('instance', 'get put head delete post', function () {});
     };
     expect(register).to.not.throwException();
     done();
@@ -490,7 +490,7 @@ describe('Controllers', function () {
 
   it('should allow registering query middleware for other verbs', function (done) {
     var controller = baucis.Controller('store');
-    var register = function () { controller.query('get put head del', function () {}) };
+    var register = function () { controller.query('get put head delete', function () {}) };
     expect(register).not.to.throwException();
     done();
   });
@@ -848,7 +848,7 @@ describe('Controllers', function () {
 
   it('should allow setting path apart from plural', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/linseed/oil',
+      url: 'http://localhost:8012/api/linseed.oil',
       json: true
     };
     request.get(options, function (err, response, body) {

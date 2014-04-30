@@ -134,7 +134,7 @@ var decorator = module.exports = function (options, protect) {
   });
 
   // DELETE
-  protect.finalize('del', function (request, response, next) {
+  protect.finalize('delete', function (request, response, next) {
     // Remove each document from the database.
     request.baucis.send(function (context, callback) { context.doc.remove(callback) });
     // Respond with the count of deleted documents.

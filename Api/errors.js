@@ -1,5 +1,4 @@
 var util = require('util');
-var semver = require('semver');
 var mongoose = require('mongoose');
 var BaucisError = require('../BaucisError');
 

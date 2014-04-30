@@ -21,7 +21,7 @@ var decorator = module.exports = function () {
 
   // Check that the HTTP method has not been disabled for this controller.
   controller.request(function (request, response, next) {
-    var method = request.method === 'DELETE' ? 'del' : request.method.toLowerCase();
+    var method = request.method.toLowerCase();
     if (controller.methods(method) !== false) return next();
     next(BaucisError.MethodNotAllowed('The requested method has been disabled for this resource'));
   });

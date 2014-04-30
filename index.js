@@ -2,7 +2,6 @@
 var deco = require('deco');
 var mongoose = require('mongoose');
 var Api = require('./Api');
-var Release = require('./Release');
 var Controller = require('./Controller');
 var Model = require('./Model');
 var BaucisError = require('./BaucisError');
@@ -17,9 +16,8 @@ var models = [];
 var baucis = module.exports = function (options) {
   var previous = baucis.empty();
 
-  if (options && options.releases) previous.set('releases', options.releases);
+  if (options && options.releases) previous.releases(options.releases);
 
-  previous.initialize();
   return previous;
 };
 
@@ -58,13 +56,11 @@ baucis.model = function (name, source) {
 
 // __Expose Modules__
 baucis.Api = Api;
-baucis.Release = Release;
 baucis.Controller = Controller;
 baucis.Error = BaucisError;
 baucis.Model = Model;
 
 Api.container(baucis);
-Release.container(baucis);
 Controller.container(baucis);
 BaucisError.container(baucis);
 Model.container(baucis);

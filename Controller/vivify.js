@@ -28,7 +28,7 @@ var decorator = module.exports = function (options, protect) {
     child.request('post', function (request, response, next) {
       request.baucis.incoming(function (context, callback) {
         var path = child.parentPath();
-        if (!context.incoming[path]) context.incoming[path] = request.params.parentId;
+        if (!context.incoming[path]) context.incoming[path] = request.parentId;
         callback(null, context);
       });
       next();
@@ -36,7 +36,7 @@ var decorator = module.exports = function (options, protect) {
 
     child.query(function (request, response, next) {
       var conditions = {};
-      conditions[child.parentPath()] = request.params.parentId;
+      conditions[child.parentPath()] = request.parentId;
       request.baucis.query.where(conditions);
       next();
     });

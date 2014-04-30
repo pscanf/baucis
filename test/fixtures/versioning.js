@@ -26,9 +26,7 @@ var fixture = module.exports = {
     baucis.rest('party').versions('~3');
     baucis.rest('pumpkin').locking(true);
 
-    app.use('/api/versioned', baucis({
-      releases: [ '1.0.0', '2.1.0', '3.0.1' ]
-    }));
+    app.use('/api/versioned', baucis().releases('1.0.0').releases('2.1.0').releases('3.0.1'));
 
     baucis.rest('dungeon');
 

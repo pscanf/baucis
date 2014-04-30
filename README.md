@@ -1,8 +1,10 @@
-# baucis v1.0.0-prerelease.2
+# baucis v1.0.0-prerelease.3
 
 Baucis enables you to build scalable REST APIs using the open source tools and standards you and your team already know.  Like Baucis and Philemon of old, the module provides REST to the weary traveler.  [Baucis](https://en.wikipedia.org/wiki/Baucis_and_Philemon) is not the same as [Bacchus](https://en.wikipedia.org/wiki/Dionysus).
 
 Baucis is used in production by startups, departments, and at least one Fortune 500 company, not to mention at hackathons and conferences worldwide.
+
+Baucis is now compatible with Express 4!
 
 If you like Baucis, [please consider tipping](https://www.gittip.com/wprl/).
 
@@ -13,7 +15,7 @@ The official baucis documentation is being moved to [kun.io/baucis](http://kun.i
 
  * Awesomely scalable.  Takes full advantage of the inherent power of Node.js and MongoDB.
  * Automatically build APIs through reflection of your Mongoose schemata.
- * Built on Express so adding custom middleware is a snap.  100% compatible with existing middleware such as passport.
+ * Built on Express 4 so adding custom middleware is a snap.  100% compatible with existing middleware such as passport.
  * Supports geolocation and full text search.
  * Highly customizable, simple interface.  Can be extended with plugins.
  * Automatically generate interactive Swagger documentation for the API.
@@ -330,7 +332,7 @@ To add middleware that applies only to specific HTTP methods, use the second for
 
 The final form is the most specific.  The first argument lets you specify whether the middleware applies to document instances (paths like `/cheeses/:id`) or to collection requests (paths like `/cheeses`).
 
-    controller.request('instance', 'head get del', middleware);
+    controller.request('instance', 'head get delete', middleware);
     controller.request('collection', 'post', middleware);
 
 ## Swagger
@@ -380,7 +382,7 @@ To customize the swagger definition, simply alter the controler's swagger data d
 | Header Field | Notes |
 | ------------ | ----- |
 | API-Version | Set this to a valid semver range to request a specific version or range of versions for the requested controller. |
-| X-Baucis-Update-Operator | Use this to perform updates (that **BYPASS VALIDATION**) using a special update operator such as `$set`, `$push`, or `$pull`.  The fields that may be updated must be whitelisted per controller.
+| Update-Operator | Use this to perform updates (that **BYPASS VALIDATION**) using a special update operator such as `$set`, `$push`, or `$pull`.  The fields that may be updated must be whitelisted per controller.
 
 ### Response
 
@@ -499,7 +501,7 @@ Sent when the query does not match any document, or when the requested resource 
 
 #### 405 Method Not Allowed
 
-The request HTTP method (i.e one of `HEAD`, `GET`, `POST`, `PUT`, `DELETE`) is disabled for this resource.  This can be done by e.g. `controller.methods('post put del', false)`.
+The request HTTP method (i.e one of `HEAD`, `GET`, `POST`, `PUT`, `DELETE`) is disabled for this resource.  This can be done by e.g. `controller.methods('post put delete', false)`.
 
     baucis.Error.MethodNotAllowed
 
@@ -577,7 +579,7 @@ The requested functionality is not implemented now, but may be implented in the 
  * Internal refactoring and simplification
  * Begin a cookbook-style guide with lots of code examples.
  * v1.0.0
- * Express 4
+ * ~~Express 4~~
 
 
 ## Extending Baucis

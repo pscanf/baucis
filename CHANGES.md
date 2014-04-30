@@ -1,5 +1,15 @@
 # Baucis Change Log
 
+## v1.0.0-prerelease.3
+
+Express 4!
+del -> delete
+Controller activation is no longer required (again)
+API activation is not required
+Controller properties can change at runtime, and the API will now reflect those changes
+Remove X-Powered-By for all baucis routes
+
+
 ## v1.0.0-prerelease.2
 
 Merge to master and make small update to the README.

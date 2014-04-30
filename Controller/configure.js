@@ -49,11 +49,8 @@ var decorator = module.exports = function (model, protect) {
     'baucisPath', 
     function (value) { 
       if (value === undefined) return '/' + this.model().plural();
-      else return value;
-    },
-    function (path) {
-      if (!path) return path;
-      return '/' + path.replace(/[.]/g, '/');
+      if (value.indexOf('/') !== 0) return '/' + value;
+      return value;
     }
   );
 
@@ -68,7 +65,12 @@ var decorator = module.exports = function (model, protect) {
     }
     if (!child.parentPath()) child.parentPath(controller.model().singular());
     child.api(controller.api());
-    controller.use(child);
+    controller.use('/:parentId/:path', function (request, response, next) {
+      var path = '/' + request.params.path;
+      if (path !== child.baucisPath()) return next(); 
+      request.parentId = request.params.parentId;
+      child(request, response, next);
+    });
     return children.concat(child);
   });
 

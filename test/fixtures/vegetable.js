@@ -1,6 +1,7 @@
 // __Dependencies__
 var mongoose = require('mongoose');
 var express = require('express');
+var bodyParser = require('body-parser');
 var async = require('async');
 var es = require('event-stream');
 var baucis = require('../..');
@@ -58,7 +59,7 @@ var fixture = module.exports = {
     baucis.rest('fungus').select('-hyphenated-field-name');
     baucis.rest('mineral').relations(true);
 
-    var veggies = fixture.controller = baucis.rest('vegetable');
+    var veggies = baucis.rest('vegetable');
     veggies.lastModified('lastModified').relations(false).hints(true).comments(true);
 
     veggies.request(function (request, response, next) {
@@ -105,7 +106,7 @@ var fixture = module.exports = {
     // Test that parsed body is respected
     veggies.request(function (request, response, next) {
       if (request.query.parse !== 'true') return next();
-      express.json()(request, response, next);
+      bodyParser.json()(request, response, next);
     });
 
     // Test arbitrary documents

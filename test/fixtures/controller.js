@@ -102,7 +102,7 @@ var fixture = module.exports = {
     baucis.rest('timeentry').findBy('name');
     baucis.rest('bean').methods('get', false);
     baucis.rest('dean').findBy('room').methods('get', false);
-    baucis.rest('lien').select('-title').methods('del', false);
+    baucis.rest('lien').select('-title').methods('delete', false);
     baucis.rest('mean').locking(true);
     baucis.rest('bal').findBy('name');
     baucis.rest('bal').baucisPath('linseed.oil');

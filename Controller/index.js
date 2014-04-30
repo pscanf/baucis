@@ -5,7 +5,7 @@ var express = require('express');
 // __Module Definition__
 var Controller = module.exports = deco();
 
-Controller.factory(express);
+Controller.factory(express.Router);
 Controller.decorators(__dirname, [
   'configure',
   'stages',

@@ -31,7 +31,7 @@ function last (skip, names, values) {
 }
 // Returns `true` if the given stirng is a recognized HTTP method.
 function isRecognizedMethod (s) {
-  return /^head|get|put|post|del$/.exec(s) ? true : false;
+  return /^all|head|get|put|post|delete$/.exec(s) ? true : false;
 }
 // Parse middleware into an array of middleware definitions for each endpoint and method
 function factor (options) {
@@ -41,7 +41,7 @@ function factor (options) {
 
   if (methodString) methodString = methodString.toLowerCase();
 
-  if (!methodString || methodString === '*') methodString = 'head get post put del';
+  if (!methodString || methodString === '*') methodString = 'all';
   methods = methodString.split(/\s+/);
 
   methods.forEach(function (method) {
@@ -72,55 +72,31 @@ function factor (options) {
 var decorator = module.exports = function (options, protect) {
   var controller = this;
   // __Private Instance Members__
-  // A method to store rotue definitions for later.
-  var storedDefinitions = [];
-  function storeDefinition (definition) {
-    storedDefinitions.push(definition);
-  }
   // A method used to activate middleware for a particular stage.
   function activate (definition) {
     var stage = protect.controllerForStage[definition.stage];
     var f = stage[definition.method].bind(stage);
-    var mount = '';
-    if (controller.parent && controller.parent.parent && controller.parent.parent.children) {
-      mount = '/:parentId' + controller.baucisPath();
-    }
-    if (definition.endpoint === 'instance') mount += '/:id';
-    if (!mount) mount = '/';
-    return f(mount, definition.middleware);
+    if (definition.endpoint === 'instance') f('/:id', definition.middleware);
+    else f('/', definition.middleware);
   }
   // __Protected Instance Members__
   protect.finalize = function (endpoint, methods, middleware) {
-    defineRoutes('finalize', arguments).forEach(storeDefinition);
+    defineRoutes('finalize', arguments).forEach(activate);
     return controller;
   };
   // __Public Instance Members__
   // A method used to activate request-stage middleware.
   controller.request = function (endpoint, methods, middleware) {
-    defineRoutes('request', arguments).forEach(storeDefinition);
+    defineRoutes('request', arguments).forEach(activate);
     return controller;
   };
   // A method used to activate query-stage middleware.
   controller.query = function (endpoint, methods, middleware) {
-    defineRoutes('query', arguments).forEach(storeDefinition);
+    defineRoutes('query', arguments).forEach(activate);
     return controller;
   };
   // A method used to activate document-stage middleware.
   controller.documents = function (endpoint, methods, middleware) {
     throw BaucisError.Deprecated('The documents stage of middleware has been deprecated.  Use an outgoing stream instead.')
   };
-
-  protect.property('activated', false, function (state) {
-    // Only activate once; can't deactivate.
-    if (controller.activated()) return true;
-    var t = state ? true : false;
-    if (t) {
-      controller.children().forEach(function (child) {
-        child.activated(true);
-      });
-      storedDefinitions.forEach(activate);
-    }
-
-    return t;
-  });
 };

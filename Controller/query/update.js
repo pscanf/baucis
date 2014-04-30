@@ -111,7 +111,7 @@ var decorator = module.exports = function (options, protect) {
       function (context) {
         count += 1;
         if (count === 2) {
-          next(BaucisError.BadRequest('The request body contained more than one update document'));
+          this.emit('error', BaucisError.BadRequest('The request body contained more than one update document'));
           return;
         }
         if (count > 1) return;
@@ -120,7 +120,7 @@ var decorator = module.exports = function (options, protect) {
       },
       function () {
         if (count === 0) {
-          next(BaucisError.BadRequest('The request body did not contain an update document'));
+          this.emit('error', BaucisError.BadRequest('The request body did not contain an update document'));
         }
         this.emit('end');
       }
