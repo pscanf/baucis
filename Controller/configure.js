@@ -19,7 +19,6 @@ var decorator = module.exports = function (model, protect) {
   protect.property('relations', true);
   protect.property('select', '');
   protect.property('lastModified');
-  protect.property('api'); // TODO changing this is an NOP
   protect.property('parentPath');
 
   protect.property('findBy', '_id', function (path) {
@@ -30,13 +29,11 @@ var decorator = module.exports = function (model, protect) {
     return path;
   });
 
-  // TODO changing after activation is an NOP
   protect.property('versions', '*', function (range) {
     if (semver.validRange(range)) return range;
     throw BaucisError.Configuration('Controller version range "%s" was not a valid semver range', range);
   }); 
 
-  // TODO changing after activation is an NOP
   protect.property('model', undefined, function (m) {
     var baucis = require('..');
     if (m instanceof Model) return m;
@@ -44,7 +41,6 @@ var decorator = module.exports = function (model, protect) {
     return Model(m);
   });
 
-  // TODO changing this after activation is a NOP
   protect.property(
     'baucisPath', 
     function (value) { 
@@ -54,7 +50,6 @@ var decorator = module.exports = function (model, protect) {
     }
   );
 
-  // TODO changing this after release init is an NOP
   protect.property('children', [], function (child) {
     var children = this.children();
     if (!child) {
@@ -64,11 +59,10 @@ var decorator = module.exports = function (model, protect) {
       throw BaucisError.Configuration('A controller was added as a child to the same parent contorller twice');
     }
     if (!child.parentPath()) child.parentPath(controller.model().singular());
-    child.api(controller.api());
     controller.use('/:parentId/:path', function (request, response, next) {
       var path = '/' + request.params.path;
       if (path !== child.baucisPath()) return next(); 
-      request.parentId = request.params.parentId;
+      request.baucis.parentId = request.params.parentId;
       child(request, response, next);
     });
     return children.concat(child);

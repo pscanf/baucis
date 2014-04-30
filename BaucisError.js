@@ -1,11 +1,9 @@
 // __Dependencies__
 var deco = require('deco');
 var util = require('util');
-
 // __Module Definition__
 // Parent type for child baucis errors.
 var BaucisError = module.exports = deco().inherit(Error);
-
 // __Private Module Members__
 // Build a constructor function for a Baucis error, with a custom default message
 // that can be overridden.
@@ -26,7 +24,6 @@ function buildConstructor (options) {
 
   return ChildError;
 };
-
 // __Public Module Members__
 BaucisError.BadRequest = buildConstructor({
   defaultMessage: 'Please fix this request and try again',

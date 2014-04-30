@@ -7,11 +7,6 @@ var BaucisError = require('../BaucisError');
 var decorator = module.exports = function (options, protect) {
   var controller = this;
 
-  function embed (controller, child) {
-    controller.children(child);
-    return controller;
-  };
-
   controller.vivify = function (path) {
     var definition = controller.model().schema().path(path);
     var ref = definition.caster.options.ref;
@@ -28,7 +23,7 @@ var decorator = module.exports = function (options, protect) {
     child.request('post', function (request, response, next) {
       request.baucis.incoming(function (context, callback) {
         var path = child.parentPath();
-        if (!context.incoming[path]) context.incoming[path] = request.parentId;
+        if (!context.incoming[path]) context.incoming[path] = request.baucis.parentId;
         callback(null, context);
       });
       next();
@@ -36,12 +31,12 @@ var decorator = module.exports = function (options, protect) {
 
     child.query(function (request, response, next) {
       var conditions = {};
-      conditions[child.parentPath()] = request.parentId;
+      conditions[child.parentPath()] = request.baucis.parentId;
       request.baucis.query.where(conditions);
       next();
     });
 
-    embed(controller, child);
+    controller.children(child);
 
     return child;
   };

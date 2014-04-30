@@ -11,7 +11,6 @@ Controller.decorators(__dirname, [
   'stages',
   'activation',
   'vivify',
-  'initialize',
   'request',
   'query',
   'send'

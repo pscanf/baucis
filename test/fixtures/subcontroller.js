@@ -30,16 +30,6 @@ var fixture = module.exports = {
     var users = baucis.rest('user');
     var tasks = users.vivify('tasks');
 
-    users.request(function (request, response, next) {
-      if (request.baucis.controller === users) return next();
-      next(new Error('request.baucis.controller set incorrectly!'));
-    });
-
-    tasks.request(function (request, response, next) {
-      if (request.baucis.controller === tasks) return next();
-      next(new Error('request.baucis.controller set incorrectly!'));
-    });
-
     tasks.request(function (request, response, next) {
       request.baucis.outgoing(function (context, callback) {
         context.doc.name = 'Changed by Middleware';

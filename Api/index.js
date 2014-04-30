@@ -9,7 +9,14 @@ var BaucisError = require('../BaucisError');
 var Api = module.exports = deco(function (options, protect) {
   var api = this;
 
-  var middleware = api.middleware = express();
+  var middleware = api.middleware = express.Router();
+
+  api.use(function (request, response, next) {
+    if (request.baucis) return next(BaucisError.Configuration('Baucis request property already created'));
+    request.baucis = { api: api };
+    response.removeHeader('x-powered-by');
+    next();
+  });
 
   api.use(middleware);
   

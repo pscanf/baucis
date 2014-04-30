@@ -76,18 +76,8 @@ var fixture = module.exports = {
       response.json(request.params.id);
     });
 
-    stores.request(function (request, response, next) {
-      if (request.baucis.controller === stores) return next();
-      next(new Error('request.baucis.controller set incorrectly!'));
-    });
-
     // Tools embedded controller
     var storeTools = stores.vivify('tools');
-
-    storeTools.request(function (request, response, next) {
-      if (request.baucis.controller === storeTools) return next();
-      next(new Error('request.baucis.controller set incorrectly!'));
-    });
 
     storeTools.query(function (request, response, next) {
       request.baucis.query.where('bogus', false);

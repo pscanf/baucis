@@ -95,8 +95,4 @@ var decorator = module.exports = function (options, protect) {
     defineRoutes('query', arguments).forEach(activate);
     return controller;
   };
-  // A method used to activate document-stage middleware.
-  controller.documents = function (endpoint, methods, middleware) {
-    throw BaucisError.Deprecated('The documents stage of middleware has been deprecated.  Use an outgoing stream instead.')
-  };
 };

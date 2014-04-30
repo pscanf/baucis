@@ -1,5 +1,9 @@
 # Baucis Change Log
 
+## v1.0.0-prerelease.4
+
+Remove `request.baucis.controller`.  Remove `controller.api`.
+
 ## v1.0.0-prerelease.3
 
 Express 4!
