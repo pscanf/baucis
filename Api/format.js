@@ -1,5 +1,4 @@
 var BaucisError = require('../BaucisError');
-
 var formatters = {};
 
 var decorator = module.exports = function () {

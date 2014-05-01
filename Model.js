@@ -8,7 +8,6 @@ var Model = module.exports = deco(function (source, protect) {
 
   if (!source) throw BaucisError.Configuration('Source must be set');
 
-  // TODO changing these after activation is a NOP
 	protect.property('schema');
   protect.property('singular');
   protect.property('plural');

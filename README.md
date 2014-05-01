@@ -1,4 +1,4 @@
-# baucis v1.0.0-prerelease.4
+# baucis v1.0.0-prerelease.5
 
 Baucis enables you to build scalable REST APIs using the open source tools and standards you and your team already know.  Like Baucis and Philemon of old, the module provides REST to the weary traveler.  [Baucis](https://en.wikipedia.org/wiki/Baucis_and_Philemon) is not the same as [Bacchus](https://en.wikipedia.org/wiki/Dionysus).
 
@@ -14,6 +14,7 @@ The official baucis documentation is being moved to [kun.io/baucis](http://kun.i
 ## Features
 
  * Awesomely scalable.  Takes full advantage of the inherent power of Node.js and MongoDB.
+ * Fully takes advantage of Node streaming to nimbly process large datasets (both incoming and outgoing)
  * Automatically build APIs through reflection of your Mongoose schemata.
  * Built on Express 4 so adding custom middleware is a snap.  100% compatible with existing middleware such as passport.
  * Supports geolocation and full text search.
@@ -54,15 +55,15 @@ Check the [change log](CHANGES.md) for info on all the latest features.
 
 To install:
 
-    npm install baucis
+    npm install --save baucis
 
 An example of creating a REST API from a couple Mongoose schemata.
 
     var Vegetable = new mongoose.Schema({ name: String });
     var Fruit = new mongoose.Schema({ name: String });
 
-    mongoose.model('vegetable', Vegetable);
-    mongoose.model('fruit', Fruit);
+    baucis.model('vegetable', Vegetable);
+    baucis.model('fruit', Fruit);
 
     // Create a simple controller.
     baucis.rest('vegetable');
@@ -131,18 +132,6 @@ Customize them with Express middleware, including pre-existing modules like `pas
 This property sets the controller's mongoose model.  A string or model object may be passed in.  The first time the model is set `singular`, `plural`, and `path` will also be set to defaults based on the mongoose model.  The model property is initally set when the controller is first constructed.
 
     controller.model('cheese');
-
-### controller.singular
-
-Customize the name used for singular instances of documents associated with this controller.  Defaults to the name of the controller's model.
-
-    controller.singular('cactus');
-
-### controller.plural
-
-Customize the name used for groups of documents associated with this controller.  Defaults to the plural of the controller's singular name.  Uses Mongoose's pluralizer utility method.
-
-    controller.plural('cacti');
 
 ### controller.select
 
@@ -222,12 +211,14 @@ Versioning is implemented using [semver](http://semver.org).  Supported releases
     baucis.rest('cat').versions('>0.0.1 <1.0.0');
     baucis.rest('cat').versions('~1');
     baucis.rest('cat').versions('>2.0.0');
-    app.use('/api', baucis({ releases: [ '0.0.1', '0.0.2', '1.0.0', '1.1.0', '2.0.0' ]}));
+    var api = baucis();
+    baucis().release('0.0.2').release('1.0.0').release('1.1.0').release('2.0.0')
+    app.use('/api', api);
 
 Later, make requests and set the `API-Version` header to a [semver](http://semver.org) range, such as `~1`, `>2 <3`, `*`, etc.  Baucis will use the highest release number that satisfies the range.  If no `API-Version` is specified in a request, the highest release will be used.
 
-##Streaming
 
+##Streaming
 
 Baucis takes full advantage of Node streams internally to offer even more performance, especially when dealing with large datasets.  Both outgoing and incoming documents are streamed!
 
@@ -471,6 +462,22 @@ Add an index hint to the query (must be enabled per controller).
 Add a comment to a query (must be enabled per controller).
 
     GET /api/wrenches?comment=Something informative
+
+
+## Models
+
+### model.singular
+
+Customize the name used for singular instances of documents associated with this model.  Defaults to the name of the model's model.
+
+    model.singular('cactus');
+
+### model.plural
+
+Customize the name used for groups of documents associated with this model.  Defaults to the plural of the model's singular name.  Uses Mongoose's pluralizer utility method.
+
+    model.plural('cacti');
+
 
 ## Errors & Status Codes
 
