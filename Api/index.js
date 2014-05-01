@@ -13,7 +13,7 @@ var Api = module.exports = deco(function (options, protect) {
 
   api.use(function (request, response, next) {
     if (request.baucis) return next(BaucisError.Configuration('Baucis request property already created'));
-    request.baucis = { api: api };
+    request.baucis = {};
     response.removeHeader('x-powered-by');
     next();
   });

@@ -1,5 +1,10 @@
 # Baucis Change Log
 
+## v1.0.0-prerelease.6
+
+Move parsers/formatters from Api to baucis object.
+
+
 ## v1.0.0-prerelease.5
 
 Add PATENTS file.  A little more cleaning up.

@@ -5,6 +5,7 @@ var BaucisError = require('../../BaucisError');
 
 // __Module Definition__
 var decorator = module.exports = function (options, protect) {
+  var baucis = require('../..');
   var controller = this;
 
   controller.query('post', function (request, response, next) {
@@ -23,7 +24,7 @@ var decorator = module.exports = function (options, protect) {
     }
     // Otherwise, stream and parse the request.
     else {
-      parser = request.baucis.api.parser(request.get('content-type'));
+      parser = baucis.parser(request.get('content-type'));
       if (!parser) return next(BaucisError.UnsupportedMediaType());
       pipeline(request);
       pipeline(parser);

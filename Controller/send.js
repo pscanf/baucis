@@ -47,6 +47,7 @@ function count () {
 
 // __Module Definition__
 var decorator = module.exports = function (options, protect) {
+  var baucis = require('..');
   var controller = this;
 
   // Create the basic stream.
@@ -76,7 +77,7 @@ var decorator = module.exports = function (options, protect) {
     // Apply user streams. 
     pipeline(request.baucis.outgoing());
     // Set the document formatter based on the Accept header of the request.
-    request.baucis.api.formatters(response, function (error, formatter) {
+    baucis.formatters(response, function (error, formatter) {
       if (error) return next(error);
       request.baucis.formatter = formatter;
       next();

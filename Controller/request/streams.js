@@ -20,7 +20,7 @@ var decorator = module.exports = function (options, protect) {
       // But, if no streams were added, just pass back a through stream.
       return es.through();
     };
-  }
+  };
   // __Middleware__
   // Create the pipeline interface the user interacts with.
   this.request(function (request, response, next) {

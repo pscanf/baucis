@@ -1,4 +1,4 @@
-# baucis v1.0.0-prerelease.5
+# baucis v1.0.0-prerelease.6
 
 Baucis enables you to build scalable REST APIs using the open source tools and standards you and your team already know.  Like Baucis and Philemon of old, the module provides REST to the weary traveler.  [Baucis](https://en.wikipedia.org/wiki/Baucis_and_Philemon) is not the same as [Bacchus](https://en.wikipedia.org/wiki/Dionysus).
 
@@ -581,12 +581,19 @@ The requested functionality is not implemented now, but may be implented in the 
 ### Q2 2014
 
  * v1.0.0 Release candidates
- * Improve documentation
+ * Refine & improve documentation
  * Benchmark
  * Internal refactoring and simplification
- * Begin a cookbook-style guide with lots of code examples.
  * v1.0.0
- * ~~Express 4~~
+ * Begin a cookbook-style guide with lots of code examples.
+ * ~~Express 4~~ *(completed)*
+
+### Q3 2014
+
+ * Full `Accept` header field(s) semantics
+ * Expand hypermedia support (in-band information)
+ * Code-on-demand features?  
+ * More features & more plugins
 
 
 ## Extending Baucis
