@@ -161,7 +161,7 @@ describe('Controllers', function () {
   it('should allow adding a uniqe findBy field 1', function (done) {
     var makeController = function () {
       var rab = new mongoose.Schema({ 'arb': { type: String, unique: true } });
-      baucis.model('rab', rab);
+      mongoose.model('rab', rab);
       baucis.Controller('rab').findBy('arb');
     };
     expect(makeController).not.to.throwException();
@@ -171,7 +171,7 @@ describe('Controllers', function () {
   it('should allow adding a unique findBy field 2', function (done) {
     var makeController = function () {
       var barb = new mongoose.Schema({ 'arb': { type: String, index: { unique: true } } });
-      baucis.model('barb', barb);
+      mongoose.model('barb', barb);
       baucis.Controller('barb').findBy('arb');
     };
     expect(makeController).not.to.throwException();
@@ -513,7 +513,7 @@ describe('Controllers', function () {
       c: String,
       d: String
     });
-    baucis.model('doozle', doozle);
+    mongoose.model('doozle', doozle);
     var controller = baucis.Controller('doozle').select('-d c -a b');
     expect(controller.deselected()).eql([ 'a', 'd' ]);
     done();

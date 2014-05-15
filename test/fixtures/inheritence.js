@@ -20,8 +20,8 @@ var LiqueurSchema = BaseSchema();
 var AmaroSchema = BaseSchema({ bitterness: Number });
 var CordialSchema = BaseSchema({ sweetness: Number });
 
-var Liqueur = baucis.model('liqueur', LiqueurSchema).plural('amari').source();
-var Amaro = Liqueur.discriminator('amaro', AmaroSchema);
+var Liqueur = mongoose.model('liqueur', LiqueurSchema);
+var Amaro = Liqueur.discriminator('amaro', AmaroSchema).plural('amari');
 var Cordial = Liqueur.discriminator('cordial', CordialSchema);
 
 var fixture = module.exports = {
@@ -30,6 +30,7 @@ var fixture = module.exports = {
 
     baucis.rest(Liqueur);
     baucis.rest(Amaro);
+    
     app = express();
     app.use('/api', baucis());
 

@@ -40,17 +40,17 @@ var Liens = new Schema({ title: { type: String, default: 'Babrius' } });
 var Fiends = new Schema({ average: Number });
 var Unmades = new Schema({ mode: Number });
 
-baucis.model('tool', Tools);
-baucis.model('store', Stores);
-baucis.model('cheese', Cheese);
-baucis.model('bean', Beans);
-baucis.model('dean', Deans);
-baucis.model('lien', Liens);
-baucis.model('fiend', Fiends);
-baucis.model('unmade', Unmades);
-baucis.model('timeentry', Cheese).plural('timeentries');
-baucis.model('mean', Fiends);
-baucis.model('bal', Stores).plural('baloo');
+mongoose.model('tool', Tools);
+mongoose.model('store', Stores);
+mongoose.model('cheese', Cheese);
+mongoose.model('bean', Beans);
+mongoose.model('dean', Deans);
+mongoose.model('lien', Liens);
+mongoose.model('fiend', Fiends);
+mongoose.model('unmade', Unmades);
+mongoose.model('timeentry', Cheese, 'cheeses').plural('timeentries');
+mongoose.model('mean', Fiends, 'fiends').locking(true);
+mongoose.model('bal', Stores, 'stores').plural('baloo');
 
 var fixture = module.exports = {
   init: function (done) {
@@ -78,7 +78,6 @@ var fixture = module.exports = {
 
     // Tools embedded controller
     var storeTools = stores.vivify('tools');
-
     storeTools.query(function (request, response, next) {
       request.baucis.query.where('bogus', false);
       next();
@@ -93,9 +92,9 @@ var fixture = module.exports = {
     baucis.rest('bean').methods('get', false);
     baucis.rest('dean').findBy('room').methods('get', false);
     baucis.rest('lien').select('-title').methods('delete', false);
-    baucis.rest('mean').locking(true);
+    baucis.rest('mean');
     baucis.rest('bal').findBy('name');
-    baucis.rest('bal').baucisPath('linseed.oil');
+    baucis.rest('bal').fragment('linseed.oil');
 
     app = express();
     app.use('/api', baucis());

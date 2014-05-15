@@ -10,7 +10,6 @@ var plugins = {
 };
 
 var instance = Api();
-var models = [];
 var parsers = {};
 var formatters = {};
 
@@ -30,28 +29,6 @@ baucis.empty = function () {
   var previous = instance;
   instance = Api();
   return previous;
-};
-
-baucis.model = function (name, source) {
-  function getter () {
-    return models.filter(function (model) {
-      return model.singular() === name;
-    })[0];
-  };
-  function setter () {
-    var model;
-    var keys = Object.keys(mongoose.models).filter(function (key) { 
-      return mongoose.models[key].schema === source 
-    });
-    if (keys.length === 0) model = Model(mongoose.model(name, source));
-    else model = Model(mongoose.model(keys[0]));
-    model.singular(name);
-    models.push(model);
-    return model;
-  };
-
-  if (arguments.length === 1) return getter();
-  else return setter();
 };
 
 baucis.formatters = function (response, callback) {

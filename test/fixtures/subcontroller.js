@@ -19,8 +19,8 @@ var Task = new Schema({
   }
 });
 
-baucis.model('user', User);
-baucis.model('task', Task);
+mongoose.model('user', User);
+mongoose.model('task', Task);
 
 var fixture = module.exports = {
   init: function (done) {

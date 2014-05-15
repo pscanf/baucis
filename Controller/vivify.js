@@ -8,7 +8,7 @@ var decorator = module.exports = function (options, protect) {
   var controller = this;
 
   controller.vivify = function (path) {
-    var definition = controller.model().schema().path(path);
+    var definition = controller.model().schema.path(path);
     var ref = definition.caster.options.ref;
 
     if (definition.caster.instance !== 'ObjectID') {
@@ -18,7 +18,7 @@ var decorator = module.exports = function (options, protect) {
       throw BaucisError.Configuration('Only paths that reference another collection can be vivified');
     }
 
-    var child = Controller(ref).baucisPath(path);
+    var child = Controller(ref).fragment(path);
 
     child.request('post', function (request, response, next) {
       request.baucis.incoming(function (context, callback) {

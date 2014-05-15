@@ -47,7 +47,7 @@ var decorator = module.exports = function () {
     if (request.method !== 'GET') return done();
     if (!request.query.limit) return done();
 
-    controller.model().source().count(request.baucis.conditions, function (error, count) {
+    controller.model().count(request.baucis.conditions, function (error, count) {
       if (error) return next(error);
 
       var limit = Number(request.query.limit);

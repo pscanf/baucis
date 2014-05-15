@@ -10,9 +10,9 @@ var Party = new Schema({ hobbits: Number, dwarves: Number });
 var Dungeon = new Schema({ treasures: Number });
 var Pumpkin = new Schema({ title: String });
 
-baucis.model('party', Party);
-baucis.model('dungeon', Dungeon);
-baucis.model('pumpkin', Pumpkin);
+mongoose.model('party', Party);
+mongoose.model('dungeon', Dungeon);
+mongoose.model('pumpkin', Pumpkin).locking(true);
 
 var fixture = module.exports = {
   init: function (done) {
@@ -21,10 +21,10 @@ var fixture = module.exports = {
 
     app = express();
 
+    baucis.rest('pumpkin');
     baucis.rest('party').versions('1.x');
     baucis.rest('party').versions('2.1.0');
     baucis.rest('party').versions('~3');
-    baucis.rest('pumpkin').locking(true);
 
     app.use('/api/versioned', baucis().releases('1.0.0').releases('2.1.0').releases('3.0.1'));
 

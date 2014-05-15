@@ -1,5 +1,10 @@
 # Baucis Change Log
 
+## v1.0.0-prerelease.7
+
+Rename `baucisPath` to `fragment`.  Use a decorator for Mongoose models, rather than a wrapper object.  Wrap `mongoose.model` to add decorator to all models.  Move `lastModified` and `locking` to model objects.
+
+
 ## v1.0.0-prerelease.6
 
 Move parsers/formatters from Api to baucis object.

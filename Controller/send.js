@@ -86,7 +86,7 @@ var decorator = module.exports = function (options, protect) {
 
   // HEAD
   protect.finalize('instance', 'head', function (request, response, next) {
-    var modified = controller.lastModified();
+    var modified = controller.model().lastModified();
     if (modified) request.baucis.send(lastModified(response, modified));
     request.baucis.send(etag(response));
     request.baucis.send(empty);
@@ -100,7 +100,7 @@ var decorator = module.exports = function (options, protect) {
 
   // GET
   protect.finalize('instance', 'get', function (request, response, next) {
-    var modified = controller.lastModified();
+    var modified = controller.model().lastModified();
     if (modified) request.baucis.send(lastModified(response, modified));
     request.baucis.send(etag(response));
     request.baucis.send(redoc);
