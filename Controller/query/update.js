@@ -35,7 +35,7 @@ var decorator = module.exports = function (options, protect) {
     var count = 0;
     var operator = request.headers['update-operator'];
     var versionKey = controller.model().schema.get('versionKey');
-    var pipeline = protect.pipeline();
+    var pipeline = protect.pipeline(next);
     // Check if the body was parsed by some external middleware e.g. `express.json`.
     // If so, create a one-document stream from the parsed body.
     if (request.body) {
@@ -168,7 +168,6 @@ var decorator = module.exports = function (options, protect) {
 
     var s = pipeline();
     s.on('end', next);
-    s.on('error', next);
     s.resume();
   });
 };

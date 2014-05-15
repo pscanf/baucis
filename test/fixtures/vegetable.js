@@ -73,6 +73,30 @@ var fixture = module.exports = {
       next();
     });
 
+    veggies.request(function (request, response, next) {
+      if (request.query.failIt !== 'true') return next();
+      request.baucis.incoming(es.through(function (context) {
+        this.emit('error', baucis.Error.Forbidden('Bento box'));
+      }));
+      next();
+    });
+
+    veggies.request(function (request, response, next) {
+      if (request.query.failItFunction !== 'true') return next();
+      request.baucis.incoming(function (context, callback) {
+        callback(baucis.Error.Forbidden('Bento box'));
+      });
+      next();
+    });
+
+    veggies.request(function (request, response, next) {
+      if (request.query.failIt2 !== 'true') return next();
+      request.baucis.outgoing(function (context, callback) {
+        callback(baucis.Error.Forbidden('Bento box'));
+      });
+      next();
+    });
+
     // Test streaming in through custom handler
     veggies.request(function (request, response, next) {
       if (request.query.streamIn !== 'true') return next();

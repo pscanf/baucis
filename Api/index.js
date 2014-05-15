@@ -36,4 +36,4 @@ var Api = module.exports = deco(function (options, protect) {
 });
 
 Api.factory(express.Router);
-Api.decorators(__dirname);
+Api.decorators(__dirname, ['controllers', 'errors']);
