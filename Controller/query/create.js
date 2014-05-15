@@ -1,6 +1,7 @@
 // __Dependencies__
 var es = require('event-stream');
 var util = require('util');
+var domain = require('domain');
 var BaucisError = require('../../BaucisError');
 
 // __Module Definition__
@@ -11,7 +12,7 @@ var decorator = module.exports = function (options, protect) {
   controller.query('post', function (request, response, next) {
     var url = request.originalUrl || request.url;
     var findBy = controller.findBy();
-    var pipeline = protect.pipeline();
+    var pipeline = protect.pipeline(next);
     var parser;
     // Add trailing slash to URL if needed.
     if (url.lastIndexOf('/') === (url.length - 1)) url = url.slice(0, url.length - 1);
@@ -42,9 +43,9 @@ var decorator = module.exports = function (options, protect) {
       var type = context.incoming.__t;
       var Discriminator = type ? Model.discriminators[type] : undefined;
       if (type && !Discriminator) {
-          callback(BaucisError.BadRequest("A document's type did not match any known discriminators for this resource"));
-          return;
-        }
+        callback(BaucisError.BadRequest("A document's type did not match any known discriminators for this resource"));
+        return;
+      }
       // Create the document using either the model or child model.
       if (type) transformed.doc = new Discriminator();
       else transformed.doc = new Model();
@@ -69,7 +70,6 @@ var decorator = module.exports = function (options, protect) {
     });
     // Write the IDs to an array and process them.
     var s = pipeline();
-    s.on('error', next);
     s.pipe(es.writeArray(function (error, ids) {
       if (error) return next(error);
       // URL location of newly created document or documents.

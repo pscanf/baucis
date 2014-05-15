@@ -107,6 +107,65 @@ describe('Middleware', function () {
     });
   });
 
+  it('should handle errors in user streams (IN/POST)', function (done) {
+    var options = {
+      url: 'http://localhost:8012/api/vegetables/',
+      qs: { failIt: true },
+      json: { name: 'zoom' }
+    };
+    request.post(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(403);
+      expect(body).to.be('Forbidden: Bento box (403).')
+      done();
+    });
+  });
+
+  it('should handle errors in user streams (IN/PUT)', function (done) {
+    // should set all fields to a string
+    var radicchio = vegetables[7];
+    var options = {
+      url: 'http://localhost:8012/api/vegetables/' + radicchio._id,
+      qs: { failIt: true },
+      json: { name: 'zoom' }
+    };
+    request.put(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(403);
+      expect(body).to.be('Forbidden: Bento box (403).');
+      done();
+    });
+  });
+
+  it('should handle errors in user streams (FUNCTION)', function (done) {
+    // should set all fields to a string
+    var options = {
+      url: 'http://localhost:8012/api/vegetables/',
+      qs: { failItFunction: true },
+      json: { name: 'zoom' }
+    };
+    request.post(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(403);
+      expect(body).to.be('Forbidden: Bento box (403).');
+      done();
+    });
+  });
+
+  it('should handle errors in user streams (OUT)', function (done) {
+    var options = {
+      url: 'http://localhost:8012/api/vegetables/',
+      qs: { failIt2: true },
+      json: true
+    };
+    request.get(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(403);
+      expect(body).to.be('Forbidden: Bento box (403).');
+      done();
+    });
+  });
+
   it('should skip streaming documents in if request.body is already present', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables/',

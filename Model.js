@@ -1,7 +1,6 @@
 var deco = require('deco');
 var mongoose = require('mongoose');
 var pluralize = require('mongoose/lib/utils').toCollectionName;
-var BaucisError = require('./BaucisError');
 
 var Model = module.exports = deco(function (options, protect) {
   var model = this;
@@ -26,7 +25,7 @@ var Model = module.exports = deco(function (options, protect) {
   model.plural(pluralize(model.singular()));
 });
 
-// Wrap the mongoose model function to add this mixin.
+// Wrap the mongoose model function to add this mixin to all registered models.
 var originalMongooseModel = mongoose.model;
 mongoose.model = function () {
   var m = originalMongooseModel.apply(mongoose, arguments);
