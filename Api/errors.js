@@ -2,10 +2,10 @@ var util = require('util');
 var mongoose = require('mongoose');
 var BaucisError = require('../BaucisError');
 
-var plugin = module.exports = function () {
-  var api = this;
+var plugin = module.exports = function (options) {
+  var controller = this;
 
-  api.use(function (error, request, response, next) {
+  controller.use(function (error, request, response, next) {
     if (!error) return next();
     // Just set the status code for these errors.
     if (error instanceof BaucisError) {
@@ -21,7 +21,8 @@ var plugin = module.exports = function () {
     // These are validation errors.
     if (error instanceof mongoose.Error.ValidationError) {
       response.status(422);
-      response.json(error.errors);
+      if (controller.handleErrors()) response.json(error.errors);
+      else next(error);
       return;
     }
     if (error.message.indexOf('E11000 duplicate key error') !== -1) {
@@ -39,7 +40,8 @@ var plugin = module.exports = function () {
         value: value
       };
       response.status(422);
-      response.json(body);
+      if (controller.handleErrors()) response.json(body);
+      else next(error);
       return;
     }
     // Pass other kinds of errors on to be handled elsewhere (or not).

@@ -28,6 +28,10 @@ var Api = module.exports = deco(function (options, protect) {
     return this.releases().concat(release);
   });
 
+  protect.property('handleErrors', true, function (handle) {
+    return handle ? true : false;
+  });
+
   api.rest = function (model) {
     var controller = Controller(model);
     api.add(controller);

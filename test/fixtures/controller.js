@@ -96,8 +96,13 @@ var fixture = module.exports = {
     baucis.rest('bal').findBy('name');
     baucis.rest('bal').fragment('linseed.oil');
 
+
     app = express();
     app.use('/api', baucis());
+
+    baucis.rest('cheese').fragment('geese');  
+
+    app.use('/api2', baucis().handleErrors(false));
 
     server = app.listen(8012);
 

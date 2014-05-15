@@ -15,9 +15,7 @@ var formatters = {};
 
 // __Module Definition__
 var baucis = module.exports = function (options) {
-  var previous = baucis.empty();
-  if (options && options.releases) previous.releases(options.releases);
-  return previous;
+  return baucis.empty();
 };
 
 // __Public Members__

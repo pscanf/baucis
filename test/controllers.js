@@ -846,6 +846,24 @@ describe('Controllers', function () {
     });
   });
 
+  it('should not handle errors if disabled', function (done) {
+    var options = {
+      url: 'http://localhost:8012/api2/geese',
+      json: true,
+      body: { name: 'Gorgonzola', color: 'Green' }
+    };
+    request.post(options, function (err, response, body) {
+      if (err) return done(err);
+      expect(response.statusCode).to.be(201);
+      request.post(options, function (err, response, body) {
+        if (err) return done(err);
+        expect(response.statusCode).to.be(422);
+        expect(body).to.match(/^MongoError: E11000 duplicate key error index:/);
+        done();
+      });
+    });
+  });
+
   it('should allow setting path apart from plural', function (done) {
     var options = {
       url: 'http://localhost:8012/api/linseed.oil',
