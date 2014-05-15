@@ -9,7 +9,7 @@ var decorator = module.exports = function () {
   controller.request(function (request, response, next) {
     var id = request.params.id;
     var check = ['ObjectID', 'Number'];
-    var instance = controller.model().schema().path(controller.findBy()).instance;
+    var instance = controller.model().schema.path(controller.findBy()).instance;
 
     if (!id) return next();
     if (check.indexOf(instance) === -1) return next();

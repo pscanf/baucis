@@ -11,7 +11,7 @@
     }
   ],
   "homepage": "https://github.com/wprl/baucis",
-  "version": "1.0.0-prerelease.6",
+  "version": "1.0.0-prerelease.7",
   "main": "index.js",
   "scripts": {
     "test": "mocha --bail"

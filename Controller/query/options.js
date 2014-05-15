@@ -43,7 +43,7 @@ var decorator = module.exports = function () {
       next(BaucisError.Forbidden('You may not find distinct values for the requested path'));
       return;
     }
-    var query = controller.model().source().distinct(distinct, request.baucis.conditions);
+    var query = controller.model().distinct(distinct, request.baucis.conditions);
     query.exec(function (error, values) {
       if (error) return next(error);
       request.baucis.documents = values;

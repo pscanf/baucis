@@ -15,36 +15,24 @@ var decorator = module.exports = function (model, protect) {
   // __Property Definitions__
   protect.property('comments', false);
   protect.property('hints', false);
-  protect.property('locking', false);
   protect.property('relations', true);
   protect.property('select', '');
-  protect.property('lastModified');
   protect.property('parentPath');
-
-  protect.property('findBy', '_id', function (path) {
-    var findByPath = controller.model().schema().path(path);
-    if (!findByPath.options.unique && !(findByPath.options.index && findByPath.options.index.unique)) {
-      throw BaucisError.Configuration('`findBy` path for model "%s" must be unique', controller.model().singular());
-    }
-    return path;
-  });
-
+  
   protect.property('versions', '*', function (range) {
     if (semver.validRange(range)) return range;
     throw BaucisError.Configuration('Controller version range "%s" was not a valid semver range', range);
   }); 
 
-  protect.property('model', undefined, function (m) {
-    var baucis = require('..');
-    if (m instanceof Model) return m;
-    if (typeof m === 'string') return baucis.model(m) || m;
-    return Model(m);
+  protect.property('model', undefined, function (m) { // TODO readonly
+    if (typeof m === 'string') return mongoose.model(m);
+    return m;
   });
 
   protect.property(
-    'baucisPath', 
+    'fragment', 
     function (value) { 
-      if (value === undefined) return '/' + this.model().plural();
+      if (value === undefined) return '/' + controller.model().plural();
       if (value.indexOf('/') !== 0) return '/' + value;
       return value;
     }
@@ -60,12 +48,20 @@ var decorator = module.exports = function (model, protect) {
     }
     if (!child.parentPath()) child.parentPath(controller.model().singular());
     controller.use('/:parentId/:path', function (request, response, next) {
-      var path = '/' + request.params.path;
-      if (path !== child.baucisPath()) return next(); 
+      var fragment = '/' + request.params.path;
+      if (fragment !== child.fragment()) return next(); 
       request.baucis.parentId = request.params.parentId;
       child(request, response, next);
     });
     return children.concat(child);
+  });
+
+  protect.property('findBy', '_id', function (path) {
+    var findByPath = controller.model().schema.path(path);
+    if (!findByPath.options.unique && !(findByPath.options.index && findByPath.options.index.unique)) {
+      throw BaucisError.Configuration('`findBy` path for model "%s" must be unique', controller.model().modelName);
+    }
+    return path;
   });
 
   protect.multiproperty('operators', false);
@@ -74,23 +70,18 @@ var decorator = module.exports = function (model, protect) {
   });
 
   controller.deselected = function (path) {
-    var deselected = [];
-    // Store naming, model, and schema.
-    // Find deselected paths in the schema.
-    controller.model().schema().eachPath(function (name, path) {
-      if (path.options.select === false) deselected.push(name);
-    });
+    var deselected = controller.model().deselected();
     // Add deselected paths from the controller.
     controller.select().split(/\s+/).forEach(function (path) {
       var match = /^(?:[-]((?:[\w]|[-])+)\b)$/.exec(path);
       if (match) deselected.push(match[1]);
     });
-    var finalized = deselected.filter(function(path, position) {
+    var deduplicated = deselected.filter(function(path, position) {
       return deselected.indexOf(path) === position;
     });
-
-    if (arguments.length === 0) return finalized;
-    else return (finalized.indexOf(path) !== -1);
+    
+    if (arguments.length === 0) return deduplicated;
+    else return (deduplicated.indexOf(path) !== -1);
   };
 
   // Set the controller model.

@@ -44,9 +44,9 @@ Vegetable.pre('remove', function (next) {
   next();
 });
 
-baucis.model('vegetable', Vegetable);
-baucis.model('fungus', Fungus).plural('fungi');
-baucis.model('mineral', Mineral);
+mongoose.model('vegetable', Vegetable).lastModified('lastModified');
+mongoose.model('fungus', Fungus).plural('fungi');
+mongoose.model('mineral', Mineral);
 
 // __Module Definition__
 var fixture = module.exports = {
@@ -60,7 +60,7 @@ var fixture = module.exports = {
     baucis.rest('mineral').relations(true);
 
     var veggies = baucis.rest('vegetable');
-    veggies.lastModified('lastModified').relations(false).hints(true).comments(true);
+    veggies.relations(false).hints(true).comments(true);
 
     veggies.request(function (request, response, next) {
       if (request.query.block === 'true') return response.send(401);

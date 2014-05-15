@@ -3,23 +3,33 @@ var mongoose = require('mongoose');
 var pluralize = require('mongoose/lib/utils').toCollectionName;
 var BaucisError = require('./BaucisError');
 
-var Model = module.exports = deco(function (source, protect) {
+var Model = module.exports = deco(function (options, protect) {
   var model = this;
 
-  if (!source) throw BaucisError.Configuration('Source must be set');
-
-	protect.property('schema');
   protect.property('singular');
   protect.property('plural');
-  protect.property('source', undefined, function (source) {
-    if (this.source() !== undefined) throw BaucisError.Configuration('Source is readonly');
-    // If it's a string, get the model from mongoose.
-    if (typeof source === 'string') return mongoose.model(source);
-    return source;
-  });
+  protect.property('locking', false);
+  protect.property('lastModified');
 
-  model.source(source);
-  model.schema(model.source().schema);
-  model.singular(model.source().modelName);
+  model.deselected = function (path) {
+    var deselected = [];
+    // Store naming, model, and schema.
+    // Find deselected paths in the schema.
+    model.schema.eachPath(function (name, path) {
+      if (path.options.select === false) deselected.push(name);
+    });
+    if (arguments.length === 0) return deselected;
+    else return (deselected.indexOf(path) !== -1);
+  };
+
+  model.singular(model.modelName);
   model.plural(pluralize(model.singular()));
 });
+
+// Wrap the mongoose model function to add this mixin.
+var originalMongooseModel = mongoose.model;
+mongoose.model = function () {
+  var m = originalMongooseModel.apply(mongoose, arguments);
+  if (!m.singular) Model.apply(m);
+  return m;
+};

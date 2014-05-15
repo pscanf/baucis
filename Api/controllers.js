@@ -17,7 +17,7 @@ var plugin = module.exports = function () {
   // Find the correct controller to handle the request.  
   api.middleware.use('/:path', function (request, response, next) {
     var found = false;
-    var path = '/' + request.params.path;
+    var fragment = '/' + request.params.path;
     // Requested range is used to select highest possible release number.
     // Then later controllers are checked for matching the release number.
     var range = request.headers['api-version'] || '*';
@@ -42,7 +42,7 @@ var plugin = module.exports = function () {
     // Find the matching controller among controllers that match the requested release.
     filteredControllers.forEach(function (controller) {
       if (found) return;
-      if (path !== controller.baucisPath()) return; 
+      if (fragment !== controller.fragment()) return; 
       // Path and version match.
       found = true;
       controller(request, response, next);

@@ -38,7 +38,7 @@ var decorator = module.exports = function (options, protect) {
     // Map function to create a document from incoming JSON and update the context.
     pipeline(function (context, callback) {
       var transformed = { incoming: context.incoming };
-      var Model = controller.model().source();
+      var Model = controller.model();
       var type = context.incoming.__t;
       var Discriminator = type ? Model.discriminators[type] : undefined;
       if (type && !Discriminator) {

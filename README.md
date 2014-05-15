@@ -1,4 +1,4 @@
-# baucis v1.0.0-prerelease.6
+# baucis v1.0.0-prerelease.7
 
 Baucis enables you to build scalable REST APIs using the open source tools and standards you and your team already know.  Like Baucis and Philemon of old, the module provides REST to the weary traveler.  [Baucis](https://en.wikipedia.org/wiki/Baucis_and_Philemon) is not the same as [Bacchus](https://en.wikipedia.org/wiki/Dionysus).
 
@@ -62,8 +62,8 @@ An example of creating a REST API from a couple Mongoose schemata.
     var Vegetable = new mongoose.Schema({ name: String });
     var Fruit = new mongoose.Schema({ name: String });
 
-    baucis.model('vegetable', Vegetable);
-    baucis.model('fruit', Fruit);
+    mongoose.model('vegetable', Vegetable);
+    mongoose.model('fruit', Fruit);
 
     // Create a simple controller.
     baucis.rest('vegetable');
@@ -129,7 +129,7 @@ Customize them with Express middleware, including pre-existing modules like `pas
 
 ### controller.model
 
-This property sets the controller's mongoose model.  A string or model object may be passed in.  The first time the model is set `singular`, `plural`, and `path` will also be set to defaults based on the mongoose model.  The model property is initally set when the controller is first constructed.
+This property sets the controller's mongoose model.  You can pass in a string or a directly pass in a mongoose model.
 
     controller.model('cheese');
 
@@ -150,18 +150,6 @@ Set to `true` to enable setting the response Link header with various useful lin
 The unique path used to identify documents for this controller.  Defaults to `_id`.
 
     controller.findBy('name');
-
-### controller.lastModified
-
-Set the `Last-Modified` HTTP header using the given `Date` field.  Disabl;ed by default.
-
-    controller.lastModified('modified.date');
-
-### controller.locking
-
-Enable optimistic locking.  (Disabled by default.)  Requires that all PUTs must send the document version (`__v` by default) and will send a 409 response if there would be a version conflict, instead of performing the update.
-
-    controller.locking(true);
 
 ### controller.hints
 
@@ -202,8 +190,14 @@ This can be used to note the path the schema defines that is associated with a v
     var teachers = baucis.rest('teacher');
     var classrooms = teachers.vivify('classrooms').parentPath('classTeachers');
 
-### controller.versions
+### controller.fragment
 
+This is the fragment to match request URLs agains.  Defaults to the plural name of the model.
+
+    controller.fragment('/somewhere');
+
+
+### controller.versions
 
 Versioning is implemented using [semver](http://semver.org).  Supported releases are specified when calling `baucis()`.  The release(s) that a controller belongs to are specified with the `versions` controller option.
 
@@ -466,17 +460,40 @@ Add a comment to a query (must be enabled per controller).
 
 ## Models
 
+Baucis decorates Mongoose models with a few additional methods to add richer textual and other semantics.  The Model API is ubstable.  It will be stablized for v1.0.0.
+
+Typically, these methods would be called when the schema is registered with Mongoose:
+
+    mongoose.model('cactus', Cactus).plural('cacti');
+    mongoose.model('hen', Hen).locking(true);
+    
+
 ### model.singular
 
-Customize the name used for singular instances of documents associated with this model.  Defaults to the name of the model's model.
+Customize the name used for singular instances of documents associated with this model.
 
     model.singular('cactus');
+
 
 ### model.plural
 
 Customize the name used for groups of documents associated with this model.  Defaults to the plural of the model's singular name.  Uses Mongoose's pluralizer utility method.
 
     model.plural('cacti');
+
+    
+### model.lastModified
+
+Set the `Last-Modified` HTTP header using the given `Date` field.  Disabled by default.
+
+    model.lastModified('modified.date');
+
+
+### model.locking
+
+Enable optimistic locking.  (Disabled by default.)  Requires that all PUTs must send the document version (`__v` by default) and will send a 409 response if there would be a version conflict, instead of performing the update.
+
+    model.locking(true);
 
 
 ## Errors & Status Codes
@@ -613,11 +630,14 @@ Add decorators to Controllers and other baucis constructors by using the `decora
 
 ## Plugins
 
- * [baucis-swagger](https://www.npmjs.org/package/baucis-swagger)
- * [bswagger](https://www.npmjs.org/package/bswagger)
- * [baucis-gform](https://www.npmjs.org/package/baucis-gform)
- * [baucis-patch](https://www.npmjs.org/package/baucis-patch)
- * [baucis-json](https://www.npmjs.org/package/baucis-json)
+| Module Name  |  |
+| ------------ | ----- |
+| [baucis-access](https://github.com/hippich/baucis-access) | Configure read/write access on a per-attribute basis (created by Pavel Karoukin) |
+|[baucis-swagger](https://www.npmjs.org/package/baucis-swagger) | automatically generate interactive API documentation (created by wprl)
+|[bswagger](https://www.npmjs.org/package/bswagger) | alternative swagger package (created by j.sedlan)
+|[baucis-gform](https://www.npmjs.org/package/baucis-gform) | Rapidly develop a administration UI for your baucis API (created by stemey)
+|[baucis-patch](https://www.npmjs.org/package/baucis-patch) | created by wprl
+|[baucis-json](https://www.npmjs.org/package/baucis-json) | created by wprl
 
 *The `baucis-json` plugin is bundled with baucis by default.  It's a good example for writing your own plugins, and for parsing or formatting custom content types.*
 
