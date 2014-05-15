@@ -1,5 +1,10 @@
 # Baucis Change Log
 
+## v1.0.0-candidate.0
+
+Use published version of baucis-json.
+
+
 ## v1.0.0-prerelease.9
 
 Allow turning off error handling per API.  Fix #178.
