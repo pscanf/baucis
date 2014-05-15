@@ -1,5 +1,12 @@
 # Baucis Change Log
 
+## v1.0.0-prerelease.9
+
+Allow turning off error handling per API.  Fix #178.
+ 
+    baucis().handleErrors(false);
+
+
 ## v1.0.0-prerelease.8
 
 Correctly handle errors in user streams.  Improve error handling.  Fix #177.
