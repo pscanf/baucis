@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var Api = require('./Api');
 var Controller = require('./Controller');
 var Model = require('./Model');
-var BaucisError = require('./BaucisError');
+var BaucisError = require('baucis-error');
 var plugins = {
   json: require('baucis-json')
 };

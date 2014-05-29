@@ -2,7 +2,7 @@
 var mongoose = require('mongoose');
 var semver = require('semver');
 var Model = require('../Model');
-var BaucisError = require('../BaucisError');
+var BaucisError = require('baucis-error');
 
 // __Module Definition__
 var decorator = module.exports = function (model, protect) {
@@ -17,9 +17,6 @@ var decorator = module.exports = function (model, protect) {
   protect.property('hints', false);
   protect.property('relations', true);
   protect.property('select', '');
-  protect.property('parentController');
-  protect.property('parentPath');
-  protect.property('emptyCollection', 204);
   
   protect.property('versions', '*', function (range) {
     if (semver.validRange(range)) return range;
@@ -40,50 +37,12 @@ var decorator = module.exports = function (model, protect) {
     }
   );
 
-  protect.property('children', [], function (child) {
-    var children = this.children();
-    if (!child) {
-      throw BaucisError.Configuration('A child controller must be supplied when using the children poperty');
-    }
-    if (children.indexOf(child) !== -1) {
-      throw BaucisError.Configuration('A controller was added as a child to the same parent contorller twice');
-    }
-    if (!child.parentPath()) child.parentPath(controller.model().singular());
-    
-    controller.use('/:parentId/:path', function (request, response, next) {
-      var fragment = '/' + request.params.path;
-      var parentConditions = {};
-      if (fragment !== child.fragment()) return next(); 
-
-      request.baucis.parentId = request.params.parentId;
-      parentConditions[controller.findBy()] = request.params.parentId;
-
-      controller.model().findOne(parentConditions, function (error, parent) {
-        if (error) return next(error);
-        if (!parent) {
-          error = BaucisError.NotFound();
-          error.parentController = true;
-          next(error);
-          return;
-        };
-        child(request, response, next);
-      });
-    });
-
-    child.parentController(controller);
-    return children.concat(child);
-  });
-
   protect.property('findBy', '_id', function (path) {
     var findByPath = controller.model().schema.path(path);
     if (!findByPath.options.unique && !(findByPath.options.index && findByPath.options.index.unique)) {
       throw BaucisError.Configuration('`findBy` path for model "%s" must be unique', controller.model().modelName);
     }
     return path;
-  });
-
-  protect.property('handleErrors', true, function (handle) {
-    return handle ? true : false;
   });
 
   protect.multiproperty('operators', false);

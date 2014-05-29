@@ -1,8 +1,14 @@
 # Baucis Change Log
 
+## v1.0.0-candidate.2
+
+Make 200 default for empty collection/search.  Split out baucis-errors and baucis-vivify.
+
+
 ## v1.0.0-candidate.1
 
 Fix #149.  Fix #181.  Move handleErrors from Api to Controller.  Add parentController method.  Add emptyCollection method to controller.  It is set to 204 by defult, but can be set to 200, 204, or 404 to set how collection endpoint requests handle no matching documents per controller.
+
 
 ## v1.0.0-candidate.0
 

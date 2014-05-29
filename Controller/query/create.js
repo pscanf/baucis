@@ -2,7 +2,7 @@
 var es = require('event-stream');
 var util = require('util');
 var domain = require('domain');
-var BaucisError = require('../../BaucisError');
+var BaucisError = require('baucis-error');
 
 // __Module Definition__
 var decorator = module.exports = function (options, protect) {

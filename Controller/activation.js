@@ -1,5 +1,5 @@
 // __Dependencies__
-var BaucisError = require('../BaucisError');
+var BaucisError = require('baucis-error');
 var Controller = require('../Controller');
 // __Private Module Members__
 // Expands route definitions based on generalized arguments.

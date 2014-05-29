@@ -1,7 +1,7 @@
 // __Dependencies__
 var es = require('event-stream');
 var crypto = require('crypto');
-var BaucisError = require('../BaucisError');
+var BaucisError = require('baucis-error');
 
 // __Private Module Members__
 // A map that is used to create empty response body.

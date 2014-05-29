@@ -9,16 +9,9 @@ var Schema = mongoose.Schema;
 
 var Stores = new Schema({
   name: { type: String, required: true, unique: true },
-  tools: [{ type: mongoose.Schema.ObjectId, ref: 'tool' }],
   mercoledi: Boolean,
   voltaic: { type: Boolean, default: true },
   'hyphenated-field-name': { type: Boolean, default: true }
-});
-
-var Tools = new Schema({
-  name: { type: String, required: true },
-  store: { type: String, required: true },
-  bogus: { type: Boolean, default: false, required: true }
 });
 
 var Cheese = new Schema({
@@ -40,7 +33,6 @@ var Liens = new Schema({ title: { type: String, default: 'Babrius' } });
 var Fiends = new Schema({ average: Number });
 var Unmades = new Schema({ mode: Number });
 
-mongoose.model('tool', Tools);
 mongoose.model('store', Stores);
 mongoose.model('cheese', Cheese);
 mongoose.model('bean', Beans);
@@ -74,13 +66,6 @@ var fixture = module.exports = {
 
     stores.get('/:id/arbitrary', function (request, response, next) {
       response.json(request.params.id);
-    });
-
-    // Tools embedded controller
-    var storeTools = stores.vivify('tools');
-    storeTools.query(function (request, response, next) {
-      request.baucis.query.where('bogus', false);
-      next();
     });
 
     var cheesy = baucis.rest('cheese').select('-_id color name').findBy('name');
@@ -117,15 +102,15 @@ var fixture = module.exports = {
     mongoose.model('store').remove({}, function (error) {
       if (error) return done(error);
 
-      mongoose.model('tool').remove({}, function (error) {
-        if (error) return done(error);
+      mongoose.model('cheese').remove({}, function (error) {
 
-        mongoose.model('cheese').remove({}, function (error) {
+        // create stores and tools
+        mongoose.model('store').create(
+          ['Westlake', 'Corner'].map(function (name) { return { name: name } }),
+          function (error, store) {
+            if (error) return done(error);
 
-          // create stores and tools
-          mongoose.model('store').create(
-            ['Westlake', 'Corner'].map(function (name) { return { name: name } }),
-            function (error, store) {
+            mongoose.model('lien').create({ title: 'Heraclitus' }, function (error, lien) {
               if (error) return done(error);
 
               var cheeses = [
@@ -139,17 +124,10 @@ var fixture = module.exports = {
                 }
               ];
 
-              mongoose.model('cheese').create(cheeses, function (error) {
-                if (error) return done(error);
-
-                mongoose.model('tool').create(
-                  ['Hammer', 'Saw', 'Axe'].map(function (name) { return { store: store.name, name: name } }),
-                  done
-                );
-              });
-            }
-          );
-        });
+              mongoose.model('cheese').create(cheeses, done);
+            });
+          }
+        );
       });
     });
   }

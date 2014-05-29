@@ -1,13 +1,13 @@
 // __Dependencies__
 var util = require('util');
-var BaucisError = require('../../BaucisError');
+var BaucisError = require('baucis-error');
 
 // __Module Definition__
-var decorator = module.exports = function () {
+var decorator = module.exports = function (options, protect) {
   var controller = this;
   var check = ['ObjectID', 'Number'];
 
-  function isInvalid (id, instance, type) {
+  protect.isInvalid = function (id, instance, type) {
     var error;
     if (!id) return false;
     if (check.indexOf(instance) === -1) return false;
@@ -20,31 +20,19 @@ var decorator = module.exports = function () {
       type: 'url.id',
       value: id
     };
-  }
-
-  function calculateInstance (c) {
-    if (!c) return undefined;
-    return c.model().schema.path(c.findBy()).instance;
-  }
+  };
 
   // Validate URL's ID parameter, if any.
   controller.request(function (request, response, next) {
     var id = request.params.id;
-    var parentId = request.params.parentId;
-    var instance = calculateInstance(controller);
-    var parentInstance = calculateInstance(controller.parentController());
-    var invalid = isInvalid(request.params.id, instance, 'url.id');
-    var parentInvalid = isInvalid(parentId, parentInstance, 'url.parentId');
+    var instance = controller.model().schema.path(controller.findBy()).instance;
+    var invalid = protect.isInvalid(request.params.id, instance, 'url.id');
     var error;
 
-    if (!invalid && !parentInvalid) return next();
+    if (!invalid) return next();
 
     error = BaucisError.ValidationError('The requested document ID "%s" is not a valid document ID', id);
-    error.errors = {};
-
-    if (invalid) error.errors.id = invalid;
-    if (parentInvalid) error.errors.parentId = parentInvalid;
-
+    error.errors = { id: invalid };
     next(error);
   });
 

@@ -2,7 +2,7 @@
 var express = require('express');
 var util = require('util');
 var es = require('event-stream');
-var BaucisError = require('../../BaucisError');
+var BaucisError = require('baucis-error');
 
 // __Private Module Members__
 var validOperators = [ '$set', '$push', '$pull' ];

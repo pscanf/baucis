@@ -1,7 +1,7 @@
 // __Dependencies__
 var util = require('util');
 var semver = require('semver');
-var BaucisError = require('../BaucisError');
+var BaucisError = require('baucis-error');
 
 // __Module Definition__
 var plugin = module.exports = function () {

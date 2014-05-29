@@ -3,7 +3,7 @@ var deco = require('deco');
 var semver = require('semver');
 var express = require('express');
 var Controller = require('../Controller');
-var BaucisError = require('../BaucisError');
+var BaucisError = require('baucis-error');
 
 // __Module Definition__
 var Api = module.exports = deco(function (options, protect) {

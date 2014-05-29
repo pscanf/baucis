@@ -1,5 +1,5 @@
 // __Dependencies__
-var BaucisError = require('../../BaucisError');
+var BaucisError = require('baucis-error');
 
 // __Private Methods__
 function isDefinedAndNotNull (n) {
