@@ -1,4 +1,4 @@
-# baucis v1.0.0-candidate.2
+# baucis v1.0.0-candidate.3
 
 Baucis enables you to build scalable REST APIs using the open source tools and standards you and your team already know.  Like Baucis and Philemon of old, the module provides REST to the weary traveler.  [Baucis](https://en.wikipedia.org/wiki/Baucis_and_Philemon) is not the same as [Bacchus](https://en.wikipedia.org/wiki/Dionysus).
 

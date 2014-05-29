@@ -665,8 +665,8 @@ describe('Queries', function () {
     };
     request.get(options, function (error, response, body) {
       if (error) return done(error);
-      expect(response.statusCode).to.be(204);
-      expect(body).to.be(undefined);
+      expect(response.statusCode).to.be(200);
+      expect(body).to.eql([]);
       done();
     });
   });
