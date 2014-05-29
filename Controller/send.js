@@ -66,15 +66,15 @@ var decorator = module.exports = function (options, protect) {
     pipeline(function (doc, callback) {
       callback(null, { doc: doc, incoming: null });
     });
-    // Check for 404.
+    // Check for not found.
     pipeline(es.through(
       function (context) {
         count += 1;
         this.emit('data', context);
       },
       function () {
-        if (count === 0) this.emit('error', BaucisError.NotFound());
-        else this.emit('end');
+        if (count > 0) return this.emit('end');
+        this.emit('error', BaucisError.NotFound());
       }
     ));
     // Apply user streams. 

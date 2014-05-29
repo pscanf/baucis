@@ -46,6 +46,45 @@ describe('GET plural', function () {
     });
   });
 
+  it("should send 200 when emptyCollection set to 200 and no documents found", function (done) {
+    var options = {
+      url: 'http://localhost:8012/api/empty-array',
+      json: true
+    };
+    request.get(options, function (err, response, body) {
+      if (err) return done(err);
+      expect(response.statusCode).to.be(200);
+      expect(body).to.eql([]);
+      done();
+    });
+  });
+
+  it("should send 204 when emptyCollection set to 204 and no documents found", function (done) {
+    var options = {
+      url: 'http://localhost:8012/api/no-content',
+      json: true
+    };
+    request.get(options, function (err, response, body) {
+      if (err) return done(err);
+      expect(response.statusCode).to.be(204);
+      expect(body).to.be(undefined);
+      done();
+    });
+  });
+
+  it("should send 404 when emptyCollection set to 404 and no documents found", function (done) {
+    var options = {
+      url: 'http://localhost:8012/api/not-found',
+      json: true
+    };
+    request.get(options, function (err, response, body) {
+      if (err) return done(err);
+      expect(response.statusCode).to.be(404);
+      expect(body).to.be('Not Found: No document matched the requested query (404).');
+      done();
+    });
+  });
+
   it('should not set Location header', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables',

@@ -218,10 +218,9 @@ describe('Controllers', function () {
     });
   });
 
-  it('should 404 when parentId is not found', function (done) {
-    // TODO should still validate parentId for 400
+  it('should 404 when parent ID is not found', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/stores/Mom+Pop/tools?sort=name',
+      url: 'http://localhost:8012/api/stores/Lolo/tools?sort=name',
       json: true
     };
     request.get(options, function (error, response, body) {
@@ -232,19 +231,20 @@ describe('Controllers', function () {
     });
   });
 
-  it('should 404 when restricted query has no results', function (done) {
-    // TODO should still validate parentId for 400
+  it('should 204 when restricted query has no results', function (done) {
     var options = {
       url: 'http://localhost:8012/api/stores/Corner/tools?sort=name',
       json: true
     };
     request.get(options, function (error, response, body) {
       if (error) return done(error);
-      expect(response.statusCode).to.be(404);
-      expect(body).to.be('Not Found: No document matched the requested query (404).');
+      expect(response.statusCode).to.be(204);
+      expect(body).to.be(undefined);
       done();
     });
   });
+
+  it('should 422 when restricted query parent ID is invalid');
 
   it('should allow mounting of subcontrollers (GET plural)', function (done) {
     var options = {
@@ -261,14 +261,14 @@ describe('Controllers', function () {
 
   it('should allow mounting of subcontrollers (POST plural)', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/stores/123/tools',
+      url: 'http://localhost:8012/api/stores/Westlake/tools',
       json: { name: 'Reticulating Saw' }
     };
     request.post(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(201);
       expect(body).to.have.property('bogus', false);
-      expect(body).to.have.property('store', '123');
+      expect(body).to.have.property('store', 'Westlake');
       done();
     });
   });
@@ -770,28 +770,44 @@ describe('Controllers', function () {
     });
   });
 
-  it('should return a 400 when ID malformed (not ObjectID)', function (done) {
+  it('should return a 422 when ID malformed (not ObjectID)', function (done) {
     var options = {
       url: 'http://localhost:8012/api/beans/bad',
       json: true
     };
     request.get(options, function (error, response, body) {
       if (error) return done(error);
-      expect(response.statusCode).to.be(400);
-      expect(body).to.be('Bad Request: The requested document ID &quot;bad&quot; is not a valid document ID (400).');
+      expect(response.statusCode).to.be(422);
+      expect(body).to.eql({ 
+        id: {
+          message: 'The requested document ID "bad" is not a valid document ID',
+          name: 'BaucisError',
+          path: '/:id',
+          type: 'url.id',
+          value: 'bad'
+        }
+      });
       done();
-    });
+    });   
   });
 
-  it('should return a 400 when ID malformed (not Number)', function (done) {
+  it('should return a 422 when ID malformed (not Number)', function (done) {
     var options = {
       url: 'http://localhost:8012/api/deans/0booze',
       json: true
     };
     request.get(options, function (error, response, body) {
       if (error) return done(error);
-      expect(response.statusCode).to.be(400);
-      expect(body).to.be('Bad Request: The requested document ID &quot;0booze&quot; is not a valid document ID (400).');
+      expect(response.statusCode).to.be(422);
+      expect(body).to.eql({ 
+        id: {
+          message: 'The requested document ID "0booze" is not a valid document ID',
+          name: 'BaucisError',
+          path: '/:id',
+          type: 'url.id',
+          value: '0booze' 
+        } 
+      });
       done();
     });
   });
@@ -848,7 +864,7 @@ describe('Controllers', function () {
 
   it('should not handle errors if disabled', function (done) {
     var options = {
-      url: 'http://localhost:8012/api2/geese',
+      url: 'http://localhost:8012/api-no-error-handler/geese',
       json: true,
       body: { name: 'Gorgonzola', color: 'Green' }
     };

@@ -15,6 +15,7 @@ var server;
 var Schema = mongoose.Schema;
 var Fungus = new Schema({ 'hyphenated-field-name': String });
 var Mineral = new Schema({ color: String });
+var Animal = new Schema({ name: String });
 var Vegetable = new Schema({
   name: { type: String, required: true },
   lastModified: { type: Date, required: true, default: Date.now },
@@ -47,6 +48,7 @@ Vegetable.pre('remove', function (next) {
 mongoose.model('vegetable', Vegetable).lastModified('lastModified');
 mongoose.model('fungus', Fungus).plural('fungi');
 mongoose.model('mineral', Mineral);
+mongoose.model('animal', Animal);
 
 // __Module Definition__
 var fixture = module.exports = {
@@ -58,6 +60,10 @@ var fixture = module.exports = {
 
     baucis.rest('fungus').select('-hyphenated-field-name');
     baucis.rest('mineral').relations(true);
+
+    baucis.rest('animal').fragment('empty-array').emptyCollection(200);
+    baucis.rest('animal').fragment('no-content').emptyCollection(204);
+    baucis.rest('animal').fragment('not-found').emptyCollection(404);
 
     var veggies = baucis.rest('vegetable');
     veggies.relations(false).hints(true).comments(true);

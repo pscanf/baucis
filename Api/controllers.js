@@ -45,6 +45,7 @@ var plugin = module.exports = function () {
       if (fragment !== controller.fragment()) return; 
       // Path and version match.
       found = true;
+      request.baucis.controller = controller;
       controller(request, response, next);
     });
     if (!found) return next();
