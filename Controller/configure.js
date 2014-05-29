@@ -17,7 +17,9 @@ var decorator = module.exports = function (model, protect) {
   protect.property('hints', false);
   protect.property('relations', true);
   protect.property('select', '');
+  protect.property('parentController');
   protect.property('parentPath');
+  protect.property('emptyCollection', 204);
   
   protect.property('versions', '*', function (range) {
     if (semver.validRange(range)) return range;
@@ -47,12 +49,28 @@ var decorator = module.exports = function (model, protect) {
       throw BaucisError.Configuration('A controller was added as a child to the same parent contorller twice');
     }
     if (!child.parentPath()) child.parentPath(controller.model().singular());
+    
     controller.use('/:parentId/:path', function (request, response, next) {
       var fragment = '/' + request.params.path;
+      var parentConditions = {};
       if (fragment !== child.fragment()) return next(); 
+
       request.baucis.parentId = request.params.parentId;
-      child(request, response, next);
+      parentConditions[controller.findBy()] = request.params.parentId;
+
+      controller.model().findOne(parentConditions, function (error, parent) {
+        if (error) return next(error);
+        if (!parent) {
+          error = BaucisError.NotFound();
+          error.parentController = true;
+          next(error);
+          return;
+        };
+        child(request, response, next);
+      });
     });
+
+    child.parentController(controller);
     return children.concat(child);
   });
 
@@ -62,6 +80,10 @@ var decorator = module.exports = function (model, protect) {
       throw BaucisError.Configuration('`findBy` path for model "%s" must be unique', controller.model().modelName);
     }
     return path;
+  });
+
+  protect.property('handleErrors', true, function (handle) {
+    return handle ? true : false;
   });
 
   protect.multiproperty('operators', false);

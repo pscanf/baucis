@@ -96,13 +96,12 @@ var fixture = module.exports = {
     baucis.rest('bal').findBy('name');
     baucis.rest('bal').fragment('linseed.oil');
 
-
     app = express();
     app.use('/api', baucis());
 
-    baucis.rest('cheese').fragment('geese');  
+    baucis.rest('cheese').fragment('geese').handleErrors(false);  
 
-    app.use('/api2', baucis().handleErrors(false));
+    app.use('/api-no-error-handler', baucis());
 
     server = app.listen(8012);
 

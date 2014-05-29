@@ -13,5 +13,6 @@ Controller.decorators(__dirname, [
   'vivify',
   'request',
   'query',
-  'send'
+  'send',
+  'errors'
 ]);
