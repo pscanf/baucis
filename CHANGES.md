@@ -1,8 +1,13 @@
 # Baucis Change Log
 
+## v1.0.0-candidate.4
+
+Update baucis-error version.
+
+
 ## v1.0.0-candidate.3
 
-Make 200 default for empty collection/search.  Split out baucis-errors and baucis-vivify.
+Update baucis-error version.
 
 
 ## v1.0.0-candidate.2
