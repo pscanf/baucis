@@ -38,6 +38,15 @@ describe('Controllers', function () {
     done();
   });
 
+  it('should have methods set by default', function (done) {
+    var controller;
+    var makeController = function () { controller = baucis.Controller('unmade') };
+    makeController();
+    expect(makeController).to.not.throwException();
+    expect(controller.methods()).to.eql([ 'head', 'get', 'put', 'post', 'delete' ]);
+    done();
+  });
+
   it('should support select options for GET requests', function (done) {
     var options = {
       url: 'http://localhost:8012/api/cheeses',
@@ -672,4 +681,5 @@ describe('Controllers', function () {
       done();
     });
   });
+
 });

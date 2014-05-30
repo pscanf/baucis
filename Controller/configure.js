@@ -45,8 +45,8 @@ var decorator = module.exports = function (model, protect) {
     return path;
   });
 
-  protect.multiproperty('operators', false);
-  protect.multiproperty('methods', true, function (enabled) {
+  protect.multiproperty('operators', undefined, false);
+  protect.multiproperty('methods', 'head get put post delete', true, function (enabled) {
     return enabled ? true : false;
   });
 
