@@ -43,7 +43,12 @@ var decorator = module.exports = function (options, protect) {
       var type = context.incoming.__t;
       var Discriminator = type ? Model.discriminators[type] : undefined;
       if (type && !Discriminator) {
-        callback(BaucisError.BadRequest("A document's type did not match any known discriminators for this resource"));
+        callback(BaucisError.UnprocessableEntity({
+          message: "A document's type did not match any known discriminators for this resource",
+          name: 'BaucisError',
+          path: '__t',
+          value: type
+        }));
         return;
       }
       // Create the document using either the model or child model.
@@ -77,7 +82,13 @@ var decorator = module.exports = function (options, protect) {
       // Set the conditions used to build `request.baucis.query`.
       var conditions = request.baucis.conditions[findBy] = { $in: ids };
       // Check for at least one document.
-      if (ids.length === 0) return next(BaucisError.BadRequest('The request body must contain at least one document'));
+      if (ids.length === 0) {
+        next(BaucisError.UnprocessableEntity({
+          message: 'The request body must contain at least one document',
+          name: 'BaucisError'
+        }));
+        return;
+      }
       // Set the `Location` header if at least one document was sent.
       if (ids.length === 1) location = url + '/' + ids[0];
       else location = util.format('%s?conditions={ "%s": %s }', url, findBy, JSON.stringify(conditions));

@@ -73,14 +73,24 @@ var decorator = module.exports = function (options, protect) {
       var bodyId = context.incoming[controller.findBy()];
       if (bodyId === undefined) return callback(null, context);
       if (bodyId === request.params.id) return callback(null, context);
-      callback(BaucisError.BadRequest("The ID of the update document did not match the URL's document ID"));
+      callback(BaucisError.UnprocessableEntity({
+        message: "The ID of the update document did not match the URL's document ID.",
+        name: 'BaucisError',
+        path: controller.findBy(),
+        value: bodyId
+      }));
     });
     // Ensure the request includes a finite object version if locking is enabled.
     if (controller.model().locking()) {
       pipeline(function (context, callback) {
         var updateVersion = context.incoming[versionKey];
         if (updateVersion === undefined || !Number.isFinite(Number(updateVersion))) {
-          return callback(BaucisError.BadRequest('Locking is enabled, so the target version must be provided in the request body using path "%s"', versionKey));
+          callback(BaucisError.UnprocessableEntity({
+            message: 'Locking is enabled, but the target version was not provided in the request body.',
+            name: 'BaucisError',
+            path: versionKey
+          }));
+          return;
         }
         callback(null, context);
       });
@@ -112,7 +122,10 @@ var decorator = module.exports = function (options, protect) {
       function (context) {
         count += 1;
         if (count === 2) {
-          this.emit('error', BaucisError.BadRequest('The request body contained more than one update document'));
+          this.emit('error', BaucisError.UnprocessableEntity({
+            message: 'The request body contained more than one update document',
+            name: 'BaucisError'
+          }));
           return;
         }
         if (count > 1) return;
@@ -121,7 +134,11 @@ var decorator = module.exports = function (options, protect) {
       },
       function () {
         if (count === 0) {
-          this.emit('error', BaucisError.BadRequest('The request body did not contain an update document'));
+          this.emit('error', BaucisError.UnprocessableEntity({
+            message: 'The request body did not contain an update document',
+            name: 'BaucisError'
+          }));
+          return;
         }
         this.emit('end');
       }
@@ -143,7 +160,7 @@ var decorator = module.exports = function (options, protect) {
         var wrapper = {};
 
         if (validOperators.indexOf(operator) === -1) {
-          callback(BaucisError.BadRequest('The requested update operator "%s" is not supported', operator));
+          callback(BaucisError.NotImplemented('The requested update operator "%s" is not supported', operator));
           return;
         }
         // Ensure that some paths have been enabled for the operator.

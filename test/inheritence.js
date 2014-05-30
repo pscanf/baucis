@@ -88,14 +88,22 @@ describe('Inheritence', function () {
     });
   });
 
-  it('should give a 400 if the discriminator does not exist', function (done) {
+  it('should give a 422 if the discriminator does not exist', function (done) {
     var options = {
       url: 'http://localhost:8012/api/liqueurs',
       json: { name: 'Oud Bruin', __t: 'ale' }
     };
     request.post(options, function (error, response, body) {
       if (error) return done(error);
-      expect(response.statusCode).to.equal(400);
+      expect(response.statusCode).to.equal(422);
+      expect(body).to.eql([ 
+        { 
+          message: 'A document\'s type did not match any known discriminators for this resource',
+          name: 'BaucisError',
+          path: '__t',
+          value: 'ale' 
+        }
+      ]);
       done();
     });
   });

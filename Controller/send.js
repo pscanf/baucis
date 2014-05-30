@@ -55,8 +55,11 @@ var decorator = module.exports = function (options, protect) {
     var count = 0;
     var documents = request.baucis.documents;
     var pipeline = request.baucis.send = protect.pipeline(function (error) {
-      if (error.message !== 'bad hint') return next(error);
-      next(BaucisError.BadRequest('The requested query hint is invalid'));
+      if (error.message === 'bad hint') {
+        next(BaucisError.BadRequest('The requested query hint is invalid'));
+        return;
+      }
+      next(error);
     });
     // If documents were set in the baucis hash, use them.
     if (documents) pipeline(es.readArray([].concat(documents)));

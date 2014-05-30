@@ -46,7 +46,7 @@ describe('PUT singular', function () {
     });
   });
 
-  it("should 400 on no document", function (done) {
+  it("should 422 on no document", function (done) {
     var radicchio = vegetables[7];
     var options = {
       url: 'http://localhost:8012/api/vegetables/' + radicchio._id,
@@ -60,18 +60,23 @@ describe('PUT singular', function () {
       // put the leek on the server
       var options = {
         url: 'http://localhost:8012/api/vegetables/' + radicchio._id,
-        json: null
+        json: true
       };
       request.put(options, function (err, response, body) {
         if (err) return done(err);
-        expect(response.statusCode).to.be(400);
-        expect(body).to.be('Bad Request: The request body did not contain an update document (400).');
+        expect(response.statusCode).to.be(422);
+        expect(body).to.eql([
+          {
+            message: 'The request body did not contain an update document',
+            name: 'BaucisError'
+          }
+        ]);
         done();
       });
     });
   });
 
-  it("should 400 on multiple documents", function (done) {
+  it("should 422 on multiple documents", function (done) {
     var radicchio = vegetables[7];
     var options = {
       url: 'http://localhost:8012/api/vegetables/' + radicchio._id,
@@ -89,8 +94,13 @@ describe('PUT singular', function () {
       };
       request.put(options, function (err, response, body) {
         if (err) return done(err);
-        expect(response.statusCode).to.be(400);
-        expect(body).to.be('Bad Request: The request body contained more than one update document (400).');
+        expect(response.statusCode).to.be(422);
+        expect(body).to.eql([ 
+          { 
+            message: 'The request body contained more than one update document',
+            name: 'BaucisError' 
+          } 
+        ]);
         done();
       });
     });

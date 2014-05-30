@@ -13,13 +13,7 @@ var decorator = module.exports = function (options, protect) {
     if (check.indexOf(instance) === -1) return false;
     if (instance === 'ObjectID' && id.match(/^[a-f0-9]{24}$/i)) return false;
     if (instance === 'Number' && !isNaN(Number(id))) return false;
-    return {
-      message: util.format('The requested document ID "%s" is not a valid document ID', id),
-      name: 'BaucisError',
-      path: '/:id',
-      type: 'url.id',
-      value: id
-    };
+    return true;
   };
 
   // Validate URL's ID parameter, if any.
@@ -27,13 +21,8 @@ var decorator = module.exports = function (options, protect) {
     var id = request.params.id;
     var instance = controller.model().schema.path(controller.findBy()).instance;
     var invalid = protect.isInvalid(request.params.id, instance, 'url.id');
-    var error;
-
     if (!invalid) return next();
-
-    error = BaucisError.ValidationError('The requested document ID "%s" is not a valid document ID', id);
-    error.errors = { id: invalid };
-    next(error);
+    next(BaucisError.BadRequest('The requested document ID "%s" is not a valid document ID', id));
   });
 
   // Check that the HTTP method has not been disabled for this controller.

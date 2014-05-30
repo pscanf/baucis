@@ -11,7 +11,7 @@
     }
   ],
   "homepage": "https://github.com/wprl/baucis",
-  "version": "1.0.0-candidate.4",
+  "version": "1.0.0-candidate.5",
   "main": "index.js",
   "scripts": {
     "test": "mocha --bail"
@@ -40,8 +40,8 @@
     "http"
   ],
   "dependencies": {
-    "baucis-error": "1.0.0-candidate.3",
-    "baucis-json": "1.0.0-candidate.0",
+    "baucis-error": "^1.0.0-candidate.5",
+    "baucis-json": "^1.0.0-candidate.1",
     "deco": "~0.12.0",
     "event-stream": "~3.1.5",
     "semver": "~2.2.1"

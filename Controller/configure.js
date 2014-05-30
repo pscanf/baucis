@@ -9,7 +9,7 @@ var decorator = module.exports = function (model, protect) {
   var controller = this;
 
   if (typeof model !== 'string' && (!model || !model.schema)) {
-    throw BaucisError.Configuration('You must pass in a model or model name');
+    throw BaucisError.Misconfigured('You must pass in a model or model name');
   }
 
   // __Property Definitions__
@@ -20,7 +20,7 @@ var decorator = module.exports = function (model, protect) {
   
   protect.property('versions', '*', function (range) {
     if (semver.validRange(range)) return range;
-    throw BaucisError.Configuration('Controller version range "%s" was not a valid semver range', range);
+    throw BaucisError.Misconfigured('Controller version range "%s" was not a valid semver range', range);
   }); 
 
   protect.property('model', undefined, function (m) { // TODO readonly
@@ -40,7 +40,7 @@ var decorator = module.exports = function (model, protect) {
   protect.property('findBy', '_id', function (path) {
     var findByPath = controller.model().schema.path(path);
     if (!findByPath.options.unique && !(findByPath.options.index && findByPath.options.index.unique)) {
-      throw BaucisError.Configuration('`findBy` path for model "%s" must be unique', controller.model().modelName);
+      throw BaucisError.Misconfigured('`findBy` path for model "%s" must be unique', controller.model().modelName);
     }
     return path;
   });

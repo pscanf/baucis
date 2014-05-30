@@ -559,44 +559,28 @@ describe('Controllers', function () {
     });
   });
 
-  it('should return a 422 when ID malformed (not ObjectID)', function (done) {
+  it('should return a 400 when ID malformed (not ObjectID)', function (done) {
     var options = {
       url: 'http://localhost:8012/api/beans/bad',
       json: true
     };
     request.get(options, function (error, response, body) {
       if (error) return done(error);
-      expect(response.statusCode).to.be(422);
-      expect(body).to.eql({ 
-        id: {
-          message: 'The requested document ID "bad" is not a valid document ID',
-          name: 'BaucisError',
-          path: '/:id',
-          type: 'url.id',
-          value: 'bad'
-        }
-      });
+      expect(response.statusCode).to.be(400);
+      expect(body).to.be('Bad Request: The requested document ID &quot;bad&quot; is not a valid document ID (400).');
       done();
     });   
   });
 
-  it('should return a 422 when ID malformed (not Number)', function (done) {
+  it('should return a 400 when ID malformed (not Number)', function (done) {
     var options = {
       url: 'http://localhost:8012/api/deans/0booze',
       json: true
     };
     request.get(options, function (error, response, body) {
       if (error) return done(error);
-      expect(response.statusCode).to.be(422);
-      expect(body).to.eql({ 
-        id: {
-          message: 'The requested document ID "0booze" is not a valid document ID',
-          name: 'BaucisError',
-          path: '/:id',
-          type: 'url.id',
-          value: '0booze' 
-        } 
-      });
+      expect(response.statusCode).to.be(400);
+      expect(body).to.eql('Bad Request: The requested document ID &quot;0booze&quot; is not a valid document ID (400).');
       done();
     });
   });

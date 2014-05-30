@@ -12,7 +12,7 @@ var Api = module.exports = deco(function (options, protect) {
   var middleware = api.middleware = express.Router();
 
   api.use(function (request, response, next) {
-    if (request.baucis) return next(BaucisError.Configuration('Baucis request property already created'));
+    if (request.baucis) return next(BaucisError.Misconfigured('Baucis request property already created'));
     request.baucis = {};
     response.removeHeader('x-powered-by');
     next();
@@ -23,7 +23,7 @@ var Api = module.exports = deco(function (options, protect) {
   // __Public Members___
   protect.property('releases', [ '0.0.1' ], function (release) {
     if (!semver.valid(release)) {
-      throw BaucisError.Configuration('Release version "%s" is not a valid semver version', release);
+      throw BaucisError.Misconfigured('Release version "%s" is not a valid semver version', release);
     }
     return this.releases().concat(release);
   });

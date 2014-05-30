@@ -1,4 +1,4 @@
-# baucis v1.0.0-candidate.4
+# baucis v1.0.0-candidate.5
 
 Baucis enables you to build scalable REST APIs using the open source tools and standards you and your team already know.  Like Baucis and Philemon of old, the module provides REST to the weary traveler.  [Baucis](https://en.wikipedia.org/wiki/Baucis_and_Philemon) is not the same as [Bacchus](https://en.wikipedia.org/wiki/Dionysus).
 
@@ -175,20 +175,6 @@ Used to disable specific HTTP methods for the controller.
 
     controller.operators('$push $set', 'foo some.path some.other.path');
     controller.operators('$pull', 'another.path');
-
-### controller.vivify
-
-This can be used to add paths under a controller.  For example, a teacher schema might define an array of classrooms.  `controller.vivify` lets embed the classrooms associated with a teacher at a URL like `/teacher/123/classrooms`.
-
-    var teachers = baucis.rest('teacher');
-    var classrooms = teachers.vivify('classrooms');
-
-### controller.parentPath
-
-This can be used to note the path the schema defines that is associated with a vivified URL.  For example, in the above example, if the classroom schema didn't use the field `teacher` to link to the teachers collection, but instead used a name of `classTeachers`:
-
-    var teachers = baucis.rest('teacher');
-    var classrooms = teachers.vivify('classrooms').parentPath('classTeachers');
 
 ### controller.fragment
 
@@ -509,6 +495,7 @@ Baucis supports a rich array of error responses and status codes. For more infor
 The client made a bad request and should fix the request before trying again.  This is also sent when a deprecated command is used.
 
     baucis.Error.BadRequest
+    baucis.Error.BadSyntax
     baucis.Error.Deprecated
 
 #### 403 Forbidden
@@ -551,9 +538,9 @@ The request body content type was not able to be parsed.  By default JSON is sup
 
 #### 422 Unprocessable Entity
 
-This status indicates a validation error ocurred, or that the entity sent to the server was invalid semantically in another way.
+This status indicates the request body was syntactically correct and could be parsed, but that it is not semantically correct, and so it could not be processed.  Most often countered when a document's validation step fails.
 
-    baucis.Error.ValidationError
+    baucis.Error.UnprocessableEntity
 
 Baucis will send a response body with error 422 that indicates what validation failed for which fields.
 
@@ -584,7 +571,7 @@ Where as `4xx` errors mean the requester messed up, `5xx` errors mean the server
 
 This means that baucis is misconfigured, or that the server tried to perform the requested action but failed.
 
-    baucis.Error.Configuration
+    baucis.Error.Misconfigured
 
 #### 501 Not Implemented
 
@@ -630,16 +617,18 @@ Add decorators to Controllers and other baucis constructors by using the `decora
 
 ## Plugins
 
-| Module Name  |  |
-| ------------ | ----- |
-| [baucis-access](https://github.com/hippich/baucis-access) | Configure read/write access on a per-attribute basis (created by Pavel Karoukin) |
+|Module Name  |  |
+|------------ | ----- |
+|[baucis-access](https://github.com/hippich/baucis-access) | Configure read/write access on a per-attribute basis (created by Pavel Karoukin) |
 |[baucis-swagger](https://www.npmjs.org/package/baucis-swagger) | automatically generate interactive API documentation (created by wprl)
 |[bswagger](https://www.npmjs.org/package/bswagger) | alternative swagger package (created by j.sedlan)
 |[baucis-gform](https://www.npmjs.org/package/baucis-gform) | Rapidly develop a administration UI for your baucis API (created by stemey)
+|[baucis-vivify](https://www.npmjs.org/package/baucis-vivify) | Used for embedding controllers under a parent path (created by wprl)
 |[baucis-patch](https://www.npmjs.org/package/baucis-patch) | created by wprl
 |[baucis-json](https://www.npmjs.org/package/baucis-json) | created by wprl
+|[baucis-error](https://www.npmjs.org/package/baucis-error) | created by wprl
 
-*The `baucis-json` plugin is bundled with baucis by default.  It's a good example for writing your own plugins, and for parsing or formatting custom content types.*
+*The `baucis-json` and `baucis-error` plugins is bundled with baucis by default.  `baucis-json` is a good example for writing your own plugins, and for parsing or formatting custom content types.*
 
 
 ##Contact

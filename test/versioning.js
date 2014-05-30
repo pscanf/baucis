@@ -227,8 +227,14 @@ describe('Versioning', function () {
       };
       request.put(options, function (error, response, body) {
         if (error) return done(error);
-        expect(response.statusCode).to.be(400);
-        expect(body).to.be('Bad Request: Locking is enabled, so the target version must be provided in the request body using path &quot;__v&quot; (400).');
+        expect(response.statusCode).to.be(422);
+        expect(body).to.eql([ 
+          { 
+            message: 'Locking is enabled, but the target version was not provided in the request body.',
+            name: 'BaucisError',
+            path: '__v' 
+          } 
+        ]);
         done();
       });
     });

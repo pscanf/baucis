@@ -19,7 +19,7 @@ function last (skip, names, values) {
   var r = {};
   var position = names.length;
   var count = values.filter(exists).length - skip;
-  if (count < 1) throw BaucisError.Configuration('Too few arguments.');
+  if (count < 1) throw BaucisError.Misconfigured('Too few arguments.');
 
   names.forEach(function (name) {
     var index = skip + count - position;
@@ -45,20 +45,20 @@ function factor (options) {
   methods = methodString.split(/\s+/);
 
   methods.forEach(function (method) {
-    if (!isRecognizedMethod(method)) throw BaucisError.Configuration('Unrecognized HTTP method: "%s"', method);
+    if (!isRecognizedMethod(method)) throw BaucisError.Misconfigured('Unrecognized HTTP method: "%s"', method);
   });
 
-  if (!options.stage) throw BaucisError.Configuration('The middleware stage was not provided');
+  if (!options.stage) throw BaucisError.Misconfigured('The middleware stage was not provided');
   if (options.endpoint && options.endpoint !== 'instance' && options.endpoint !== 'collection') {
-    throw BaucisError.Configuration('End-point type must be either "instance" or "collection," not "%s"', options.endpoint);
+    throw BaucisError.Misconfigured('End-point type must be either "instance" or "collection," not "%s"', options.endpoint);
   }
   // Middleware function or array
   if (!Array.isArray(options.middleware) && typeof options.middleware !== 'function') {
-    throw BaucisError.Configuration('Middleware must be an array or function');
+    throw BaucisError.Misconfigured('Middleware must be an array or function');
   }
   // Check endpoint is valid
   if (options.endpoint !== undefined && options.endpoint !== 'instance' && options.endpoint !== 'collection') {
-    throw BaucisError.Configuration('End-point type must be either "instance" or "collection," not "%s"', options.endpoint);
+    throw BaucisError.Misconfigured('End-point type must be either "instance" or "collection," not "%s"', options.endpoint);
   }
   // Add definitions for one or both endpoints, for each HTTP method.
   methods.forEach(function (method) {

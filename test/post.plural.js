@@ -77,14 +77,20 @@ describe('POST plural', function () {
     });
   });
 
-  it('should 400 if no document sent', function (done) {
+  it('should 422 if no document sent', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables/',
       json: []
     };
     request.post(options, function (error, response, body) {
       if (error) return done(error);
-      expect(response.statusCode).to.equal(400);
+      expect(response.statusCode).to.equal(422);
+      expect(body).to.eql([ 
+        { 
+          message: 'The request body must contain at least one document',
+          name: 'BaucisError'
+        }
+      ]);
       done();
     });
   });
@@ -113,17 +119,16 @@ describe('POST plural', function () {
       if (error) return done(error);
 
       expect(response.statusCode).to.equal(422);
-      expect(body).to.have.property('name');
-      expect(body.name).to.have.property('message', 'Path `name` is required.');
-      expect(body.name).to.have.property('name', 'ValidatorError');
-      expect(body.name).to.have.property('path', 'name');
-      expect(body.name).to.have.property('type', 'required');
-      expect(body).to.have.property('score');
-      expect(body.score).to.have.property('message', 'Path `score` (-1) is less than minimum allowed value (1).');
-      expect(body.score).to.have.property('name', 'ValidatorError');
-      expect(body.score).to.have.property('path', 'score');
-      expect(body.score).to.have.property('type', 'min');
-      expect(body.score).to.have.property('value', -1);
+      expect(body).to.have.property('length', 2);
+      expect(body[0]).to.have.property('message', 'Path `name` is required.');
+      expect(body[0]).to.have.property('name', 'ValidatorError');
+      expect(body[0]).to.have.property('path', 'name');
+      expect(body[0]).to.have.property('type', 'required');
+      expect(body[1]).to.have.property('message', 'Path `score` (-1) is less than minimum allowed value (1).');
+      expect(body[1]).to.have.property('name', 'ValidatorError');
+      expect(body[1]).to.have.property('path', 'score');
+      expect(body[1]).to.have.property('type', 'min');
+      expect(body[1]).to.have.property('value', -1);
 
       done();
     });
