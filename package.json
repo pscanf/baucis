@@ -7,7 +7,40 @@
   },
   "contributors": [
     {
-      "name": "eguneys"
+      "name": "eguneys",
+      "url": "https://github.com/eguneys"
+    },
+    {
+      "name": "feychenie",
+      "url": "https://github.com/feychenie"
+    },
+        {
+      "name": "pirhoo",
+      "url": "https://github.com/pirhoo"
+    },
+    {
+      "name": "neverfox",
+      "url": "https://github.com/neverfox"
+    },
+    {
+      "name": "lukaszfiszer",
+      "url": "https://github.com/lukaszfiszer"
+    },
+    {
+      "name": "lcalvy",
+      "url": "https://github.com/lcalvy"
+    },
+    {
+      "name": "stemey",
+      "url": "https://github.com/stemey"
+    },
+    {
+      "name": "Illniyar",
+      "url": "https://github.com/Illniyar"
+    },
+    {
+      "name": "fanfuzion",
+      "url": "https://github.com/fanfuzion"
     }
   ],
   "homepage": "https://github.com/wprl/baucis",
