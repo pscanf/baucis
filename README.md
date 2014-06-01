@@ -30,7 +30,7 @@ The official baucis documentation is being moved to [kun.io/baucis](http://kun.i
 
  * Real time browser/client subscription with EventSource (server sent events)
  * Web hooks
- 
+
 Check the [change log](CHANGES.md) for info on all the latest features.
 
 
@@ -58,26 +58,27 @@ To install:
     npm install --save baucis
 
 An example of creating a REST API from a couple Mongoose schemata.
+``` javascript
+var Vegetable = new mongoose.Schema({ name: String });
+var Fruit = new mongoose.Schema({ name: String });
 
-    var Vegetable = new mongoose.Schema({ name: String });
-    var Fruit = new mongoose.Schema({ name: String });
+mongoose.model('vegetable', Vegetable);
+mongoose.model('fruit', Fruit);
 
-    mongoose.model('vegetable', Vegetable);
-    mongoose.model('fruit', Fruit);
+// Create a simple controller.
+baucis.rest('vegetable');
 
-    // Create a simple controller.
-    baucis.rest('vegetable');
+// Create a controller with custom middleware for update/create.
+baucis.rest('fruit').request('put post', function (request, response, next) {
+  if (request.isAuthenticated()) return next();
+  return response.send(401);
+});
 
-    // Create a controller with custom middleware for update/create.
-    baucis.rest('fruit').request('put post', function (request, response, next) {
-      if (request.isAuthenticated()) return next();
-      return response.send(401);
-    });
-
-    // Create the app and listen for API requests
-    var app = express();
-    app.use('/api', baucis());
-    app.listen(80);
+// Create the app and listen for API requests
+var app = express();
+app.use('/api', baucis());
+app.listen(80);
+```
 
 Later, make requests:
 
@@ -94,36 +95,43 @@ Later, make requests:
 
 
 `baucis.rest` returns an instance of the controller created to handle the schema's API routes.  Pass in a mongoose model name:
-
-    var controller = baucis.rest('robot');
+``` javascript
+var controller = baucis.rest('robot');
+```
 
 Or, pass in a Mongoose model:
 
-    var controller = baucis.rest(mongoose.model('robot'));
+``` javascript
+var controller = baucis.rest(mongoose.model('robot'));
+```
 
 Controllers are Express apps like any other.
 
-    // Add middleware before API routes
-    controller.use('/qux', function (request, response, next) {
-      // Do something cool…
-      next();
-    });
+``` javascript
+// Add middleware before API routes
+controller.use('/qux', function (request, response, next) {
+  // Do something cool…
+  next();
+});
 
-    controller.get('/readme', function (request, response, next) {
-      // Send a readme document about the resource (for example)
-      next();
-    });
+controller.get('/readme', function (request, response, next) {
+  // Send a readme document about the resource (for example)
+  next();
+});
 
-    // Do other stuff...
-    controller.set('some option name', 'value');
-    controller.listen(3000);
+// Do other stuff...
+controller.set('some option name', 'value');
+controller.listen(3000);
+```
 
 Customize them with Express middleware, including pre-existing modules like `passport`.  Middleware can be registered like so:
 
-    controller.request(function (request, response, next) {
-      if (request.isAuthenticated()) return next();
-      return response.send(401);
-    });
+``` javascript
+controller.request(function (request, response, next) {
+  if (request.isAuthenticated()) return next();
+  return response.send(401);
+});
+```
 
 ##Controllers
 
@@ -131,69 +139,89 @@ Customize them with Express middleware, including pre-existing modules like `pas
 
 This property sets the controller's mongoose model.  You can pass in a string or a directly pass in a mongoose model.
 
-    controller.model('cheese');
+``` javascript
+controller.model('cheese');
+```
 
 ### controller.select
 
 Select or deselect fields for all queries.
 
-    controller.select('foo +bar -password');
+``` javascript
+controller.select('foo +bar -password');
+```
 
 ### controller.relations
 
 Set to `true` to enable setting the response Link header with various useful links.  Especially useful for paging.
 
-    controller.relations(true);
+``` javascript
+controller.relations(true);
+```
 
 ### controller.findBy
 
 The unique path used to identify documents for this controller.  Defaults to `_id`.
 
-    controller.findBy('name');
+``` javascript
+controller.findBy('name');
+```
 
 ### controller.hints
 
 Allow sending an index hint for the query from the client.  Disabled by default.
 
-    controller.hints(true);
+``` javascript
+controller.hints(true);
+```
 
 ### controller.comments
 
 Allow sending a query comment from the client.  Disabled by default.
 
-    controller.comments(true);
+``` javascript
+controller.comments(true);
+```
 
 ### controller.methods
 
 Used to disable specific HTTP methods for the controller.
 
-    controller.methods('post put delete', false);
+``` javascript
+controller.methods('post put delete', false);
+```
 
 ### controller.operators
 
 **BYPASSES VALIDATION** Use this method to enable non-defualt update operators.  The update method can be set using the `Update-Operator` header field.
 
-    controller.operators('$push $set', 'foo some.path some.other.path');
-    controller.operators('$pull', 'another.path');
+``` javascript
+controller.operators('$push $set', 'foo some.path some.other.path');
+controller.operators('$pull', 'another.path');
+```
 
 ### controller.fragment
 
 This is the fragment to match request URLs agains.  Defaults to the plural name of the model.
 
-    controller.fragment('/somewhere');
+``` javascript
+controller.fragment('/somewhere');
+```
 
 
 ### controller.versions
 
 Versioning is implemented using [semver](http://semver.org).  Supported releases are specified when calling `baucis()`.  The release(s) that a controller belongs to are specified with the `versions` controller option.
 
-    baucis.rest('cat').versions('0.0.1');
-    baucis.rest('cat').versions('>0.0.1 <1.0.0');
-    baucis.rest('cat').versions('~1');
-    baucis.rest('cat').versions('>2.0.0');
-    var api = baucis();
-    baucis().release('0.0.2').release('1.0.0').release('1.1.0').release('2.0.0')
-    app.use('/api', api);
+``` javascript
+baucis.rest('cat').versions('0.0.1');
+baucis.rest('cat').versions('>0.0.1 <1.0.0');
+baucis.rest('cat').versions('~1');
+baucis.rest('cat').versions('>2.0.0');
+var api = baucis();
+baucis().release('0.0.2').release('1.0.0').release('1.1.0').release('2.0.0')
+app.use('/api', api);
+```
 
 Later, make requests and set the `API-Version` header to a [semver](http://semver.org) range, such as `~1`, `>2 <3`, `*`, etc.  Baucis will use the highest release number that satisfies the range.  If no `API-Version` is specified in a request, the highest release will be used.
 
@@ -204,61 +232,69 @@ Baucis takes full advantage of Node streams internally to offer even more perfor
 
 To alter or inspect documents being sent or process, add a through stream that transforms or processes them.  As a shortcut, a map function can be passed in.  It will be used to create a map stream internally.  Here's an example of adding a stream to alter POST'd or PUT'd request bodies:
 
-    controller.request(function (request, response, next) {
-      request.baucis.incoming(function (context, callback) {
-        context.incoming.name = 'Feverfew';
-        callback(null, context);
-      });
-      next();
-    });
+``` javascript
+controller.request(function (request, response, next) {
+  request.baucis.incoming(function (context, callback) {
+    context.incoming.name = 'Feverfew';
+    callback(null, context);
+  });
+  next();
+});
+```
 
 For PUT requests, the document is available to the stream.  For POSTs `context.doc` will be set to `null`.
 
-    controller.request(function (request, response, next) {
-      request.baucis.incoming(function (context, callback) {
-        if (context.doc.created !== context.incoming.created) {
-          callback(baucis.errors.Forbidden('The created date cannot be updated'));
-          return;
-        }
-        callback(null, context);
-      });
-      next();
-    });
+``` javascript
+controller.request(function (request, response, next) {
+  request.baucis.incoming(function (context, callback) {
+    if (context.doc.created !== context.incoming.created) {
+      callback(baucis.errors.Forbidden('The created date cannot be updated'));
+      return;
+    }
+    callback(null, context);
+  });
+  next();
+});
+```
 
 
 Passing in through streams is also allowed.  Here's an example using the [through module](https://www.npmjs.org/package/through) to create a stream that checks for a forbidden sort of whiskey and alters the name of incoming (POSTed) documents.
 
-    controller.request(function (request, response, next) {
-      request.baucis.incoming(through(function (context) {
-        if (context.incoming.whiskey === 'Canadian') {
-          // Errors will be passed off to `next` later, and the stream will
-          // be stopped.
-          this.emit('error', baucis.errors.Forbidden('Too smooth.'));
-          return;
-        }
-        context.incoming.name = 'SHAZAM';
-        this.queue(context);
-      }));
-      next();
-    });
+``` javascript
+controller.request(function (request, response, next) {
+  request.baucis.incoming(through(function (context) {
+    if (context.incoming.whiskey === 'Canadian') {
+      // Errors will be passed off to `next` later, and the stream will
+      // be stopped.
+      this.emit('error', baucis.errors.Forbidden('Too smooth.'));
+      return;
+    }
+    context.incoming.name = 'SHAZAM';
+    this.queue(context);
+  }));
+  next();
+});
+```
 
 If `request.baucis.incoming` or `request.baucis.outgoing` is called multiple times, the multiple through streams will be piped together.
 
 Here's an example of how a stream that interacts with outgoing documents may be added:
 
-    controller.request(function (request, response, next) {
-      request.baucis.outgoing(through(function (context) {
-        if (context.doc.owner !== request.user) {
-          // Errors will be passed off to `next` later, and the stream will
-          // be stopped.
-          this.emit('error', baucis.errors.Forbidden());
-          return;
-        }
-        delete context.doc.password;
-        this.queue(context);
-      }));
-      next();
-    });
+``` javascript
+controller.request(function (request, response, next) {
+  request.baucis.outgoing(through(function (context) {
+    if (context.doc.owner !== request.user) {
+      // Errors will be passed off to `next` later, and the stream will
+      // be stopped.
+      this.emit('error', baucis.errors.Forbidden());
+      return;
+    }
+    delete context.doc.password;
+    this.queue(context);
+  }));
+  next();
+});
+```
 
 -----------
 
@@ -284,27 +320,33 @@ This stage of middleware will be called after baucis applies defaults to the Mon
 
 To apply middleware to all API routes, just pass the function or array to the method for the appropriate stage:
 
-    controller.request(function (request, response, next) {
-      if (request.isAuthenticated()) return next();
-      return response.send(401);
-    });
+``` javascript
+controller.request(function (request, response, next) {
+  if (request.isAuthenticated()) return next();
+  return response.send(401);
+});
 
-    controller.query(function (request, response, next) {
-      request.baucis.query.populate('fences');
-      next();
-    });
+controller.query(function (request, response, next) {
+  request.baucis.query.populate('fences');
+  next();
+});
+```
 
 To add middleware that applies only to specific HTTP methods, use the second form.  It adds a paramater that must contain a space delimted list of HTTP methods that the middleware should be applied to.
 
-    controller.query('head get', function (request, response, next) {
-      request.baucis.query.limit(5);
-      next();
-    });
+``` javascript
+controller.query('head get', function (request, response, next) {
+  request.baucis.query.limit(5);
+  next();
+});
+```
 
 The final form is the most specific.  The first argument lets you specify whether the middleware applies to document instances (paths like `/cheeses/:id`) or to collection requests (paths like `/cheeses`).
 
-    controller.request('instance', 'head get delete', middleware);
-    controller.request('collection', 'post', middleware);
+``` javascript
+controller.request('instance', 'head get delete', middleware);
+controller.request('collection', 'post', middleware);
+```
 
 ## Swagger
 
@@ -319,9 +361,11 @@ Next, download the [swagger-ui](https://github.com/wordnik/swagger-ui) client.
 
 Then, create your API as normal, but be sure to require `baucis-swagger`.
 
-    var baucis = require('baucis');
-    var swagger = require('baucis-swagger');
-    app.use('/api', baucis());
+``` javascript
+var baucis = require('baucis');
+var swagger = require('baucis-swagger');
+app.use('/api', baucis());
+```
 
 Point the swagger client at your API:
 
@@ -331,20 +375,22 @@ Now you have documentation and a test client!
 
 To customize the swagger definition, simply alter the controler's swagger data directly:
 
-    var controller = baucis.rest('sauce');
+``` javascript
+var controller = baucis.rest('sauce');
 
-    controller.swagger.apis.push({
-      'path': '/sauces/awesome',
-      'description': 'Awesome sauce.',
-      'operations': [
-        {
-          'httpMethod': 'GET',
-          'nickname': 'getAwesomeSauce',
-          'responseClass': 'Sauce',
-          'summary': 'Carolina BBQ Sauce.'
-        }
-      ]
-    });
+controller.swagger.apis.push({
+  'path': '/sauces/awesome',
+  'description': 'Awesome sauce.',
+  'operations': [
+    {
+      'httpMethod': 'GET',
+      'nickname': 'getAwesomeSauce',
+      'responseClass': 'Sauce',
+      'summary': 'Carolina BBQ Sauce.'
+    }
+  ]
+});
+```
 
 ## HTTP Headers
 
@@ -449,37 +495,42 @@ Add a comment to a query (must be enabled per controller).
 Baucis decorates Mongoose models with a few additional methods to add richer textual and other semantics.  The Model API is ubstable.  It will be stablized for v1.0.0.
 
 Typically, these methods would be called when the schema is registered with Mongoose:
+``` javascript
+mongoose.model('cactus', Cactus).plural('cacti');
+mongoose.model('hen', Hen).locking(true);
+```
 
-    mongoose.model('cactus', Cactus).plural('cacti');
-    mongoose.model('hen', Hen).locking(true);
-    
 
 ### model.singular
 
 Customize the name used for singular instances of documents associated with this model.
-
-    model.singular('cactus');
+``` javascript
+model.singular('cactus');
+```
 
 
 ### model.plural
 
 Customize the name used for groups of documents associated with this model.  Defaults to the plural of the model's singular name.  Uses Mongoose's pluralizer utility method.
+``` javascript
+model.plural('cacti');
+```
 
-    model.plural('cacti');
 
-    
 ### model.lastModified
 
 Set the `Last-Modified` HTTP header using the given `Date` field.  Disabled by default.
-
-    model.lastModified('modified.date');
+``` javascript
+model.lastModified('modified.date');
+```
 
 
 ### model.locking
 
 Enable optimistic locking.  (Disabled by default.)  Requires that all PUTs must send the document version (`__v` by default) and will send a 409 response if there would be a version conflict, instead of performing the update.
-
-    model.locking(true);
+``` javascript
+model.locking(true);
+```
 
 
 ## Errors & Status Codes
@@ -543,22 +594,23 @@ This status indicates the request body was syntactically correct and could be pa
     baucis.Error.UnprocessableEntity
 
 Baucis will send a response body with error 422 that indicates what validation failed for which fields.
-
-      {
-        "name": {
-          "message": "Path `name` is required.",
-          "name": "ValidatorError",
-          "path": "name",
-          "type": "required"
-        },
-        "score": {
-          "message": "Path `score` (-1) is less than minimum allowed value (1).",
-          "name": "ValidatorError",
-          "path": "score",
-          "type": "min",
-          "value": -1);
-        }
-      }
+``` json
+{
+  "name": {
+  "message": "Path `name` is required.",
+  "name": "ValidatorError",
+  "path": "name",
+      "type": "required"
+  },
+  "score": {
+  "message": "Path `score` (-1) is less than minimum allowed value (1).",
+  "name": "ValidatorError",
+  "path": "score",
+  "type": "min",
+      "value": -1
+  }
+}
+```
 
 Technically, this error is from [RFC4918](https://tools.ietf.org/html/rfc4918#section-11.2), the WebDAV specification.
 
@@ -579,7 +631,7 @@ The requested functionality is not implemented now, but may be implented in the 
 
     baucis.Error.NotImplemented
 
-    
+
 ## Roadmap
 
 ### Q2 2014
@@ -605,14 +657,15 @@ The requested functionality is not implemented now, but may be implented in the 
 Baucis can be augmented via incoming and outgoing streams, as well as with decorators.
 
 Add decorators to Controllers and other baucis constructors by using the `decorators` method.  Adding a decorator will affect all subsequently created controllers.  Here's how you could add a tiny plugin that makes all subsequently added controllers check authentication for all PUTs and POSTs.  
-
-    baucis.Controller.decorators(function (options, protect) {
-      var controller = this;
-      controller.request('put post', function (request, response, next) {
-        if (!request.isAuthenticated()) return next(new Error());
-        next();
-      });
-    });
+``` javascript
+baucis.Controller.decorators(function (options, protect) {
+  var controller = this;
+  controller.request('put post', function (request, response, next) {
+    if (!request.isAuthenticated()) return next(new Error());
+    next();
+  });
+});
+```
 
 
 ## Plugins
