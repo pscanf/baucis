@@ -137,7 +137,10 @@ This property sets the controller's mongoose model.  You can pass in a string or
 
 Select or deselect fields for all queries.
 
-    controller.select('foo +bar -password');
+    controller.select('field -password');
+    controller.select('+groats');
+
+Note that mixing inluding and excluding fields causes an error.
 
 ### controller.relations
 
@@ -361,11 +364,11 @@ To customize the swagger definition, simply alter the controler's swagger data d
 | Header Field | Notes |
 | ------------ | ----- |
 | ETag | Used for HTTP caching based on response body.  Supported automatically for single object endpoints. |
-| Last-Modified | Used for HTTP caching.  Can be set automatically by Baucis for single object endpoints.
+| Last-Modified | Used for HTTP caching.  Can be set automatically by Baucis for single object endpoints. |
 | Accept | Set to `application/json` for all responses. |
 | Allow | Set automatically, correctly removing HTTP methods when those methods have been disabled. |
 | Location | Set to the URL of the created/edited entity for PUT and POST responses. |
-| Link | Optionally, baucis can add related links to the header for you.  Especially useful for paging through a query.  `first`, `last`, `next`, and `previous` links are added when paging through a collection when using the `limit` & `skip` query options. |
+| Link | Baucis adds related links to the header for you.  Especially useful for paging through a query.  `first`, `last`, `next`, and `previous` links are added when paging through a collection when using the `limit` & `skip` query options. |
 
 ## Query Options
 
@@ -409,6 +412,8 @@ Set which fields should be selected for response documents.
 It is not permitted to use the `select` query option to select deselected paths.  This is to allow a mechanism for hiding fields from client software.
 
 You can deselect paths in the Mongoose schema definition using `select: false` or in the controller by calling e.g. `controller.select('-foo')`.  Your server middleware will be able to select these fields as usual using `query.select`, while preventing the client from selecting the field.
+
+Note that mixing inluding and excluding fields causes an error.
 
 ### populate
 

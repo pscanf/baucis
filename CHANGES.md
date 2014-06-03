@@ -1,5 +1,10 @@
 # Baucis Change Log
 
+## v1.0.0-candidate.6
+
+Minor tweaks.  
+
+
 ## v1.0.0-candidate.5
 
 Revisit all error conditions.  Make 422 error response body an array.

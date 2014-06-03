@@ -170,6 +170,35 @@ describe('Queries', function () {
     });
   });
 
+  it('should disallow selecting fields when populating', function (done) {
+    var options = {
+      url: 'http://localhost:8012/api/vegetables?populate={ "path": "a", "select": "arbitrary" }',
+      json: true
+    };
+    request.get(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(403);
+      expect(body).to.be('Forbidden: Selecting fields of populated documents is not permitted (403).');
+      done();
+    });
+  });
+
+  it('should allow populating children', function (done) {
+    var id = vegetables[0]._id;
+    var options = {
+      url: 'http://localhost:8012/api/vegetables/' + id + '/?populate=nutrients',
+      json: true
+    };
+    request.get(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(200);
+      expect(body).to.have.property('nutrients');
+      expect(body.nutrients).to.have.property('length', 1);
+      expect(body.nutrients[0]).to.have.property('color', 'Blue');
+      done();
+    });
+  });
+
   it('should allow default express query string format', function(done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables?conditions[name]=Radicchio',
@@ -388,7 +417,7 @@ describe('Queries', function () {
 
   it('should allow using relations: true with sorted queries', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/minerals?sort=color&limit=2&skip=2&select=-__v -_id',
+      url: 'http://localhost:8012/api/minerals?sort=color&limit=2&skip=2&select=-__v -_id -enables',
       json: true
     };
     request.get(options, function (error, response, body) {
@@ -666,7 +695,7 @@ describe('Queries', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(200);
-      expect(body).to.eql([]);
+      expect(body).to.have.property('length', 1);
       done();
     });
   });

@@ -14,15 +14,19 @@ var server;
 // __Fixture Schemata__
 var Schema = mongoose.Schema;
 var Fungus = new Schema({ 'hyphenated-field-name': String });
-var Mineral = new Schema({ color: String });
 var Animal = new Schema({ name: String });
+var Mineral = new Schema({
+  color: String,
+  enables: [ { type: Schema.ObjectId, ref: 'fungus' } ]
+});
 var Vegetable = new Schema({
   name: { type: String, required: true },
   lastModified: { type: Date, required: true, default: Date.now },
   diseases: { type: [ String ], select: false },
   species: { type: String, default: 'n/a', select: false },
   related: { type: Schema.ObjectId, ref: 'vegetable' },
-  score: { type: Number, min: 1 }
+  score: { type: Number, min: 1 },
+  nutrients: [ { type: Schema.ObjectId, ref: 'mineral' } ]
 });
 
 Vegetable.pre('save', function (next) {
@@ -168,17 +172,26 @@ var fixture = module.exports = {
   create: function (done) {
     var Vegetable = mongoose.model('vegetable');
     var Mineral = mongoose.model('mineral');
+    var Fungus = mongoose.model('fungus');
     var mineralColors = [ 'Blue', 'Green', 'Pearlescent', 'Red', 'Orange', 'Yellow', 'Indigo', 'Violet' ];
     var vegetableNames = [ 'Turnip', 'Spinach', 'Pea', 'Shitake', 'Lima Bean', 'Carrot', 'Zucchini', 'Radicchio' ];
+    var fungus = new Fungus();
     var minerals = mineralColors.map(function (color) {
-      return new Mineral({ color: color });
+      return new Mineral({ 
+        color: color,
+        enables: fungus._id
+      });
     });
     vegetables = vegetableNames.map(function (name) { // TODO leaked global
-      return new Vegetable({ name: name });
+      return new Vegetable({ 
+        name: name,
+        nutrients: [ minerals[0]._id ]
+      });
     });
     var deferred = [
       Vegetable.remove.bind(Vegetable),
-      Mineral.remove.bind(Mineral)
+      Mineral.remove.bind(Mineral),
+      Fungus.remove.bind(Fungus)
     ];
 
     deferred = deferred.concat(vegetables.map(function (vegetable) {
@@ -188,6 +201,8 @@ var fixture = module.exports = {
     deferred = deferred.concat(minerals.map(function (mineral) {
       return mineral.save.bind(mineral);
     }));
+
+    deferred.push(fungus.save.bind(fungus));
 
     async.series(deferred, done);
   }
