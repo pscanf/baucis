@@ -48,7 +48,7 @@
     }
   ],
   "homepage": "https://github.com/wprl/baucis",
-  "version": "1.0.0-candidate.6",
+  "version": "1.0.0-candidate.7",
   "main": "index.js",
   "scripts": {
     "test": "mocha --bail"

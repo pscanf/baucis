@@ -1,4 +1,4 @@
-# baucis v1.0.0-candidate.6
+# baucis v1.0.0-candidate.7
 
 Baucis enables you to build scalable REST APIs using the open source tools and standards you and your team already know.  Like Baucis and Philemon of old, the module provides REST to the weary traveler.  [Baucis](https://en.wikipedia.org/wiki/Baucis_and_Philemon) is not the same as [Bacchus](https://en.wikipedia.org/wiki/Dionysus).
 
@@ -23,13 +23,13 @@ The official baucis documentation is being moved to [kun.io/baucis](http://kun.i
  * Perform rich queries of the API using an expressive JSON syntax via query string.
  * Mongoose middleware, inheritence, and validation methods are automatically respected.
  * Version your API using semver.
- * Over 150 Mocha.js tests.
+ * Over 140 Mocha.js tests.
 
 
 ### Coming Soon
 
- * Real time browser/client subscription with EventSource (server sent events)
- * Web hooks
+ * Real time browser/client [subscription with EventSource](https://github.com/wprl/baucis-subscribe) (server sent events)
+ * [Web hooks](https://github.com/wprl/baucis-hooks)
 
 Check the [change log](CHANGES.md) for info on all the latest features.
 
@@ -145,7 +145,7 @@ This property sets the controller's mongoose model.  You can pass in a string or
 controller.model('cheese');
 ```
 
-### controller.select
+### controller.select 
 
 Select or deselect fields for all queries.
 
@@ -158,10 +158,10 @@ Note that mixing inluding and excluding fields causes an error.
 
 ### controller.relations
 
-Set to `true` to enable setting the response Link header with various useful links.  Especially useful for paging.
+By default the response Link header is set with various useful links based on context.  This is especially useful for paging.  May be disabled using this method.
 
 ``` javascript
-controller.relations(true);
+controller.relations(false);
 ```
 
 ### controller.findBy
@@ -211,6 +211,24 @@ This is the fragment to match request URLs agains.  Defaults to the plural name 
 
 ``` javascript
 controller.fragment('/somewhere');
+```
+
+### controller.emptyCollection
+
+This can be used to set what status code & body are returned for requests that yield empty query results.  The default is status code 200 with a JSON body containing an empty array.  Other possible options are 204 No Content and 404 Not Found.
+
+``` javascript
+controller.emptyCollection(200);
+controller.emptyCollection(204);
+controller.emptyCollection(404);
+```
+
+### controller.handleErrors
+
+Baucis sets the response status code based on different errors.  By default, it also catches and builds responses for certain errors.  Set this to false to have the controller only set status codes, and not handle errors further.
+
+``` javascript
+controller.emptyCollection(false);
 ```
 
 
@@ -646,7 +664,7 @@ The requested functionality is not implemented now, but may be implented in the 
  * v1.0.0 Release candidates
  * Refine & improve documentation
  * Benchmark
- * Internal refactoring and simplification
+ * ~~Internal refactoring and simplification~~ *(completed)*
  * v1.0.0
  * Begin a cookbook-style guide with lots of code examples.
  * ~~Express 4~~ *(completed)*
@@ -688,7 +706,7 @@ baucis.Controller.decorators(function (options, protect) {
 |[baucis-json](https://www.npmjs.org/package/baucis-json) | created by wprl
 |[baucis-error](https://www.npmjs.org/package/baucis-error) | created by wprl
 
-*The `baucis-json` and `baucis-error` plugins is bundled with baucis by default.  `baucis-json` is a good example for writing your own plugins, and for parsing or formatting custom content types.*
+*The `baucis-json` and `baucis-error` plugins are bundled with baucis by default.  `baucis-json` is a good example for writing your own plugins for parsing or formatting custom content types.*
 
 
 ##Contact

@@ -749,4 +749,31 @@ describe('Queries', function () {
     });
   });
 
+  it('should allow using query operators with _id', function (done) {
+    var options = {
+      url: 'http://localhost:8012/api/vegetables?conditions={ "_id": { "$gt": "111111111111111111111111" } }',
+      json: true
+    };
+    request.get(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(200);
+      expect(body).to.have.property('length', 8);
+      expect(body[0]).to.have.property('name', 'Turnip');
+      done();
+    });
+  });
+
+  it('should give a 400 if the query stirng is unpar using query operators with _id', function (done) {
+    var options = {
+      url: 'http://localhost:8012/api/vegetables?conditions={ \'_id\': { \'$gt\': \'111111111111111111111111\' } }',
+      json: true
+    };
+    request.get(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(400);
+      expect(body).to.be('Bad Request: The conditions query string value was not valid JSON: &quot;Unexpected token &#39;&quot; (400).');
+      done();
+    });
+  });
+
 });

@@ -1,5 +1,10 @@
 # Baucis Change Log
 
+## v1.0.0-candidate.7
+
+README tweaks.  More tests.
+
+
 ## v1.0.0-candidate.6
 
 Minor tweaks.  
