@@ -1,5 +1,10 @@
 # Baucis Change Log
 
+## v1.0.0-candidate.8
+
+Use caret for dependencies.  If you're using an older npm, let's talk about a fork or other migration path.
+
+
 ## v1.0.0-candidate.7
 
 README tweaks.  More tests.
