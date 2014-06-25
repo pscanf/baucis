@@ -1,4 +1,4 @@
-# baucis v1.0.0-candidate.8
+# baucis v1.0.0-candidate.10
 
 Baucis enables you to build scalable REST APIs using the open source tools and standards you and your team already know.  Like Baucis and Philemon of old, the module provides REST to the weary traveler.  [Baucis](https://en.wikipedia.org/wiki/Baucis_and_Philemon) is not the same as [Bacchus](https://en.wikipedia.org/wiki/Dionysus).
 
@@ -101,12 +101,14 @@ Or, pass in a Mongoose model:
 var controller = baucis.rest(mongoose.model('robot'));
 ```
 
-Calling `baucis.rest` also adds it to the current API being created.  When `baucis()` is called, the API is finalized and any new controllers will be added to another API instance.
+Calling `baucis.rest` also adds the newly created controller to the current API.  When `baucis()` is called, the API is finalized and any subsequent controllers will be added to another API instance.
 
 ```javascript
+// Creating the first API.
+baucis.rest('legume');
 var api = baucis();
-app.use(api);
-baucis.rest('tube');
+// Creating another API.
+baucis.rest('tuber');
 var api2 = baucis();
 ```
 
@@ -131,7 +133,7 @@ controller.listen(3000);
 
 Customize them with Express middleware, including pre-existing modules like `passport`.
 
-Baucis also adds controller the `request` and `query` methods to interact with the baucis interal Mongoose query.  __(See the [middleware section](#Middleware).)__
+Baucis also adds controller the `request` and `query` methods to interact with the baucis interal Mongoose query.  **(See the [middleware section](#middleware).)**
 
 ``` javascript
 controller.request(function (request, response, next) {

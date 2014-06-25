@@ -1,8 +1,14 @@
 # Baucis Change Log
 
+## v1.0.0-candidate.10
+
+Fix some typos.
+
+
 ## v1.0.0-candidate.9
 
 Add more info about `baucis.rest` to the README.
+
 
 ## v1.0.0-candidate.8
 
