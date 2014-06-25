@@ -1,5 +1,9 @@
 # Baucis Change Log
 
+## v1.0.0-candidate.9
+
+Add more info about `baucis.rest` to the README.
+
 ## v1.0.0-candidate.8
 
 Use caret for dependencies.  If you're using an older npm, let's talk about a fork or other migration path.
@@ -12,7 +16,7 @@ README tweaks.  More tests.
 
 ## v1.0.0-candidate.6
 
-Minor tweaks.  
+Minor tweaks.
 
 
 ## v1.0.0-candidate.5
@@ -48,7 +52,7 @@ Use published version of baucis-json.
 ## v1.0.0-prerelease.9
 
 Allow turning off error handling per API.  Fix #178.
- 
+
     baucis().handleErrors(false);
 
 

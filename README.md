@@ -60,21 +60,13 @@ To install:
 An example of creating a REST API from a couple Mongoose schemata.
 
 ``` javascript
+// Create a mongoose schema.
 var Vegetable = new mongoose.Schema({ name: String });
-var Fruit = new mongoose.Schema({ name: String });
-
+// Register new models with mongoose.
 mongoose.model('vegetable', Vegetable);
-mongoose.model('fruit', Fruit);
-
-// Create a simple controller.
+// Create a simple controller.  By default these HTTP methods
+// are activated: HEAD, GET, POST, PUT, DELETE
 baucis.rest('vegetable');
-
-// Create a controller with custom middleware for update/create.
-baucis.rest('fruit').request('put post', function (request, response, next) {
-  if (request.isAuthenticated()) return next();
-  return response.send(401);
-});
-
 // Create the app and listen for API requests
 var app = express();
 app.use('/api', baucis());
@@ -95,7 +87,9 @@ Later, make requests:
 ## baucis.rest
 
 
-`baucis.rest` returns an instance of the controller created to handle the schema's API routes.  Pass in a mongoose model name:
+`baucis.rest` creates a new controller associated with a given model.
+
+You can pass in a mongoose model name:
 
 ``` javascript
 var controller = baucis.rest('robot');
@@ -107,7 +101,16 @@ Or, pass in a Mongoose model:
 var controller = baucis.rest(mongoose.model('robot'));
 ```
 
-Controllers are Express apps like any other.
+Calling `baucis.rest` also adds it to the current API being created.  When `baucis()` is called, the API is finalized and any new controllers will be added to another API instance.
+
+```javascript
+var api = baucis();
+app.use(api);
+baucis.rest('tube');
+var api2 = baucis();
+```
+
+Controllers also have the ususal Express features.  Controllers are Express 4 `Routes`.
 
 ``` javascript
 // Add middleware before API routes
@@ -126,7 +129,9 @@ controller.set('some option name', 'value');
 controller.listen(3000);
 ```
 
-Customize them with Express middleware, including pre-existing modules like `passport`.  Middleware can be registered like so:
+Customize them with Express middleware, including pre-existing modules like `passport`.
+
+Baucis also adds controller the `request` and `query` methods to interact with the baucis interal Mongoose query.  __(See the [middleware section](#Middleware).)__
 
 ``` javascript
 controller.request(function (request, response, next) {
@@ -145,7 +150,7 @@ This property sets the controller's mongoose model.  You can pass in a string or
 controller.model('cheese');
 ```
 
-### controller.select 
+### controller.select
 
 Select or deselect fields for all queries.
 
@@ -249,7 +254,7 @@ app.use('/api', api);
 Later, make requests and set the `API-Version` header to a [semver](http://semver.org) range, such as `~1`, `>2 <3`, `*`, etc.  Baucis will use the highest release number that satisfies the range.  If no `API-Version` is specified in a request, the highest release will be used.
 
 
-##Streaming
+## Streaming
 
 Baucis takes full advantage of Node streams internally to offer even more performance, especially when dealing with large datasets.  Both outgoing and incoming documents are streamed!
 
@@ -279,7 +284,6 @@ controller.request(function (request, response, next) {
   next();
 });
 ```
-
 
 Passing in through streams is also allowed.  Here's an example using the [through module](https://www.npmjs.org/package/through) to create a stream that checks for a forbidden sort of whiskey and alters the name of incoming (POSTed) documents.
 
@@ -673,7 +677,7 @@ The requested functionality is not implemented now, but may be implented in the 
 
  * Full `Accept` header field(s) semantics
  * Expand hypermedia support (in-band information)
- * Code-on-demand features?  
+ * Code-on-demand features?
  * More features & more plugins
 
 
@@ -681,7 +685,7 @@ The requested functionality is not implemented now, but may be implented in the 
 
 Baucis can be augmented via incoming and outgoing streams, as well as with decorators.
 
-Add decorators to Controllers and other baucis constructors by using the `decorators` method.  Adding a decorator will affect all subsequently created controllers.  Here's how you could add a tiny plugin that makes all subsequently added controllers check authentication for all PUTs and POSTs.  
+Add decorators to Controllers and other baucis constructors by using the `decorators` method.  Adding a decorator will affect all subsequently created controllers.  Here's how you could add a tiny plugin that makes all subsequently added controllers check authentication for all PUTs and POSTs.
 ``` javascript
 baucis.Controller.decorators(function (options, protect) {
   var controller = this;
