@@ -112,7 +112,7 @@ baucis.rest('tuber');
 var api2 = baucis();
 ```
 
-Controllers also have the ususal Express features.  Controllers are Express 4 `Routes`.
+Controllers also have the usual Express features.  Controllers are Express 4 `Routes`.
 
 ``` javascript
 // Add middleware before API routes
