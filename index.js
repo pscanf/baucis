@@ -15,7 +15,7 @@ var parsers = {};
 var formatters = {};
 
 // __Module Definition__
-var baucis = module.exports = function (cb) {
+var baucis = module.exports = function (cb, releases) {
 	var a = express.Router();
 	
 	//
@@ -24,8 +24,13 @@ var baucis = module.exports = function (cb) {
 	if (cb) {
 		cb(a);
 	}
-	
-	a.use("/", baucis.empty());
+
+	var api = baucis.empty();
+	releases.forEach(function(release) {
+		api = api.releases(release); 
+	});
+
+	a.use("/", api);
 	return a;
 };
 
