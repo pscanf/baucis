@@ -1,5 +1,12 @@
 # Baucis Change Log
 
+## v1.0.0-candidate.11
+
+Baucis was awarded the MongoDB Open Source Hack Contest 2014!
+
+Update readme and roadmap.
+
+
 ## v1.0.0-candidate.10
 
 Fix some typos.

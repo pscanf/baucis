@@ -6,7 +6,7 @@
     "url": "http://kun.io/wprl"
   },
   "homepage": "https://github.com/wprl/baucis",
-  "version": "1.0.0-candidate.10",
+  "version": "1.0.0-candidate.11",
   "main": "index.js",
   "scripts": {
     "test": "mocha --bail"
@@ -29,6 +29,8 @@
     "mongoose",
     "schema",
     "schemata",
+    "model",
+    "mde",
     "mongo",
     "rfc2616",
     "web",

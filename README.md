@@ -1,21 +1,26 @@
-# baucis v1.0.0-candidate.10
+# baucis v1.0.0-candidate.11
 
-Baucis enables you to build scalable REST APIs using the open source tools and standards you and your team already know.  Like Baucis and Philemon of old, the module provides REST to the weary traveler.  [Baucis](https://en.wikipedia.org/wiki/Baucis_and_Philemon) is not the same as [Bacchus](https://en.wikipedia.org/wiki/Dionysus).
+Build scalable REST APIs using the open source tools and standards you and your team already know — *Mongoose, Express, and Node.js streams*.  Baucis takes the boilerplate out of building and maintaining scalable [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS)/[Level 3](http://martinfowler.com/articles/richardsonMaturityModel.html) REST APIs.
 
-Baucis is used in production by startups, departments, and at least one Fortune 500 company, not to mention at hackathons and conferences worldwide.  The current stable version is v0.20.5.  Lots of goodness is around the corner in v1.0.0!
+Baucis has thousands of users and is used in production by startups, departments, and Fortune 500 companies, at hackathons and conferences worldwide.  MongoDB, Inc. awarded baucis first place in their 2014 Open Source Hack Contest.
 
-Baucis is now compatible with Express 4!
+Who's using Baucis?
 
-If you like Baucis, [please consider tipping](https://www.gittip.com/wprl/).
+[![AppNow](http://github.com/wprl/baucis/raw/master/appnow-logo.png "AppNow")](https://appnow.radarconline.com)
+
+*Would you like to see your company's logo here?  Contact [william@kun.io](mailto:william@kun.io).*
+
+
+Please consider adding bounties to issues in the [issue tracker](https://github.com/wprl/baucis/issues) or contributing via [GitTip](https://www.gittip.com/wprl/).
 
 The official baucis documentation is being moved to [kun.io/baucis](http://kun.io/baucis) but is still right here for the moment!
 
 
 ## Features
 
- * Awesomely scalable.  Takes full advantage of the inherent power of Node.js and MongoDB.
+ * Awesomely scalable.
  * Fully takes advantage of Node streaming to nimbly process large datasets (both incoming and outgoing)
- * Automatically build APIs through reflection of your Mongoose schemata.
+ * Automatically build controllers from your Mongoose schemata, then easily configure them.
  * Built on Express 4 so adding custom middleware is a snap.  100% compatible with existing middleware such as passport.
  * Supports geolocation and full text search.
  * Highly customizable, simple interface.  Can be extended with plugins.
@@ -23,7 +28,7 @@ The official baucis documentation is being moved to [kun.io/baucis](http://kun.i
  * Perform rich queries of the API using an expressive JSON syntax via query string.
  * Mongoose middleware, inheritence, and validation methods are automatically respected.
  * Version your API using semver.
- * Over 140 Mocha.js tests.
+ * Over 140 Mocha.js tests in addition to express' and mongoose's.
 
 
 ### Coming Soon
@@ -667,20 +672,21 @@ The requested functionality is not implemented now, but may be implented in the 
 
 ### Q2 2014
 
- * v1.0.0 Release candidates
- * Refine & improve documentation
- * Benchmark
+ * ~~v1.0.0 release candidates~~
  * ~~Internal refactoring and simplification~~ *(completed)*
- * v1.0.0
- * Begin a cookbook-style guide with lots of code examples.
  * ~~Express 4~~ *(completed)*
 
-### Q3 2014
+### Q3-Q4 2014
 
+ * More v1.0.0 release candidates
+ * Benchmark
+ * Refine & improve documentation
+ * Begin a cookbook-style guide with lots of code examples.
+ * v1.0.0
+ * Complete web hook plugin
+ * Complete SSE plugin
+ * Increase richness of hypermedia links
  * Full `Accept` header field(s) semantics
- * Expand hypermedia support (in-band information)
- * Code-on-demand features?
- * More features & more plugins
 
 
 ## Extending Baucis
@@ -717,8 +723,8 @@ baucis.Controller.decorators(function (options, protect) {
 
 ##Contact
 
- * @wprl
- * https://linkedin.com/in/willprl
- * william@kun.io
+ * Twitter [@wprl](https://twitter.com/wprl)
+ * [LinkedIn](https://linkedin.com/in/willprl)
+ * Email [william@kun.io](mailto:william@kun.io)
 
 &copy; 2012-2014 William P. Riley-Land
