@@ -25,9 +25,13 @@ var decorator = module.exports = function (options, protect) {
         return transmute;
       }
       // If called without arguments, return a pipeline linking all streams.
-      if (streams.length > 0) return es.pipeline.apply(es, streams);
+      if (streams.length > 0) {
+        return d.run(function() {
+          return es.pipeline.apply(es, streams);
+        });
+      }
       // But, if no streams were added, just pass back a through stream.
-      return es.through();
+      return d.run(es.through);
     };
   };
   // __Middleware__
