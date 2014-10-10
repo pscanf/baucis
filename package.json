@@ -6,7 +6,7 @@
     "url": "http://kun.io/wprl"
   },
   "homepage": "https://github.com/wprl/baucis",
-  "version": "1.0.0-candidate.11",
+  "version": "1.0.0-candidate.12",
   "main": "index.js",
   "scripts": {
     "test": "mocha --bail"
