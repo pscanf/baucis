@@ -668,26 +668,9 @@ The requested functionality is not implemented now, but may be implented in the 
     baucis.Error.NotImplemented
 
 
-## Roadmap
+## Milestones
 
-### Q2 2014
-
- * ~~v1.0.0 release candidates~~
- * ~~Internal refactoring and simplification~~ *(completed)*
- * ~~Express 4~~ *(completed)*
-
-### Q3-Q4 2014
-
- * More v1.0.0 release candidates
- * Benchmark
- * Refine & improve documentation
- * Begin a cookbook-style guide with lots of code examples.
- * v1.0.0
- * Complete web hook plugin
- * Complete SSE plugin
- * Increase richness of hypermedia links
- * Full `Accept` header field(s) semantics
-
+See what's in store in the GitHub [milestones page for this repo](https://github.com/wprl/baucis/milestones).
 
 ## Extending Baucis
 
