@@ -96,12 +96,12 @@ describe('Inheritence', function () {
     request.post(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.equal(422);
-      expect(body).to.eql([ 
-        { 
+      expect(body).to.eql([
+        {
           message: 'A document\'s type did not match any known discriminators for this resource',
-          name: 'BaucisError',
+          name: 'RestError',
           path: '__t',
-          value: 'ale' 
+          value: 'ale'
         }
       ]);
       done();

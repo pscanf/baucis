@@ -2,7 +2,7 @@
 var es = require('event-stream');
 var util = require('util');
 var domain = require('domain');
-var BaucisError = require('baucis-error');
+var RestError = require('rest-error');
 
 // __Module Definition__
 var decorator = module.exports = function (options, protect) {
@@ -26,7 +26,7 @@ var decorator = module.exports = function (options, protect) {
     // Otherwise, stream and parse the request.
     else {
       parser = baucis.parser(request.get('content-type'));
-      if (!parser) return next(BaucisError.UnsupportedMediaType());
+      if (!parser) return next(RestError.UnsupportedMediaType());
       pipeline(request);
       pipeline(parser);
     }
@@ -43,9 +43,9 @@ var decorator = module.exports = function (options, protect) {
       var type = context.incoming.__t;
       var Discriminator = type ? Model.discriminators[type] : undefined;
       if (type && !Discriminator) {
-        callback(BaucisError.UnprocessableEntity({
+        callback(RestError.UnprocessableEntity({
           message: "A document's type did not match any known discriminators for this resource",
-          name: 'BaucisError',
+          name: 'RestError',
           path: '__t',
           value: type
         }));
@@ -83,9 +83,9 @@ var decorator = module.exports = function (options, protect) {
       var conditions = request.baucis.conditions[findBy] = { $in: ids };
       // Check for at least one document.
       if (ids.length === 0) {
-        next(BaucisError.UnprocessableEntity({
+        next(RestError.UnprocessableEntity({
           message: 'The request body must contain at least one document',
-          name: 'BaucisError'
+          name: 'RestError'
         }));
         return;
       }

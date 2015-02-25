@@ -4,7 +4,7 @@ var mongoose = require('mongoose');
 var Api = require('./Api');
 var Controller = require('./Controller');
 var Model = require('./Model');
-var BaucisError = require('baucis-error');
+var RestError = require('rest-error');
 var plugins = {
   json: require('baucis-json')
 };
@@ -32,7 +32,7 @@ baucis.empty = function () {
 baucis.formatters = function (response, callback) {
   var handlers = {
     default: function () {
-      callback(BaucisError.NotAcceptable());
+      callback(RestError.NotAcceptable());
     }
   };
   Object.keys(formatters).map(function (mime) {
@@ -65,12 +65,12 @@ baucis.setParser = function (mime, f) {
 // __Expose Modules__
 baucis.Api = Api;
 baucis.Controller = Controller;
-baucis.Error = BaucisError;
+baucis.Error = RestError;
 baucis.Model = Model;
 
 Api.container(baucis);
 Controller.container(baucis);
-BaucisError.container(baucis);
+RestError.container(baucis);
 Model.container(baucis);
 
 // __Plugins__

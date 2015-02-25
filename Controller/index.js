@@ -1,7 +1,7 @@
 // __Dependencies__
 var deco = require('deco');
 var express = require('express');
-var BaucisError = require('baucis-error');
+var RestError = require('rest-error');
 
 // __Module Definition__
 var Controller = module.exports = deco();
@@ -13,6 +13,6 @@ Controller.decorators(__dirname, [
   'activation',
   'request',
   'query',
-  'send'
+  'send',
+  'errors'
 ]);
-Controller.decorators(BaucisError.handler);

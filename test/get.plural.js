@@ -80,7 +80,7 @@ describe('GET plural', function () {
     request.get(options, function (err, response, body) {
       if (err) return done(err);
       expect(response.statusCode).to.be(404);
-      expect(body).to.be('Not Found: No document matched the requested query (404).');
+      expect(body).to.be('Not Found: Nothing matched the requested query (404).\n');
       done();
     });
   });

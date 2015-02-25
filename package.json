@@ -6,7 +6,7 @@
     "url": "http://kun.io/wprl"
   },
   "homepage": "https://github.com/wprl/baucis",
-  "version": "1.0.0-candidate.12",
+  "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "test": "mocha --bail"
@@ -37,15 +37,15 @@
     "http"
   ],
   "dependencies": {
-    "baucis-error": "^1.0.0-candidate.5",
-    "baucis-json": "^1.0.0-candidate.1",
+    "rest-error": "^1.2.0",
+    "baucis-json": "^1.0.0",
     "deco": "^0.12.0",
     "event-stream": "^3.1.5",
-    "semver": "^2.2.1"
+    "semver": "^2.3.2"
   },
   "peerDependencies": {
-    "mongoose": "^3.8.1",
-    "express": "^4.1.1"
+    "mongoose": "^3.8.23",
+    "express": "^4.12.0"
   },
   "devDependencies": {
     "mocha": "^1.18.2",
@@ -55,8 +55,6 @@
     "passport-local": "^1.0.0",
     "request": "^2.34.0",
     "parse-links": "^0.1.0",
-    "mongoose": "^3.8.8",
-    "express": "^4.1.1",
     "through": "^2.3.4",
     "body-parser": "^1.0.2"
   },
@@ -69,7 +67,7 @@
       "name": "feychenie",
       "url": "https://github.com/feychenie"
     },
-        {
+    {
       "name": "pirhoo",
       "url": "https://github.com/pirhoo"
     },

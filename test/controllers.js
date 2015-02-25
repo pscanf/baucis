@@ -318,7 +318,7 @@ describe('Controllers', function () {
     request.put(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: The requested update operator &quot;$push&quot; is not enabled for this resource (403).');
+      expect(body).to.be('Forbidden: The requested update operator &quot;$push&quot; is not enabled for this resource (403).\n');
       done();
     });
   });
@@ -333,7 +333,7 @@ describe('Controllers', function () {
     request.put(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: This update path is forbidden for the requested update operator &quot;$push&quot; (403).');
+      expect(body).to.be('Forbidden: This update path is forbidden for the requested update operator &quot;$push&quot; (403).\n');
       done();
     });
   });
@@ -367,7 +367,7 @@ describe('Controllers', function () {
     request.put(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: The requested update operator &quot;$pull&quot; is not enabled for this resource (403).');
+      expect(body).to.be('Forbidden: The requested update operator &quot;$pull&quot; is not enabled for this resource (403).\n');
       done();
     });
   });
@@ -382,7 +382,7 @@ describe('Controllers', function () {
     request.put(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: This update path is forbidden for the requested update operator &quot;$pull&quot; (403).');
+      expect(body).to.be('Forbidden: This update path is forbidden for the requested update operator &quot;$pull&quot; (403).\n');
       done();
     });
   });
@@ -427,7 +427,7 @@ describe('Controllers', function () {
     request.put(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: The requested update operator &quot;$set&quot; is not enabled for this resource (403).');
+      expect(body).to.be('Forbidden: The requested update operator &quot;$set&quot; is not enabled for this resource (403).\n');
       done();
     });
   });
@@ -442,7 +442,7 @@ describe('Controllers', function () {
     request.put(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: This update path is forbidden for the requested update operator &quot;$set&quot; (403).');
+      expect(body).to.be('Forbidden: This update path is forbidden for the requested update operator &quot;$set&quot; (403).\n');
       done();
     });
   });
@@ -544,7 +544,7 @@ describe('Controllers', function () {
       if (error) return done(error);
       expect(response.statusCode).to.be(405);
       expect(response.headers).to.have.property('allow', 'HEAD,POST,PUT,DELETE');
-      expect(body).to.be('Method Not Allowed: The requested method has been disabled for this resource (405).');
+      expect(body).to.be('Method Not Allowed: The requested method has been disabled for this resource (405).\n');
       done();
     });
   });
@@ -554,7 +554,7 @@ describe('Controllers', function () {
       if (error) return done(error);
       expect(response.statusCode).to.be(405);
       expect(response.headers).to.have.property('allow', 'HEAD,GET,POST,PUT');
-      expect(body).to.be('Method Not Allowed: The requested method has been disabled for this resource (405).');
+      expect(body).to.be('Method Not Allowed: The requested method has been disabled for this resource (405).\n');
       done();
     });
   });
@@ -567,9 +567,9 @@ describe('Controllers', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(400);
-      expect(body).to.be('Bad Request: The requested document ID &quot;bad&quot; is not a valid document ID (400).');
+      expect(body).to.be('Bad Request: The requested document ID &quot;bad&quot; is not a valid document ID (400).\n');
       done();
-    });   
+    });
   });
 
   it('should return a 400 when ID malformed (not Number)', function (done) {
@@ -580,7 +580,7 @@ describe('Controllers', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(400);
-      expect(body).to.eql('Bad Request: The requested document ID &quot;0booze&quot; is not a valid document ID (400).');
+      expect(body).to.eql('Bad Request: The requested document ID &quot;0booze&quot; is not a valid document ID (400).\n');
       done();
     });
   });

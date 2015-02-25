@@ -65,7 +65,7 @@ describe('Versioning', function () {
     request.get(options, function (err, response, body) {
       if (err) return done(err);
       expect(response.statusCode).to.be(400);
-      expect(body).to.be('Bad Request: The requested API version range &quot;&gt;3.0.1&quot; could not be satisfied (400).');
+      expect(body).to.be('Bad Request: The requested API version range &quot;&gt;3.0.1&quot; could not be satisfied (400).\n');
       expect(response.headers).not.to.have.property('api-version');
       done();
     });
@@ -156,7 +156,7 @@ describe('Versioning', function () {
         request.put(options, function (error, response, body) {
           if (error) return done(error);
           expect(response.statusCode).to.be(409);
-          expect(body).to.be('Conflict: This update is for an outdated version of the document (409).');
+          expect(body).to.be('Conflict: This update conflicts with a previous update (409).\n');
           done();
         });
       });
@@ -183,7 +183,7 @@ describe('Versioning', function () {
       request.put(options, function (error, response, body) {
         if (error) return done(error);
         expect(response.statusCode).to.be(409);
-        expect(body).to.be('Conflict: This update is for an outdated version of the document (409).');
+        expect(body).to.be('Conflict: This update conflicts with a previous update (409).\n');
         done();
       });
     });
@@ -228,12 +228,12 @@ describe('Versioning', function () {
       request.put(options, function (error, response, body) {
         if (error) return done(error);
         expect(response.statusCode).to.be(422);
-        expect(body).to.eql([ 
-          { 
+        expect(body).to.eql([
+          {
             message: 'Locking is enabled, but the target version was not provided in the request body.',
-            name: 'BaucisError',
-            path: '__v' 
-          } 
+            name: 'RestError',
+            path: '__v'
+          }
         ]);
         done();
       });

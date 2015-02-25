@@ -68,7 +68,7 @@ describe('PUT singular', function () {
         expect(body).to.eql([
           {
             message: 'The request body did not contain an update document',
-            name: 'BaucisError'
+            name: 'RestError'
           }
         ]);
         done();
@@ -95,11 +95,11 @@ describe('PUT singular', function () {
       request.put(options, function (err, response, body) {
         if (err) return done(err);
         expect(response.statusCode).to.be(422);
-        expect(body).to.eql([ 
-          { 
+        expect(body).to.eql([
+          {
             message: 'The request body contained more than one update document',
-            name: 'BaucisError' 
-          } 
+            name: 'RestError'
+          }
         ]);
         done();
       });
@@ -116,7 +116,7 @@ describe('PUT singular', function () {
     request.get(options, function (err, response, body) {
       if (err) return done(err);
       expect(response.statusCode).to.be(404);
-      expect(body).to.be('Not Found: No document matched the requested query (404).');
+      expect(body).to.be('Not Found: Nothing matched the requested query (404).\n');
 
       // Attempt to update non-existant doc
       var options = {
@@ -126,7 +126,7 @@ describe('PUT singular', function () {
       request.put(options, function (err, response, body) {
         if (err) return done(err);
         expect(response.statusCode).to.be(404);
-        expect(body).to.be('Not Found: No document matched the requested query (404).');
+        expect(body).to.be('Not Found: Nothing matched the requested query (404).\n');
 
         // Make sure it wasn't created
         var options = {
@@ -136,7 +136,7 @@ describe('PUT singular', function () {
         request.get(options, function (err, response, body) {
           if (err) return done(err);
           expect(response.statusCode).to.be(404);
-          expect(body).to.be('Not Found: No document matched the requested query (404).');
+          expect(body).to.be('Not Found: Nothing matched the requested query (404).\n');
           done();
         });
       });

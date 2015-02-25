@@ -1,6 +1,6 @@
 // __Dependencies__
 var util = require('util');
-var BaucisError = require('baucis-error');
+var RestError = require('rest-error');
 
 // __Module Definition__
 var decorator = module.exports = function (options, protect) {
@@ -22,24 +22,24 @@ var decorator = module.exports = function (options, protect) {
     var instance = controller.model().schema.path(controller.findBy()).instance;
     var invalid = protect.isInvalid(request.params.id, instance, 'url.id');
     if (!invalid) return next();
-    next(BaucisError.BadRequest('The requested document ID "%s" is not a valid document ID', id));
+    next(RestError.BadRequest('The requested document ID "%s" is not a valid document ID', id));
   });
 
   // Check that the HTTP method has not been disabled for this controller.
   controller.request(function (request, response, next) {
     var method = request.method.toLowerCase();
     if (controller.methods(method) !== false) return next();
-    next(BaucisError.MethodNotAllowed('The requested method has been disabled for this resource'));
+    next(RestError.MethodNotAllowed('The requested method has been disabled for this resource'));
   });
 
   // Treat the addressed document as a collection, and push the addressed object
   // to it.  (Not implemented.)
   controller.request('instance', 'post', function (request, response, next) {
-    return next(BaucisError.NotImplemented('Cannot POST to an instance'));
+    return next(RestError.NotImplemented('Cannot POST to an instance'));
   });
 
   // Update all given docs.  (Not implemented.)
   controller.request('collection', 'put', function (request, response, next) {
-    return next(BaucisError.NotImplemented('Cannot PUT to the collection'));
+    return next(RestError.NotImplemented('Cannot PUT to the collection'));
   });
 };

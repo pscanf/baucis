@@ -2,14 +2,14 @@
 var mongoose = require('mongoose');
 var semver = require('semver');
 var Model = require('../Model');
-var BaucisError = require('baucis-error');
+var RestError = require('rest-error');
 
 // __Module Definition__
 var decorator = module.exports = function (model, protect) {
   var controller = this;
 
   if (typeof model !== 'string' && (!model || !model.schema)) {
-    throw BaucisError.Misconfigured('You must pass in a model or model name');
+    throw RestError.Misconfigured('You must pass in a model or model name');
   }
 
   // __Property Definitions__
@@ -17,11 +17,11 @@ var decorator = module.exports = function (model, protect) {
   protect.property('hints', false);
   protect.property('relations', true);
   protect.property('select', '');
-  
+
   protect.property('versions', '*', function (range) {
     if (semver.validRange(range)) return range;
-    throw BaucisError.Misconfigured('Controller version range "%s" was not a valid semver range', range);
-  }); 
+    throw RestError.Misconfigured('Controller version range "%s" was not a valid semver range', range);
+  });
 
   protect.property('model', undefined, function (m) { // TODO readonly
     if (typeof m === 'string') return mongoose.model(m);
@@ -29,8 +29,8 @@ var decorator = module.exports = function (model, protect) {
   });
 
   protect.property(
-    'fragment', 
-    function (value) { 
+    'fragment',
+    function (value) {
       if (value === undefined) return '/' + controller.model().plural();
       if (value.indexOf('/') !== 0) return '/' + value;
       return value;
@@ -40,7 +40,7 @@ var decorator = module.exports = function (model, protect) {
   protect.property('findBy', '_id', function (path) {
     var findByPath = controller.model().schema.path(path);
     if (!findByPath.options.unique && !(findByPath.options.index && findByPath.options.index.unique)) {
-      throw BaucisError.Misconfigured('`findBy` path for model "%s" must be unique', controller.model().modelName);
+      throw RestError.Misconfigured('`findBy` path for model "%s" must be unique', controller.model().modelName);
     }
     return path;
   });
@@ -60,7 +60,7 @@ var decorator = module.exports = function (model, protect) {
     var deduplicated = deselected.filter(function(path, position) {
       return deselected.indexOf(path) === position;
     });
-    
+
     if (arguments.length === 0) return deduplicated;
     else return (deduplicated.indexOf(path) !== -1);
   };

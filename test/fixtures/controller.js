@@ -73,7 +73,7 @@ var fixture = module.exports = {
     cheesy.operators('$set', 'molds arbitrary.$.champagne');
     cheesy.operators('$pull', 'molds arbitrary.$.llama');
 
-    baucis.rest('timeentry').findBy('name');
+    baucis.rest('timeentry').findBy('name').select('color');
     baucis.rest('bean').methods('get', false);
     baucis.rest('dean').findBy('room').methods('get', false);
     baucis.rest('lien').select('-title').methods('delete', false);
@@ -84,7 +84,7 @@ var fixture = module.exports = {
     app = express();
     app.use('/api', baucis());
 
-    baucis.rest('cheese').fragment('geese').handleErrors(false);  
+    baucis.rest('cheese').fragment('geese').handleErrors(false);
 
     app.use('/api-no-error-handler', baucis());
 

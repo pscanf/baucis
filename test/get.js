@@ -31,7 +31,7 @@ describe('GET singular', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(404);
-      expect(body).to.be('Not Found: No document matched the requested query (404).');
+      expect(body).to.be('Not Found: Nothing matched the requested query (404).\n');
       done();
     });
   });

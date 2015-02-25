@@ -2,7 +2,7 @@
 var express = require('express');
 var util = require('util');
 var es = require('event-stream');
-var BaucisError = require('baucis-error');
+var RestError = require('rest-error');
 
 // __Private Module Members__
 var validOperators = [ '$set', '$push', '$pull' ];
@@ -44,7 +44,7 @@ var decorator = module.exports = function (options, protect) {
     // Otherwise, stream and parse the request.
     else {
       parser = baucis.parser(request.get('content-type'));
-      if (!parser) return next(BaucisError.UnsupportedMediaType());
+      if (!parser) return next(RestError.UnsupportedMediaType());
       pipeline(request);
       pipeline(parser);
     }
@@ -60,7 +60,7 @@ var decorator = module.exports = function (options, protect) {
         var query = controller.model().findOne(request.baucis.conditions);
         query.exec(function (error, doc) {
           if (error) return callback(error);
-          if (!doc) return callback(BaucisError.NotFound());
+          if (!doc) return callback(RestError.NotFound());
           // Add the Mongoose document to the context.
           callback(null, { doc: doc, incoming: context.incoming });
         });
@@ -73,9 +73,9 @@ var decorator = module.exports = function (options, protect) {
       var bodyId = context.incoming[controller.findBy()];
       if (bodyId === undefined) return callback(null, context);
       if (bodyId === request.params.id) return callback(null, context);
-      callback(BaucisError.UnprocessableEntity({
+      callback(RestError.UnprocessableEntity({
         message: "The ID of the update document did not match the URL's document ID.",
-        name: 'BaucisError',
+        name: 'RestError',
         path: controller.findBy(),
         value: bodyId
       }));
@@ -85,9 +85,9 @@ var decorator = module.exports = function (options, protect) {
       pipeline(function (context, callback) {
         var updateVersion = context.incoming[versionKey];
         if (updateVersion === undefined || !Number.isFinite(Number(updateVersion))) {
-          callback(BaucisError.UnprocessableEntity({
+          callback(RestError.UnprocessableEntity({
             message: 'Locking is enabled, but the target version was not provided in the request body.',
-            name: 'BaucisError',
+            name: 'RestError',
             path: versionKey
           }));
           return;
@@ -99,7 +99,7 @@ var decorator = module.exports = function (options, protect) {
         // Make sure the version key was selected.
         pipeline(function (context, callback) {
           if (!context.doc.isSelected(versionKey)) {
-            callback(BaucisError.BadRequest('The version key "%s" must be selected', versionKey));
+            callback(RestError.BadRequest('The version key "%s" must be selected', versionKey));
             return;
           }
           // Pass through.
@@ -108,7 +108,7 @@ var decorator = module.exports = function (options, protect) {
         pipeline(function (context, callback) {
           var updateVersion = Number(context.incoming[versionKey]);
           // Update and current version have been found.  Check if they're equal.
-          if (updateVersion !== context.doc[versionKey]) return callback(BaucisError.LockConflict());
+          if (updateVersion !== context.doc[versionKey]) return callback(RestError.LockConflict());
           // One is not allowed to set __v and increment in the same update.
           delete context.incoming[versionKey];
           context.doc.increment();
@@ -122,9 +122,9 @@ var decorator = module.exports = function (options, protect) {
       function (context) {
         count += 1;
         if (count === 2) {
-          this.emit('error', BaucisError.UnprocessableEntity({
+          this.emit('error', RestError.UnprocessableEntity({
             message: 'The request body contained more than one update document',
-            name: 'BaucisError'
+            name: 'RestError'
           }));
           return;
         }
@@ -134,9 +134,9 @@ var decorator = module.exports = function (options, protect) {
       },
       function () {
         if (count === 0) {
-          this.emit('error', BaucisError.UnprocessableEntity({
+          this.emit('error', RestError.UnprocessableEntity({
             message: 'The request body did not contain an update document',
-            name: 'BaucisError'
+            name: 'RestError'
           }));
           return;
         }
@@ -160,17 +160,17 @@ var decorator = module.exports = function (options, protect) {
         var wrapper = {};
 
         if (validOperators.indexOf(operator) === -1) {
-          callback(BaucisError.NotImplemented('The requested update operator "%s" is not supported', operator));
+          callback(RestError.NotImplemented('The requested update operator "%s" is not supported', operator));
           return;
         }
         // Ensure that some paths have been enabled for the operator.
         if (!controller.operators(operator)) {
-          callback(BaucisError.Forbidden('The requested update operator "%s" is not enabled for this resource', operator));
+          callback(RestError.Forbidden('The requested update operator "%s" is not enabled for this resource', operator));
           return;
         }
         // Make sure paths have been whitelisted for this operator.
         if (checkBadUpdateOperatorPaths(operator, Object.keys(context.incoming))) {
-          callback(BaucisError.Forbidden('This update path is forbidden for the requested update operator "%s"', operator));
+          callback(RestError.Forbidden('This update path is forbidden for the requested update operator "%s"', operator));
           return;
         }
 

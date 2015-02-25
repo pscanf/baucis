@@ -1,7 +1,7 @@
 // __Dependencies__
 var es = require('event-stream');
 var crypto = require('crypto');
-var BaucisError = require('baucis-error');
+var RestError = require('rest-error');
 
 // __Private Module Members__
 // A map that is used to create empty response body.
@@ -56,7 +56,7 @@ var decorator = module.exports = function (options, protect) {
     var documents = request.baucis.documents;
     var pipeline = request.baucis.send = protect.pipeline(function (error) {
       if (error.message === 'bad hint') {
-        next(BaucisError.BadRequest('The requested query hint is invalid'));
+        next(RestError.BadRequest('The requested query hint is invalid'));
         return;
       }
       next(error);
@@ -77,10 +77,10 @@ var decorator = module.exports = function (options, protect) {
       },
       function () {
         if (count > 0) return this.emit('end');
-        this.emit('error', BaucisError.NotFound());
+        this.emit('error', RestError.NotFound());
       }
     ));
-    // Apply user streams. 
+    // Apply user streams.
     pipeline(request.baucis.outgoing());
     // Set the document formatter based on the Accept header of the request.
     baucis.formatters(response, function (error, formatter) {

@@ -1,4 +1,4 @@
-var BaucisError = require('baucis-error');
+var RestError = require('rest-error');
 
 // __Module Definition__
 var decorator = module.exports = function () {
@@ -12,7 +12,7 @@ var decorator = module.exports = function () {
         conditions = JSON.parse(conditions);
       }
       catch (exception) {
-        next(BaucisError.BadRequest('The conditions query string value was not valid JSON: "%s"', exception.message));
+        next(RestError.BadRequest('The conditions query string value was not valid JSON: "%s"', exception.message));
         return;
       }
     }

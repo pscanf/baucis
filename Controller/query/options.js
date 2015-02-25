@@ -1,5 +1,5 @@
 // __Dependencies__
-var BaucisError = require('baucis-error');
+var RestError = require('rest-error');
 
 // __Private Methods__
 function isDefinedAndNotNull (n) {
@@ -40,7 +40,7 @@ var decorator = module.exports = function () {
     var distinct = request.query.distinct;
     if (!distinct) return next();
     if (controller.deselected(distinct)) {
-      next(BaucisError.Forbidden('You may not find distinct values for the requested path'));
+      next(RestError.Forbidden('You may not find distinct values for the requested path'));
       return;
     }
     var query = controller.model().distinct(distinct, request.baucis.conditions);
@@ -68,10 +68,10 @@ var decorator = module.exports = function () {
     if (!select) return next();
 
     if (select.indexOf('+') !== -1) {
-      return next(BaucisError.Forbidden('Including excluded fields is not permitted'));
+      return next(RestError.Forbidden('Including excluded fields is not permitted'));
     }
     if (checkBadSelection(select)) {
-      return next(BaucisError.Forbidden('Including excluded fields is not permitted'));
+      return next(RestError.Forbidden('Including excluded fields is not permitted'));
     }
 
     request.baucis.query.select(select);
@@ -93,11 +93,11 @@ var decorator = module.exports = function () {
       populate.forEach(function (field) {
         if (error) return;
         if (checkBadSelection(field.path || field)) {
-          return error = BaucisError.Forbidden('Including excluded fields is not permitted');
+          return error = RestError.Forbidden('Including excluded fields is not permitted');
         }
         // Don't allow selecting fields from client when populating
         if (field.select) {
-          return error = BaucisError.Forbidden('Selecting fields of populated documents is not permitted');
+          return error = RestError.Forbidden('Selecting fields of populated documents is not permitted');
         }
 
         request.baucis.query.populate(field);
@@ -111,7 +111,7 @@ var decorator = module.exports = function () {
     var skip = request.query.skip;
     if (skip === undefined || skip === null) return next();
     if (!isNonNegativeInteger(skip)) {
-      return next(BaucisError.BadRequest('Skip must be a non-negative integer if set'));
+      return next(RestError.BadRequest('Skip must be a non-negative integer if set'));
     }
     request.baucis.query.skip(skip);
     next();
@@ -121,7 +121,7 @@ var decorator = module.exports = function () {
     var limit = request.query.limit;
     if (limit === undefined || limit === null) return next();
     if (!isPositiveInteger(limit)) {
-      return next(BaucisError.BadRequest('Limit must be a positive integer if set'));
+      return next(RestError.BadRequest('Limit must be a positive integer if set'));
     }
     request.baucis.query.limit(limit);
     next();
@@ -131,7 +131,7 @@ var decorator = module.exports = function () {
     if (!request.query.count) return next();
     if (request.query.count === 'false') return next();
     if (request.query.count !== 'true') {
-      return next(BaucisError.BadRequest('Count must be "true" or "false" if set'));
+      return next(RestError.BadRequest('Count must be "true" or "false" if set'));
     }
 
     request.baucis.count = true;
@@ -151,7 +151,7 @@ var decorator = module.exports = function () {
 
     if (!hint) return next();
     if (!controller.hints()) {
-      return next(BaucisError.Forbidden('Hints are not enabled for this resource'));
+      return next(RestError.Forbidden('Hints are not enabled for this resource'));
     }
 
     if (typeof hint === 'string') hint = JSON.parse(hint);

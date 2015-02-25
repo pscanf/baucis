@@ -85,10 +85,10 @@ describe('POST plural', function () {
     request.post(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.equal(422);
-      expect(body).to.eql([ 
-        { 
+      expect(body).to.eql([
+        {
           message: 'The request body must contain at least one document',
-          name: 'BaucisError'
+          name: 'RestError'
         }
       ]);
       done();
@@ -144,7 +144,7 @@ describe('POST plural', function () {
       if (error) return done(error);
 
       expect(response.statusCode).to.equal(400);
-      expect(body).to.be('Bad Request: The body of this request was invalid and could not be parsed. &quot;Unexpected token c&quot; (400).');
+      expect(body).to.be('Bad Request: The body of this request was invalid and could not be parsed. &quot;Unexpected token c&quot; (400).\n');
       done();
     });
   });
