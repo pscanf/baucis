@@ -456,9 +456,9 @@ Use query options from the client to make dynamic requests.  Query options can b
 Set the Mongoose query's `find` or `remove` arguments.  This can take full advtange of the MongoDB query syntax, using geolocation, regular expressions, or full text search.  Special query operators are fine, and in fact geolocation, regular expression, and full text search capabilities are available to your API clients by default!
 
     GET /api/people?conditions={ "location": { "$near": [44, -97] } }
-    GET /api/people?articles={ "summary": { "$text": "dog bites man" } }
+    GET /api/people?conditions={ "$text": { "$search": "dog bites man" } }
     GET /api/cats?sort=-name&limit=1&conditions={ "features": "stripes" }
-    DELETE /api/people?conditions={ "name": { "$regex": "^Bob W", $flags: "i" } }
+    DELETE /api/people?conditions={ "name": { "$regex": "^Bob W", "$flags": "i" } }
 
 ### skip
 
@@ -668,26 +668,9 @@ The requested functionality is not implemented now, but may be implented in the 
     baucis.Error.NotImplemented
 
 
-## Roadmap
+## Milestones
 
-### Q2 2014
-
- * ~~v1.0.0 release candidates~~
- * ~~Internal refactoring and simplification~~ *(completed)*
- * ~~Express 4~~ *(completed)*
-
-### Q3-Q4 2014
-
- * More v1.0.0 release candidates
- * Benchmark
- * Refine & improve documentation
- * Begin a cookbook-style guide with lots of code examples.
- * v1.0.0
- * Complete web hook plugin
- * Complete SSE plugin
- * Increase richness of hypermedia links
- * Full `Accept` header field(s) semantics
-
+See what's in store in the GitHub [milestones page for this repo](https://github.com/wprl/baucis/milestones).
 
 ## Extending Baucis
 
