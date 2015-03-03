@@ -50,8 +50,4 @@ var plugin = module.exports = function () {
     });
     if (!found) return next();
   });
-
-  api.controllers = function() {
-	  return controllers;
-  }
 };

@@ -1,5 +1,4 @@
 // __Dependencies__
-var express = require("express");
 var deco = require('deco');
 var mongoose = require('mongoose');
 var Api = require('./Api');
@@ -15,23 +14,8 @@ var parsers = {};
 var formatters = {};
 
 // __Module Definition__
-var baucis = module.exports = function (cb, releases) {
-	var a = express.Router();
-	
-	//
-	// Make last minute hooks to the current controller
-	//
-	if (cb) {
-		cb(a);
-	}
-
-	var api = baucis.empty();
-	releases.forEach(function(release) {
-		api = api.releases(release); 
-	});
-
-	a.use("/", api);
-	return a;
+var baucis = module.exports = function (options) {
+  return baucis.empty();
 };
 
 // __Public Members__
@@ -76,10 +60,6 @@ baucis.parser = function (mime) {
 baucis.setParser = function (mime, f) {
   parsers[mime] = f;
   return baucis;
-};
-
-baucis.controllers = function() {
-	return instance.controllers();
 };
 
 // __Expose Modules__
