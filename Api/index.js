@@ -9,16 +9,32 @@ var RestError = require('rest-error');
 var Api = module.exports = deco(function (options, protect) {
   var api = this;
 
-  var middleware = api.middleware = express.Router();
-
   api.use(function (request, response, next) {
     if (request.baucis) return next(RestError.Misconfigured('Baucis request property already created'));
     request.baucis = {};
     response.removeHeader('x-powered-by');
+    // Any caching proxies should be aware of API version.
+    response.set('Vary', 'API-Version');
+    // TODO move this
+    // Requested range is used to select highest possible release number.
+    // Then later controllers are checked for matching the release number.
+    var version = request.headers['api-version'] || '*';
+    // Check the requested API version is valid.
+    if (!semver.validRange(version)) {
+      next(RestError.BadRequest('The requested API version range "%s" was not a valid semver range', version));
+      return;
+    }
+
+    request.baucis.release = semver.maxSatisfying(api.releases(), version);
+    // Check for API version unsatisfied and give a 400 if no versions match.
+    if (!request.baucis.release) {
+      next(RestError.BadRequest('The requested API version range "%s" could not be satisfied', version));
+      return;
+    }
+
+    response.set('API-Version', request.baucis.release);
     next();
   });
-
-  api.use(middleware);
 
   // __Public Members___
   protect.property('releases', [ '0.0.1' ], function (release) {

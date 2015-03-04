@@ -4,7 +4,7 @@ var semver = require('semver');
 var RestError = require('rest-error');
 
 // __Module Definition__
-var plugin = module.exports = function () {
+var plugin = module.exports = function (options, protect) {
   var api = this;
   var controllers = [];
 
@@ -14,40 +14,30 @@ var plugin = module.exports = function () {
     controllers.push(controller);
     return api;
   };
-  // Find the correct controller to handle the request.
-  api.middleware.use('/:path', function (request, response, next) {
-    var found = false;
-    var fragment = '/' + request.params.path;
-    // Requested range is used to select highest possible release number.
-    // Then later controllers are checked for matching the release number.
-    var range = request.headers['api-version'] || '*';
-    // Check the requested API version is valid.
-    if (!semver.validRange(range)) {
-      next(RestError.BadRequest('The requested API version range "%s" was not a valid semver range', range));
-      return;
+  // Return a copy of the controllers array, optionally filtered by release.
+  protect.controllers = function (release, fragment) {
+    var r = [].concat(controllers);
+    if (!release) return r;
+
+    if (!fragment) {
+      return r.filter(function (controller) {
+        return semver.satisfies(release, controller.versions());
+      });
     }
-    var release = semver.maxSatisfying(api.releases(), range);
-    // Check for API version unsatisfied and give a 400 if no versions match.
-    if (!release) {
-      next(RestError.BadRequest('The requested API version range "%s" could not be satisfied', range));
-      return;
-    }
-    // Set API-related headers
-    response.set('API-Version', release);
-    response.set('Vary', 'API-Version');
-    // Filter to only controllers that match the requested release.
-    var filteredControllers = controllers.filter(function (controller) {
-      return semver.satisfies(release, controller.versions());
-    });
+
     // Find the matching controller among controllers that match the requested release.
-    filteredControllers.forEach(function (controller) {
-      if (found) return;
-      if (fragment !== controller.fragment()) return;
-      // Path and version match.
-      found = true;
-      request.baucis.controller = controller;
-      controller(request, response, next);
+    return r.filter(function (controller) {
+      return fragment === controller.fragment();
     });
-    if (!found) return next();
+  };
+  // Find the correct controller to handle the request.
+  api.use('/:path', function (request, response, next) {
+    var fragment = '/' + request.params.path;
+    var controllers = protect.controllers(request.baucis.release, fragment);
+    // If not found, bail.
+    if (controllers.length === 0) return next();
+
+    request.baucis.controller = controllers[0];
+    request.baucis.controller(request, response, next);
   });
 };

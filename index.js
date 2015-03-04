@@ -9,7 +9,7 @@ var plugins = {
   json: require('baucis-json')
 };
 
-var instance = Api();
+var instance;
 var parsers = {};
 var formatters = {};
 
@@ -20,6 +20,7 @@ var baucis = module.exports = function (options) {
 
 // __Public Members__
 baucis.rest = function (model) {
+  if (!instance) instance = Api();
   return instance.rest(model);
 };
 
@@ -47,7 +48,7 @@ baucis.setFormatter = function (mime, f) {
   return baucis;
 };
 
-baucis.parser = function (mime) {
+baucis.parser = function (mime, handler) {
   // Default to JSON when no MIME type is provided.
   mime = mime || 'application/json';
   // Not interested in any additional parameters at this point.
