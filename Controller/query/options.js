@@ -131,7 +131,18 @@ var decorator = module.exports = function () {
     if (!request.query.count) return next();
     if (request.query.count === 'false') return next();
     if (request.query.count !== 'true') {
-      return next(RestError.BadRequest('Count must be "true" or "false" if set'));
+      next(RestError.BadRequest('Count must be "true" or "false" if set'));
+      return;
+    }
+
+    if (request.query.hint) {
+      next(RestError.BadRequest('Hint can\'t be used with count'));
+      return;
+    }
+
+    if (request.query.comment) {
+      next(RestError.BadRequest('Comment can\'t be used with count'));
+      return;
     }
 
     request.baucis.count = true;

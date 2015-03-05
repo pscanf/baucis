@@ -29,6 +29,16 @@ var decorator = module.exports = function (options, protect) {
     if (Array.isArray(error.errors)) return response.json(error.errors);
     response.json(Object.keys(error.errors).map(function (key) { return error.errors[key] }));
   });
+  // Handle bad hint.
+  protect.use(function (error, request, response, next) {
+    if (!error) return next();
+    // Bad Mongo query hint.
+    if (error.message === 'bad hint') {
+      next(RestError.BadRequest('The requested query hint is invalid'));
+      return;
+    }
+    next(error);
+  });
   // Handle mongo duplicate key error.
   protect.use(function (error, request, response, next) {
     if (!error) return next();

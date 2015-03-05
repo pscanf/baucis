@@ -617,14 +617,14 @@ describe('Queries', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(200);
-      expect(body).not.to.be(8);
+      expect(body).not.to.be.a(Number);
       done();
     });
   });
 
   it('should report bad hints', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/vegetables?count=true&hint={ "foogle": 1 }',
+      url: 'http://localhost:8012/api/vegetables?hint={ "foogle": 1 }',
       json: true
     };
     request.get(options, function (error, response, body) {
@@ -635,41 +635,64 @@ describe('Queries', function () {
     });
   });
 
-  it('should allow adding index hint', function (done) {
+  it('sets status to 400 if hint used with count', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/vegetables?count=true&hint={ "_id": 1 }',
+      url: 'http://localhost:8012/api/vegetables?count=true&hint={ "foogle": 1 }',
       json: true
     };
     request.get(options, function (error, response, body) {
       if (error) return done(error);
-      expect(response.statusCode).to.be(200);
-      expect(body).to.be(8);
+      expect(response.statusCode).to.be(400);
+      expect(body).to.be('Bad Request: Hint can&#39;t be used with count (400).\n')
       done();
     });
   });
 
   it('should allow adding index hint', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/vegetables?count=true&hint[_id]=1',
+      url: 'http://localhost:8012/api/vegetables?hint={ "_id": 1 }',
       json: true
     };
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(200);
-      expect(body).to.be(8);
+      done();
+    });
+  });
+
+  it('should allow adding index hint', function (done) {
+    var options = {
+      url: 'http://localhost:8012/api/vegetables?hint[_id]=1',
+      json: true
+    };
+    request.get(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(200);
+      done();
+    });
+  });
+
+  it('sets status to 400 if comment used with count', function (done) {
+    var options = {
+      url: 'http://localhost:8012/api/vegetables?count=true&comment=salve',
+      json: true
+    };
+    request.get(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(400);
+      expect(body).to.be('Bad Request: Comment can&#39;t be used with count (400).\n')
       done();
     });
   });
 
   it('should allow adding a query comment', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/vegetables?count=true&comment=testing testing 123',
+      url: 'http://localhost:8012/api/vegetables?comment=testing testing 123',
       json: true
     };
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(200);
-      expect(body).to.be(8);
       done();
     });
   });

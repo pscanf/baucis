@@ -50,15 +50,21 @@ var decorator = module.exports = function (options, protect) {
   var baucis = require('..');
   var controller = this;
 
-  // Create the basic stream.
+  // If counting get the count and send it back directly.
+  protect.finalize(function (request, response, next) {
+    if (!request.baucis.count) return next();
+
+    request.baucis.query.count(function (error, n) {
+      if (error) return next(error);
+      response.json(n);
+    });
+  });
+
+  // If not counting, create the basic stream pipeline.
   protect.finalize(function (request, response, next) {
     var count = 0;
     var documents = request.baucis.documents;
     var pipeline = request.baucis.send = protect.pipeline(function (error) {
-      if (error.message === 'bad hint') {
-        next(RestError.BadRequest('The requested query hint is invalid'));
-        return;
-      }
       next(error);
     });
     // If documents were set in the baucis hash, use them.
