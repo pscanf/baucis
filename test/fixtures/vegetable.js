@@ -107,6 +107,15 @@ var fixture = module.exports = {
       next();
     });
 
+    veggies.request(function (request, response, next) {
+      if (request.query.deleteNutrients !== 'true') return next();
+      request.baucis.outgoing(function (context, callback) {
+        context.doc.nutrients = undefined;
+        callback(null, context);
+      });
+      next();
+    });
+
     // Test streaming in through custom handler
     veggies.request(function (request, response, next) {
       if (request.query.streamIn !== 'true') return next();
@@ -177,13 +186,13 @@ var fixture = module.exports = {
     var vegetableNames = [ 'Turnip', 'Spinach', 'Pea', 'Shitake', 'Lima Bean', 'Carrot', 'Zucchini', 'Radicchio' ];
     var fungus = new Fungus();
     var minerals = mineralColors.map(function (color) {
-      return new Mineral({ 
+      return new Mineral({
         color: color,
         enables: fungus._id
       });
     });
     vegetables = vegetableNames.map(function (name) { // TODO leaked global
-      return new Vegetable({ 
+      return new Vegetable({
         name: name,
         nutrients: [ minerals[0]._id ]
       });

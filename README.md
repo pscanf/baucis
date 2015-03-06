@@ -325,7 +325,7 @@ controller.request(function (request, response, next) {
       this.emit('error', baucis.errors.Forbidden());
       return;
     }
-    delete context.doc.password;
+    context.doc.password = undefined;
     this.queue(context);
   }));
   next();
