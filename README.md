@@ -446,7 +446,7 @@ controller.swagger.apis.push({
 | Last-Modified | Used for HTTP caching.  Can be set automatically by Baucis for single object endpoints. |
 | Accept | Set to `application/json` for all responses. |
 | Allow | Set automatically, correctly removing HTTP methods when those methods have been disabled. |
-| Location | Set to the URL of the created/edited entity for PUT and POST responses. |
+| Location | Set to the URL of the created entity for POST responses. |
 | Link | Baucis adds related links to the header for you.  Especially useful for paging through a query.  `first`, `last`, `next`, and `previous` links are added when paging through a collection when using the `limit` & `skip` query options. |
 
 ## Query Options
