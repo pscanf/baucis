@@ -1,4 +1,4 @@
-# baucis v1.0.4
+# baucis v1.0.5
 
 [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/wprl/baucis?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -8,7 +8,7 @@ Baucis has thousands of users and is used in production by startups, departments
 
 Who's using Baucis?
 
-[![AppNow](http://github.com/wprl/baucis/raw/master/appnow-logo.png "AppNow")](https://appnow.radarconline.com)
+[![AppNow](http://github.com/wprl/baucis/raw/master/appnow-logo.png "AppNow")](https://appnow.radarconline.com) [![Kun.io App Studio LLC](http://github.com/wprl/baucis/raw/master/kunio.png "Kun.io App Studio LLC")](http://kun.io) [![Pixel Press](http://github.com/wprl/baucis/raw/master/pixel-press.jpg "Pixel Press")](http://www.projectpixelpress.com)
 
 *Would you like to see your company's logo here?  Contact [william@kun.io](mailto:william@kun.io).*
 
