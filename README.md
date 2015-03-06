@@ -1,4 +1,4 @@
-# baucis v1.0.0-candidate.11
+# baucis v1.0.0
 
 Build scalable REST APIs using the open source tools and standards you and your team already know — *Mongoose, Express, and Node.js streams*.  Baucis takes the boilerplate out of building and maintaining scalable [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS)/[Level 3](http://martinfowler.com/articles/richardsonMaturityModel.html) REST APIs.
 
@@ -674,7 +674,7 @@ See what's in store in the GitHub [milestones page for this repo](https://github
 
 ## Extending Baucis
 
-Baucis can be augmented via incoming and outgoing streams, as well as with decorators.
+Baucis can be augmented via Express middleware, incoming and outgoing streams, as well as with decorators.
 
 Add decorators to Controllers and other baucis constructors by using the `decorators` method.  Adding a decorator will affect all subsequently created controllers.  Here's how you could add a tiny plugin that makes all subsequently added controllers check authentication for all PUTs and POSTs.
 ``` javascript
@@ -699,7 +699,6 @@ baucis.Controller.decorators(function (options, protect) {
 |[baucis-vivify](https://www.npmjs.org/package/baucis-vivify) | Used for embedding controllers under a parent path (created by wprl)
 |[baucis-patch](https://www.npmjs.org/package/baucis-patch) | created by wprl
 |[baucis-json](https://www.npmjs.org/package/baucis-json) | created by wprl
-|[baucis-error](https://www.npmjs.org/package/baucis-error) | created by wprl
 
 *The `baucis-json` and `baucis-error` plugins are bundled with baucis by default.  `baucis-json` is a good example for writing your own plugins for parsing or formatting custom content types.*
 
