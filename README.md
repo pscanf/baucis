@@ -405,7 +405,7 @@ app.use('/api', baucis());
 
 Point the swagger client at your API:
 
-    http://localhost:8012/api/api-docs
+    http://localhost:8012/api/documentation
 
 Now you have documentation and a test client!
 
