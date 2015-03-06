@@ -1,5 +1,7 @@
 # baucis v1.0.0-candidate.11
 
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/wprl/baucis?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Build scalable REST APIs using the open source tools and standards you and your team already know — *Mongoose, Express, and Node.js streams*.  Baucis takes the boilerplate out of building and maintaining scalable [HATEOAS](https://en.wikipedia.org/wiki/HATEOAS)/[Level 3](http://martinfowler.com/articles/richardsonMaturityModel.html) REST APIs.
 
 Baucis has thousands of users and is used in production by startups, departments, and Fortune 500 companies, at hackathons and conferences worldwide.  MongoDB, Inc. awarded baucis first place in their 2014 Open Source Hack Contest.
