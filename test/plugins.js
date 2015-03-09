@@ -29,7 +29,8 @@ describe('Plugins', function () {
       s.on('data', function (post) {
         expect(post).to.have.property('comments');
         expect(post.comments).to.have.length(1);
-        expect(body[0].comments[0]).to.eql(post.comments[0].toString());
+        expect(post.comments).to.have.property('user');
+        expect(body[0].comments[0]).to.eql(post.comments[0]);
       });
     });
   });
