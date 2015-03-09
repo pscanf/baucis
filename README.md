@@ -711,4 +711,4 @@ baucis.Controller.decorators(function (options, protect) {
  * [LinkedIn](https://linkedin.com/in/willprl)
  * Email [william@kun.io](mailto:william@kun.io)
 
-&copy; 2012-2014 William P. Riley-Land
+&copy; 2012-2015 William P. Riley-Land
