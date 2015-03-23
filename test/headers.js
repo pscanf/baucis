@@ -13,7 +13,20 @@ describe('Headers', function () {
   beforeEach(fixtures.vegetable.create);
   after(fixtures.vegetable.deinit);
 
-  it('should set Last-Modified for single documents');
+  it('should set Last-Modified for single documents', function (done) {
+    var turnip = vegetables[0];
+    var options = {
+      url: 'http://localhost:8012/api/vegetables/' + turnip._id,
+      json: true
+    };
+    request.head(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(200);
+      expect(response.headers).to.have.property('last-modified');
+      expect(isFinite(new Date(response.headers['last-modified']))).to.be.ok();
+      done();
+    });
+  });
 
   it('should set Etag for single documents', function (done) {
     var turnip = vegetables[0];
