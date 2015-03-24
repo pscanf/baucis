@@ -442,8 +442,8 @@ controller.swagger.apis.push({
 
 | Header Field | Notes |
 | ------------ | ----- |
-| ETag | Used for HTTP caching based on response body.  Supported automatically for single object endpoints. |
-| Last-Modified | Used for HTTP caching.  Can be set automatically by Baucis for single object endpoints. |
+| ETag | Used for HTTP caching based on response body.  Set automatically. |
+| Last-Modified | Used for HTTP caching.  Set automatically. |
 | Accept | Set to `application/json` for all responses. |
 | Allow | Set automatically, correctly removing HTTP methods when those methods have been disabled. |
 | Location | Set to the URL of the created entity for POST responses. |

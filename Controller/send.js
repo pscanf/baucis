@@ -3,52 +3,108 @@ var es = require('event-stream');
 var crypto = require('crypto');
 var RestError = require('rest-error');
 
-// __Private Module Members__
-// A map that is used to create empty response body.
-function empty (context, callback) { callback(null, '') }
-// Map contexts back into documents.
-function redoc (context, callback) { callback(null, context.doc) }
-// Generate a respone Etag from a context.
-function etag (response) {
-  return es.map(function (context, callback) {
-    var hash = crypto.createHash('md5');
-    var etag = response.get('Etag');
-    if (etag) return callback(null, context);
-    hash.update(JSON.stringify(context.doc));
-    response.set('Etag', '"' + hash.digest('hex') + '"');
-    callback(null, context);
-  });
-}
-// Generate a Last-Modified header
-function lastModified (response, lastModifiedPath) {
-  return es.map(function (context, callback) {
-    if (!response.get('Last-Modified') && lastModifiedPath) {
-      response.set('Last-Modified', context.doc.get(lastModifiedPath));
-    }
-    callback(null, context);
-  });
-}
-// Build a reduce stream.
-function reduce (accumulated, f) {
-  return es.through(
-    function (context) {
-      accumulated = f(accumulated, context);
-    },
-    function () {
-      this.emit('data', accumulated);
-      this.emit('end');
-    }
-  );
-}
-// Count emissions.
-function count () {
-  return reduce(0, function (a, b) { return a + 1 });
-}
-
 // __Module Definition__
 var decorator = module.exports = function (options, protect) {
   var baucis = require('..');
   var controller = this;
+  var lastModifiedPath = controller.model().lastModified();
+  var trailers = {};
+
+  // __Private Module Members__
+  // Format the Trailer header.
+  function addTrailer (response, header) {
+    var current = response.get('Trailer');
+    if (!current) response.set('Trailer', header);
+    else response.set('Trailer', current + ', ' + header);
+  }
+  // A map that is used to create empty response body.
+  function empty (context, callback) { callback(null, '') }
+  // Map contexts back into documents.
+  function redoc (context, callback) { callback(null, context.doc) }
+  // Generate a respone Etag from a context.
+  function etag (response, useTrailer) {
+    if (useTrailer) {
+      addTrailer(response, 'Etag');
+      response.set('Transfer-Encoding', 'chunked');
+    }
+
+    var hash = crypto.createHash('md5');
+
+    return es.through(function (chunk) {
+      hash.update(chunk);
+      this.emit('data', chunk);
+    },
+    function () {
+      if (useTrailer) {
+        trailers.Etag = '"' + hash.digest('hex') + '"';
+      }
+      else {
+        response.set('Etag', '"' + hash.digest('hex') + '"');
+      }
+
+      this.emit('end');
+    });
+  }
+
+  function etagImmediate (response) {
+    var hash = crypto.createHash('md5');
+
+    return es.through(function (chunk) {
+      hash.update(JSON.stringify(chunk));
+      response.set('Etag', '"' + hash.digest('hex') + '"');
+      this.emit('data', chunk);
+    },
+    function () {
+      this.emit('end');
+    });
+  }
+  // Generate a Last-Modified header/trailer
+  function lastModified (response, useTrailer) {
+    if (useTrailer) {
+      addTrailer(response, 'Last-Modified');
+      response.set('Transfer-Encoding', 'chunked');
+    }
+
+    var latest = null;
+
+    return es.through(function (context) {
+      if (!context) return;
+      if (!context.doc) return this.emit('data', context);
+      if (!context.doc.get) return this.emit('data', context);
+
+      var current = context.doc.get(lastModifiedPath);
+      if (latest === null) latest = current;
+      else latest = new Date(Math.max(latest, current));
+      if (!useTrailer) {
+        response.set('Last-Modified', latest.toUTCString());
+      }
+      this.emit('data', context);
+    },
+    function () {
+      if (useTrailer) {
+        if (latest) trailers['Last-Modified'] = latest.toUTCString();
+      }
+
+      this.emit('end');
+    });
+  }
+
+  // Build a reduce stream.
+  function reduce (accumulated, f) {
+    return es.through(
+      function (context) {
+        accumulated = f(accumulated, context);
+      },
+      function () {
+        this.emit('data', accumulated);
+        this.emit('end');
+      }
+    );
+  }
+  // Count emissions.
+  function count () {
+    return reduce(0, function (a, b) { return a + 1 });
+  }
 
   // If counting get the count and send it back directly.
   protect.finalize(function (request, response, next) {
@@ -64,9 +120,7 @@ var decorator = module.exports = function (options, protect) {
   protect.finalize(function (request, response, next) {
     var count = 0;
     var documents = request.baucis.documents;
-    var pipeline = request.baucis.send = protect.pipeline(function (error) {
-      next(error);
-    });
+    var pipeline = request.baucis.send = protect.pipeline(next);
     // If documents were set in the baucis hash, use them.
     if (documents) pipeline(es.readArray([].concat(documents)));
     // Otherwise, stream the relevant documents from Mongo, based on constructed query.
@@ -98,29 +152,46 @@ var decorator = module.exports = function (options, protect) {
 
   // HEAD
   protect.finalize('instance', 'head', function (request, response, next) {
-    var modified = controller.model().lastModified();
-    if (modified) request.baucis.send(lastModified(response, modified));
-    request.baucis.send(etag(response));
+    if (lastModifiedPath) {
+      request.baucis.send(lastModified(response, false));
+    }
+
+    request.baucis.send(redoc);
+    request.baucis.send(etagImmediate(response));
+    request.baucis.send(request.baucis.formatter());
     request.baucis.send(empty);
     next();
   });
 
   protect.finalize('collection', 'head', function (request, response, next) {
+    if (lastModifiedPath) {
+      request.baucis.send(lastModified(response, false));
+    }
+
+    request.baucis.send(redoc);
+    request.baucis.send(request.baucis.formatter(true));
+    request.baucis.send(etag(response, false));
     request.baucis.send(empty);
     next();
   });
 
   // GET
   protect.finalize('instance', 'get', function (request, response, next) {
-    var modified = controller.model().lastModified();
-    if (modified) request.baucis.send(lastModified(response, modified));
-    request.baucis.send(etag(response));
+    if (lastModifiedPath) {
+      request.baucis.send(lastModified(response, false));
+    }
+
     request.baucis.send(redoc);
+    request.baucis.send(etagImmediate(response));
     request.baucis.send(request.baucis.formatter());
     next();
   });
 
   protect.finalize('collection', 'get', function (request, response, next) {
+    if (lastModifiedPath) {
+      request.baucis.send(lastModified(response, true));
+    }
+
     if (request.baucis.count) {
       request.baucis.send(count());
       request.baucis.send(es.stringify());
@@ -129,6 +200,8 @@ var decorator = module.exports = function (options, protect) {
       request.baucis.send(redoc);
       request.baucis.send(request.baucis.formatter(true));
     }
+
+    request.baucis.send(etag(response, true));
     next();
   });
 
@@ -157,6 +230,13 @@ var decorator = module.exports = function (options, protect) {
   });
 
   protect.finalize(function (request, response, next) {
-    request.baucis.send().pipe(response);
+
+    request.baucis.send().pipe(es.through(function (chunk) {
+      response.write(chunk);
+    }, function () {
+      response.addTrailers(trailers);
+      response.end();
+      this.emit('end');
+    }));
   });
 };
