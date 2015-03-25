@@ -414,6 +414,8 @@ To customize the swagger definition, simply alter the controler's swagger data d
 ``` javascript
 var controller = baucis.rest('sauce');
 
+controler.generateSwagger();
+
 controller.swagger.apis.push({
   'path': '/sauces/awesome',
   'description': 'Awesome sauce.',
