@@ -8,7 +8,7 @@ Build scalable REST APIs using the open source tools and standards you and your 
 
 Baucis has tens of thousands of users and is used in production by startups, departments, and Fortune 500 companies, and at hackathons and conferences worldwide.  MongoDB, Inc. awarded baucis first place in their 2014 Open Source Hack Contest.
 
-Who's using Baucis?
+### Who's using Baucis?
 
 [![AppNow](http://github.com/wprl/baucis/raw/master/appnow-logo.png "AppNow")](https://appnow.radarconline.com) [![Kun.io App Studio LLC](http://github.com/wprl/baucis/raw/master/kunio.png "Kun.io App Studio LLC")](http://kun.io) [![Pixel Press](http://github.com/wprl/baucis/raw/master/pixel-press.jpg "Pixel Press")](http://www.projectpixelpress.com)
 
