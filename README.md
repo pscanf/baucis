@@ -22,7 +22,7 @@ If you like baucis please consider adding bounties to issues in the [issue track
  * Automatically build controllers from your Mongoose schemata, then easily configure them.
  * Built on Express 4 so adding custom middleware is a snap.  Compatible with existing Express middleware.
  * Fully takes advantage of Node.js streaming to nimbly process large datasets.
- * Implements the HTTP specification according to the [RFC 7231](http://tools.ietf.org/rfcmarkup/7231), etc.
+ * Implements the HTTP specification according to the specifications ([RFC 7231](http://tools.ietf.org/rfcmarkup/7231), etc.)
  * Widely compatible with a variety of front end frameworks.
  * Perform rich queries of the API using an expressive JSON syntax via query string.
  * Supports geolocation and full text search.
