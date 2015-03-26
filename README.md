@@ -8,6 +8,8 @@ Build scalable REST APIs using the open source tools and standards you and your 
 
 Baucis has tens of thousands of users and is used in production by startups, departments, and Fortune 500 companies, and at hackathons and conferences worldwide.  MongoDB, Inc. awarded baucis first place in their 2014 Open Source Hack Contest.
 
+Baucis is easy for beginners, easy to scale, yet flexible enough in the long term to be extended to solve complex use cases.
+
 ### Who's using Baucis?
 
 [![AppNow](http://github.com/wprl/baucis/raw/master/appnow-logo.png "AppNow")](https://appnow.radarconline.com) [![Kun.io App Studio LLC](http://github.com/wprl/baucis/raw/master/kunio.png "Kun.io App Studio LLC")](http://kun.io) [![Pixel Press](http://github.com/wprl/baucis/raw/master/pixel-press.jpg "Pixel Press")](http://www.projectpixelpress.com)
@@ -17,12 +19,10 @@ If you like baucis please consider adding bounties to issues in the [issue track
 
 ## Features
 
- * Easy for beginners, easy to scale, yet flexible enough in the long term to be extended to solve complex use cases.
  * Automatically build controllers from your Mongoose schemata, then easily configure them.
  * Built on Express 4 so adding custom middleware is a snap.  Compatible with existing Express middleware.
  * Fully takes advantage of Node.js streaming to nimbly process large datasets.
  * Implements the HTTP specification according to the [RFC 7231](http://tools.ietf.org/rfcmarkup/7231), etc.
- * Maintainable and approachable for most devs because it is based on popular open source technologies.
  * Widely compatible with a variety of front end frameworks.
  * Perform rich queries of the API using an expressive JSON syntax via query string.
  * Supports geolocation and full text search.
