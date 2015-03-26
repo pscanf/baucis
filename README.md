@@ -17,15 +17,18 @@ If you like baucis please consider adding bounties to issues in the [issue track
 
 ## Features
 
- * Awesomely scalable.  Fully takes advantage of Node streaming to nimbly process large datasets.
+ * Easy for beginners, easy to scale, yet flexible enough to be extended in complex ways.
+ * Fully takes advantage of Node streaming to nimbly process large datasets.
  * Automatically build controllers from your Mongoose schemata, then easily configure them.
  * Built on Express 4 so adding custom middleware is a snap.  Compatible with existing Express middleware.
- * Supports geolocation and full text search.
+ * Implements the HTTP specification according to the [RFC 7231](http://tools.ietf.org/rfcmarkup/7231), etc.
+ * Maintainable and approachable for most devs because it is based on popular open source technologies.
  * Widely compatible with a variety of front end frameworks.
- * Automatically generate interactive Swagger documentation for the API.
  * Perform rich queries of the API using an expressive JSON syntax via query string.
+ * Supports geolocation and full text search.
  * Version your API using semver.
- * Highly customizable, simple interface.  Can be extended with plugins.
+ * Automatically generate interactive Swagger documentation for the API.
+ * Highly customizable, simple interface.  Can be extended with plugins (decorators).
  * Over 140 Mocha.js tests in addition to Express' and Mongoose's.
 
 
