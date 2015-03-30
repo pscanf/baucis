@@ -29,17 +29,8 @@ If you like baucis please consider adding bounties to issues in the [issue track
  * Version your API using semver.
  * Automatically generate interactive Swagger documentation for the API.
  * Highly customizable, simple interface.  Can be extended with plugins (decorators).
+ * Compatible with MongoDB 2.x and 3.x
  * Over 140 Mocha.js tests in addition to Express' and Mongoose's.
-
-
-## Examples
-
- * [Example REST API server built with Node and Baucis](//github.com/wprl/baucis-example)
- * [Examples with Backbone.js](examples/Backbone.js)
- * [Examples with AngularJS](examples/angular-example-resource.html)
- * [Examples with Restangular](examples/angular-example-restangular.html)
- * [Examples with jQuery](examples/jQuery.js)
- * [mongoose-administration-example](https://www.npmjs.org/package/mongoose-administration-example)
 
 
 ## Getting Started
@@ -64,7 +55,17 @@ app.use('/api', baucis());
 app.listen(8012);
 ```
 
-That's it!  Now you have an API dealing with vegetables.  You could access it with URLs like `http://localhost:8012/api/vegetables`.  CRUD is supported using [GET, PUT, POST, and DELETE](https://github.com/wprl/baucis/wiki/HTTP-Verbs).
+That's it!  Now you have an RFC-compliant, flexible, and semantically rich API dealing with vegetables.  You could access it with URLs like `http://localhost:8012/api/vegetables`.  CRUD is supported using [GET, PUT, POST, and DELETE](https://github.com/wprl/baucis/wiki/HTTP-Verbs).
+
+
+## Examples
+
+ * [Example REST API server built with Node and Baucis](//github.com/wprl/baucis-example)
+ * [Examples with Backbone.js](examples/Backbone.js)
+ * [Examples with AngularJS](examples/angular-example-resource.html)
+ * [Examples with Restangular](examples/angular-example-restangular.html)
+ * [Examples with jQuery](examples/jQuery.js)
+ * [mongoose-administration-example](https://www.npmjs.org/package/mongoose-administration-example)
 
 
 ## Documentation
