@@ -32,8 +32,14 @@ var decorator = module.exports = function (options, protect) {
   // Handle bad hint.
   protect.use(function (error, request, response, next) {
     if (!error) return next();
-    // Bad Mongo query hint.
+    if (!error.message) return next();
+    // Bad Mongo query hint (2.x).
     if (error.message === 'bad hint') {
+      next(RestError.BadRequest('The requested query hint is invalid'));
+      return;
+    }
+    // Bad Mongo query hint (3.x).
+    if (error.message.match('planner returned error: bad hint')) {
       next(RestError.BadRequest('The requested query hint is invalid'));
       return;
     }

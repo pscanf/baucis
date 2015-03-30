@@ -625,7 +625,10 @@ describe('Controllers', function () {
         expect(response.statusCode).to.be(422);
         expect(body).to.have.property('name');
         expect(body.name).to.have.property('message', 'Path `name` (Gorgonzola) must be unique.');
-        expect(body.name).to.have.property('originalMessage', 'E11000 duplicate key error index: yYyBaUcIsTeStYyY.cheeses.$name_1  dup key: { : "Gorgonzola" }');
+        expect(body.name).to.have.property('originalMessage');
+        expect(body.name.originalMessage).to.match(/E11000 duplicate key/);
+        expect(body.name.originalMessage).to.match(/dup key/);
+        expect(body.name.originalMessage).to.match(/yYyBaUcIsTeStYyY[.]cheeses[.][$]name_1/);
         expect(body.name).to.have.property('name', 'MongoError');
         expect(body.name).to.have.property('path', 'name');
         expect(body.name).to.have.property('type', 'unique');
