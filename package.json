@@ -10,7 +10,7 @@
   "main": "index.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --bail",
-    "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha test/*.js"
+    "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha"
   },
   "repository": {
     "type": "git",
