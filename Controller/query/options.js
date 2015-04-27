@@ -80,6 +80,7 @@ var decorator = module.exports = function () {
   // Apply incoming request populate.
   this.query(function (request, response, next) {
     var populate = request.query.populate;
+    var populateSelect = request._populateSelect;
     var error = null;
 
     if (populate) {
@@ -96,7 +97,7 @@ var decorator = module.exports = function () {
           return error = RestError.Forbidden('Including excluded fields is not permitted');
         }
         // Don't allow selecting fields from client when populating
-        if (field.select) {
+        if (field.select && !populateSelect) {
           return error = RestError.Forbidden('Selecting fields of populated documents is not permitted');
         }
 
