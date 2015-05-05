@@ -39,7 +39,7 @@ To install:
 
     npm install --save baucis
 
-An example of creating a REST API from a couple Mongoose schemata.
+It's easy to create an API from a Mongoose model:
 
 ``` javascript
 // Create a mongoose schema.
