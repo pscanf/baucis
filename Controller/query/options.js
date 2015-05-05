@@ -97,8 +97,9 @@ var decorator = module.exports = function () {
           return error = RestError.Forbidden('Including excluded fields is not permitted');
         }
         // Don't allow selecting fields from client when populating
-        if (field.select && !allowPopulateSelect) {
-          return error = RestError.Forbidden('Selecting fields of populated documents is not permitted');
+        if (field.select) {
+	  if (!allowPopulateSelect) return error = RestError.Forbidden('Selecting fields of populated documents is not permitted');
+	  console.warn('WARNING: Allowing populate with select is experimental and bypasses security.'); 
         }
 
         request.baucis.query.populate(field);
