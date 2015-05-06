@@ -16,17 +16,20 @@ var plugin = module.exports = function (options, protect) {
   };
   // Return a copy of the controllers array, optionally filtered by release.
   protect.controllers = function (release, fragment) {
-    var r = [].concat(controllers);
-    if (!release) return r;
+    var all = [].concat(controllers);
+
+    if (!release) return all;
+
+    var satisfies = all.filter(function (controller) {
+      return semver.satisfies(release, controller.versions());
+    });
 
     if (!fragment) {
-      return r.filter(function (controller) {
-        return semver.satisfies(release, controller.versions());
-      });
+      return satisfies;
     }
 
     // Find the matching controller among controllers that match the requested release.
-    return r.filter(function (controller) {
+    return satisfies.filter(function (controller) {
       return fragment === controller.fragment();
     });
   };
