@@ -1,5 +1,6 @@
 var expect = require('expect.js');
 var request = require('request');
+var mongoose = require('mongoose');
 var baucis = require('..');
 
 var fixtures = require('./fixtures');
@@ -123,11 +124,25 @@ describe('POST plural', function () {
       expect(body[0]).to.have.property('message', 'Path `name` is required.');
       expect(body[0]).to.have.property('name', 'ValidatorError');
       expect(body[0]).to.have.property('path', 'name');
-      expect(body[0]).to.have.property('type', 'required');
+
+      if (mongoose.version[0] === '3') {
+        expect(body[0]).to.have.property('type', 'required');
+      }
+      else {
+        expect(body[0]).to.have.property('kind', 'required');
+      }
+
       expect(body[1]).to.have.property('message', 'Path `score` (-1) is less than minimum allowed value (1).');
       expect(body[1]).to.have.property('name', 'ValidatorError');
       expect(body[1]).to.have.property('path', 'score');
-      expect(body[1]).to.have.property('type', 'min');
+
+      if (mongoose.version[0] === '3') {
+        expect(body[1]).to.have.property('type', 'min');
+      }
+      else {
+        expect(body[1]).to.have.property('kind', 'min');
+      }
+
       expect(body[1]).to.have.property('value', -1);
 
       done();

@@ -650,7 +650,8 @@ describe('Controllers', function () {
       request.post(options, function (err, response, body) {
         if (err) return done(err);
         expect(response.statusCode).to.be(422);
-        expect(body).to.match(/^MongoError: E11000 duplicate key error index:/);
+        expect(body).to.be.a('string');
+        expect(body).to.match(/MongoError/);
         done();
       });
     });

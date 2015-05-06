@@ -32,7 +32,7 @@ var decorator = module.exports = function (options, protect) {
   // Handle bad hint.
   protect.use(function (error, request, response, next) {
     if (!error) return next();
-    if (!error.message) return next();
+    if (!error.message) return next(error);
     // Bad Mongo query hint (2.x).
     if (error.message === 'bad hint') {
       next(RestError.BadRequest('The requested query hint is invalid'));
@@ -40,6 +40,12 @@ var decorator = module.exports = function (options, protect) {
     }
     // Bad Mongo query hint (3.x).
     if (error.message.match('planner returned error: bad hint')) {
+      next(RestError.BadRequest('The requested query hint is invalid'));
+      return;
+    }
+    if (!error.$err) return next(error);
+    // Mongoose 3
+    if (error.$err.match('planner returned error: bad hint')) {
       next(RestError.BadRequest('The requested query hint is invalid'));
       return;
     }
