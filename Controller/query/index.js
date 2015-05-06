@@ -7,6 +7,5 @@ var middleware = module.exports = deco(__dirname, [
   'create',
   'update',
   'build',
-  'options',
-  'links'
+  'options'
 ]);

@@ -6,7 +6,8 @@ var Controller = require('./Controller');
 var Model = require('./Model');
 var RestError = require('rest-error');
 var plugins = {
-  json: require('baucis-json')
+  json: require('baucis-json'),
+  links: require('baucis-links')
 };
 
 var instance;
@@ -76,3 +77,4 @@ Model.container(baucis);
 
 // __Plugins__
 plugins.json.apply(baucis);
+plugins.links.apply(baucis);
