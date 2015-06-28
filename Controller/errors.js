@@ -54,6 +54,7 @@ var decorator = module.exports = function (options, protect) {
   // Handle mongo duplicate key error.
   protect.use(function (error, request, response, next) {
     if (!error) return next();
+    if (!error.message) return next(error);
     if (error.message.indexOf('E11000 duplicate key error') === -1) {
       next(error);
       return;
