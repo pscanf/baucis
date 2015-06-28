@@ -59,19 +59,19 @@ var decorator = module.exports = function (options, protect) {
       return;
     }
 
-    var body = {};
+    var body = [];
     var scrape = /[$](.+)[_]\d+\s+dup key: [{] : "([^"]+)" [}]/;
     var scraped = scrape.exec(error.message);
     var path = scraped ? scraped[1] : '???';
     var value = scraped ? scraped[2] : '???';
-    body[path] = {
+    body.push({
       message: util.format('Path `%s` (%s) must be unique.', path, value),
       originalMessage: error.message,
       name: 'MongoError',
       path: path,
       type: 'unique',
       value: value
-    };
+    });
 
     response.status(422);
     if (controller.handleErrors()) return response.json(body);
