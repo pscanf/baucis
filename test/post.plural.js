@@ -159,7 +159,7 @@ describe('POST plural', function () {
       if (error) return done(error);
 
       expect(response.statusCode).to.equal(400);
-      expect(body).to.be('Bad Request: The body of this request was invalid and could not be parsed. &quot;Unexpected token c&quot; (400).\n');
+      expect(body).to.have.property('message', 'The body of this request was invalid and could not be parsed. "Unexpected token c" (400).');
       done();
     });
   });

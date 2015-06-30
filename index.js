@@ -13,6 +13,7 @@ var plugins = {
 var instance;
 var parsers = {};
 var formatters = {};
+var errorFormatters = {};
 
 // __Module Definition__
 var baucis = module.exports = function (options) {

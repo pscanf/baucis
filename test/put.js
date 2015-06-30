@@ -116,7 +116,7 @@ describe('PUT singular', function () {
     request.get(options, function (err, response, body) {
       if (err) return done(err);
       expect(response.statusCode).to.be(404);
-      expect(body).to.be('Not Found: Nothing matched the requested query (404).\n');
+      expect(body).to.have.property('message', 'Nothing matched the requested query (404).');
 
       // Attempt to update non-existant doc
       var options = {
@@ -126,7 +126,7 @@ describe('PUT singular', function () {
       request.put(options, function (err, response, body) {
         if (err) return done(err);
         expect(response.statusCode).to.be(404);
-        expect(body).to.be('Not Found: Nothing matched the requested query (404).\n');
+        expect(body).to.have.property('message', 'Nothing matched the requested query (404).');
 
         // Make sure it wasn't created
         var options = {
@@ -136,7 +136,7 @@ describe('PUT singular', function () {
         request.get(options, function (err, response, body) {
           if (err) return done(err);
           expect(response.statusCode).to.be(404);
-          expect(body).to.be('Not Found: Nothing matched the requested query (404).\n');
+          expect(body).to.have.property('message', 'Nothing matched the requested query (404).');
           done();
         });
       });

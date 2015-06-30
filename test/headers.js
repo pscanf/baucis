@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var express = require('express');
 var passport = require('passport')
 var LocalStrategy = require('passport-local').Strategy;
-var request = require('request');
+var request = require('request').defaults({ json: true });
 var baucis = require('..');
 
 var fixtures = require('./fixtures');
@@ -16,8 +16,7 @@ describe('Headers', function () {
   it('sets Last-Modified for single documents', function (done) {
     var turnip = vegetables[0];
     var options = {
-      url: 'http://localhost:8012/api/vegetables/' + turnip._id,
-      json: true
+      url: 'http://localhost:8012/api/vegetables/' + turnip._id
     };
     request.head(options, function (error, response, body) {
       if (error) return done(error);
@@ -44,8 +43,7 @@ describe('Headers', function () {
     var httpDate = new Date(max).toUTCString();
 
     var options = {
-      url: 'http://localhost:8012/api/vegetables',
-      json: true
+      url: 'http://localhost:8012/api/vegetables'
     };
 
     request.head(options, function (error, response, body) {
@@ -68,8 +66,7 @@ describe('Headers', function () {
   it('sets Etag for single documents', function (done) {
     var turnip = vegetables[0];
     var options = {
-      url: 'http://localhost:8012/api/vegetables/' + turnip._id,
-      json: true
+      url: 'http://localhost:8012/api/vegetables/' + turnip._id
     };
     request.head(options, function (error, response, body) {
       if (error) return done(error);
@@ -87,8 +84,7 @@ describe('Headers', function () {
 
   it('sets Etag for the collection', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/vegetables',
-      json: true
+      url: 'http://localhost:8012/api/vegetables'
     };
     request.head(options, function (error, response, body) {
       if (error) return done(error);
@@ -109,8 +105,7 @@ describe('Headers', function () {
 
   it('sets Allowed', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/vegetables',
-      json: true
+      url: 'http://localhost:8012/api/vegetables'
     };
     request.head(options, function (error, response, body) {
       if (error) return done(error);
@@ -120,7 +115,7 @@ describe('Headers', function () {
     });
   });
 
-  it('should send 406 Not Acceptable when the requested type is not accepted', function (done) {
+  it('sends 406 Not Acceptable when the requested type is not accepted', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables',
       headers: {
@@ -130,6 +125,7 @@ describe('Headers', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(406);
+      expect(response.headers).to.have.property('content-type', 'text/html; charset=utf-8');
       expect(body).to.be('Not Acceptable: The requested content type could not be provided (406).\n');
       done();
     });
@@ -145,7 +141,7 @@ describe('Headers', function () {
     request.post(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(415);
-      expect(body).to.be("Unsupported Media Type: The request&#39;s content type is unsupported (415).\n");
+      expect(body).to.have.property('message', "The request's content type is unsupported (415).");
       done();
     });
   });
@@ -167,8 +163,7 @@ describe('Headers', function () {
 
   it('should not set X-Powered-By', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/vegetables',
-      json: true
+      url: 'http://localhost:8012/api/vegetables'
     };
     request.head(options, function (error, response, body) {
       if (error) return done(error);

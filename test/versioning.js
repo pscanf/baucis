@@ -156,7 +156,7 @@ describe('Versioning', function () {
         request.put(options, function (error, response, body) {
           if (error) return done(error);
           expect(response.statusCode).to.be(409);
-          expect(body).to.be('Conflict: This update conflicts with a previous update (409).\n');
+          expect(body).to.have.property('message', 'The requested update would conflict with a previous update (409).');
           done();
         });
       });
@@ -183,7 +183,7 @@ describe('Versioning', function () {
       request.put(options, function (error, response, body) {
         if (error) return done(error);
         expect(response.statusCode).to.be(409);
-        expect(body).to.be('Conflict: This update conflicts with a previous update (409).\n');
+        expect(body).to.have.property('message', 'The requested update would conflict with a previous update (409).');
         done();
       });
     });

@@ -117,7 +117,51 @@ var decorator = module.exports = function (options, protect) {
   });
 
   // If not counting, create the basic stream pipeline.
-  protect.finalize(function (request, response, next) {
+  protect.finalize('collection', 'all',function (request, response, next) {
+    var count = 0;
+    var documents = request.baucis.documents;
+    var pipeline = request.baucis.send = protect.pipeline(next);
+    // If documents were set in the baucis hash, use them.
+    if (documents) pipeline(es.readArray([].concat(documents)));
+    // Otherwise, stream the relevant documents from Mongo, based on constructed query.
+    else pipeline(request.baucis.query.stream());
+    // Map documents to contexts.
+    pipeline(function (doc, callback) {
+      callback(null, { doc: doc, incoming: null });
+    });
+    // Check for not found.
+    pipeline(es.through(
+      function (context) {
+        count += 1;
+        this.emit('data', context);
+      },
+      function () {
+        if (count > 0) return this.emit('end');
+
+        var status = controller.emptyCollection();
+        response.status(status);
+
+        if (status === 204) return this.emit('end');
+        if (status === 200) {
+          response.json([]); // TODO other content types
+          this.emit('end');
+          return;
+        }
+
+        this.emit('error', RestError.NotFound());
+      }
+    ));
+    // Apply user streams.
+    pipeline(request.baucis.outgoing());
+    // Set the document formatter based on the Accept header of the request.
+    baucis.formatters(response, function (error, formatter) {
+      if (error) return next(error);
+      request.baucis.formatter = formatter;
+      next();
+    });
+  });
+
+  protect.finalize('instance', 'all', function (request, response, next) {
     var count = 0;
     var documents = request.baucis.documents;
     var pipeline = request.baucis.send = protect.pipeline(next);

@@ -74,7 +74,7 @@ describe('Queries', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: Including excluded fields is not permitted (403).\n');
+      expect(body).to.have.property('message', 'Including excluded fields is not permitted (403).');
       done();
     });
   });
@@ -87,7 +87,7 @@ describe('Queries', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: Including excluded fields is not permitted (403).\n');
+      expect(body).to.have.property('message', 'Including excluded fields is not permitted (403).');
       done();
     });
   });
@@ -100,7 +100,7 @@ describe('Queries', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: Including excluded fields is not permitted (403).\n');
+      expect(body).to.have.property('message', 'Including excluded fields is not permitted (403).');
       done();
     });
   });
@@ -113,7 +113,7 @@ describe('Queries', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: Including excluded fields is not permitted (403).\n');
+      expect(body).to.have.property('message', 'Including excluded fields is not permitted (403).');
       done();
     });
   });
@@ -126,7 +126,7 @@ describe('Queries', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: Selecting fields of populated documents is not permitted (403).\n');
+      expect(body).to.have.property('message', 'Selecting fields of populated documents is not permitted (403).');
       done();
     });
   });
@@ -139,7 +139,7 @@ describe('Queries', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: Including excluded fields is not permitted (403).\n');
+      expect(body).to.have.property('message', 'Including excluded fields is not permitted (403).');
       done();
     });
   });
@@ -152,7 +152,7 @@ describe('Queries', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: Selecting fields of populated documents is not permitted (403).\n');
+      expect(body).to.have.property('message', 'Selecting fields of populated documents is not permitted (403).');
       done();
     });
   });
@@ -165,7 +165,7 @@ describe('Queries', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: Selecting fields of populated documents is not permitted (403).\n');
+      expect(body).to.have.property('message', 'Selecting fields of populated documents is not permitted (403).');
       done();
     });
   });
@@ -178,7 +178,7 @@ describe('Queries', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: Selecting fields of populated documents is not permitted (403).\n');
+      expect(body).to.have.property('message', 'Selecting fields of populated documents is not permitted (403).');
       done();
     });
   });
@@ -296,7 +296,7 @@ describe('Queries', function () {
       if (error) return done(error);
       expect(response.statusCode).to.be(400);
       expect(response.headers).not.to.have.property('link');
-      expect(body).to.be('Bad Request: Limit must be a positive integer if set (400).\n');
+      expect(body).to.have.property('message', 'Limit must be a positive integer if set (400).');
       done();
     });
   });
@@ -310,7 +310,7 @@ describe('Queries', function () {
       if (error) return done(error);
       expect(response.statusCode).to.be(400);
       expect(response.headers).not.to.have.property('link');
-      expect(body).to.be('Bad Request: Limit must be a positive integer if set (400).\n');
+      expect(body).to.have.property('message', 'Limit must be a positive integer if set (400).');
       done();
     });
   });
@@ -324,7 +324,7 @@ describe('Queries', function () {
       if (error) return done(error);
       expect(response.statusCode).to.be(400);
       expect(response.headers).not.to.have.property('link');
-      expect(body).to.be('Bad Request: Limit must be a positive integer if set (400).\n');
+      expect(body).to.have.property('message', 'Limit must be a positive integer if set (400).');
       done();
     });
   });
@@ -338,7 +338,7 @@ describe('Queries', function () {
       if (error) return done(error);
       expect(response.statusCode).to.be(400);
       expect(response.headers).not.to.have.property('link');
-      expect(body).to.be('Bad Request: Limit must be a positive integer if set (400).\n');
+      expect(body).to.have.property('message', 'Limit must be a positive integer if set (400).');
       done();
     });
   });
@@ -352,7 +352,7 @@ describe('Queries', function () {
       if (error) return done(error);
       expect(response.statusCode).to.be(400);
       expect(response.headers).not.to.have.property('link');
-      expect(body).to.be('Bad Request: Skip must be a non-negative integer if set (400).\n');
+      expect(body).to.have.property('message', 'Skip must be a non-negative integer if set (400).');
       done();
     });
   });
@@ -366,7 +366,7 @@ describe('Queries', function () {
       if (error) return done(error);
       expect(response.statusCode).to.be(400);
       expect(response.headers).not.to.have.property('link');
-      expect(body).to.be('Bad Request: Count must be &quot;true&quot; or &quot;false&quot; if set (400).\n');
+      expect(body).to.have.property('message', 'Count must be "true" or "false" if set (400).');
       done();
     });
   });
@@ -630,7 +630,7 @@ describe('Queries', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(400);
-      expect(body).to.be('Bad Request: The requested query hint is invalid (400).\n')
+      expect(body).to.have.property('message', 'The requested query hint is invalid (400).')
       done();
     });
   });
@@ -643,7 +643,7 @@ describe('Queries', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(400);
-      expect(body).to.be('Bad Request: Hint can&#39;t be used with count (400).\n')
+      expect(body).to.have.property('message', 'Hint can\'t be used with count (400).')
       done();
     });
   });
@@ -680,7 +680,7 @@ describe('Queries', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(400);
-      expect(body).to.be('Bad Request: Comment can&#39;t be used with count (400).\n')
+      expect(body).to.have.property('message', 'Comment can\'t be used with count (400).')
       done();
     });
   });
@@ -705,7 +705,7 @@ describe('Queries', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: Hints are not enabled for this resource (403).\n')
+      expect(body).to.have.property('message', 'Hints are not enabled for this resource (403).')
       done();
     });
   });
@@ -767,7 +767,7 @@ describe('Queries', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: You may not find distinct values for the requested path (403).\n')
+      expect(body).to.have.property('message', 'You may not find distinct values for the requested path (403).');
       done();
     });
   });
@@ -794,7 +794,7 @@ describe('Queries', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(400);
-      expect(body).to.be('Bad Request: The conditions query string value was not valid JSON: &quot;Unexpected token &#39;&quot; (400).\n');
+      expect(body).to.have.property('message', 'The conditions query string value was not valid JSON: "Unexpected token \'" (400).');
       done();
     });
   });

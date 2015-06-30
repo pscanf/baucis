@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 var express = require('express');
 var passport = require('passport')
 var LocalStrategy = require('passport-local').Strategy;
-var request = require('request');
+var request = require('request').defaults({ json: true });
 var baucis = require('..');
 
 var fixtures = require('./fixtures');
@@ -50,8 +50,7 @@ describe('Controllers', function () {
   it('should support select options for GET requests', function (done) {
     var options = {
       url: 'http://localhost:8012/api/cheeses',
-      qs: { sort: 'name' },
-      json: true
+      qs: { sort: 'name' }
     };
     request.get(options, function (error, response, body) {
       if (error) return done(error);
@@ -67,8 +66,7 @@ describe('Controllers', function () {
 
   it('should allow deselecting', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/liens',
-      json: true
+      url: 'http://localhost:8012/api/liens'
     };
     request.get(options, function (error, response, body) {
       if (error) return done(error);
@@ -82,8 +80,7 @@ describe('Controllers', function () {
 
   it('should allow deselecting hyphenated field names', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/stores',
-      json: true
+      url: 'http://localhost:8012/api/stores'
     };
     request.get(options, function (error, response, body) {
       if (error) return done(error);
@@ -99,7 +96,6 @@ describe('Controllers', function () {
   it('should support select options for POST requests', function (done) {
     var options = {
       url: 'http://localhost:8012/api/cheeses',
-      json: true,
       body: { name: 'Gorgonzola', color: 'Green' }
     };
     request.post(options, function (err, response, body) {
@@ -116,7 +112,6 @@ describe('Controllers', function () {
   it('should support select options for PUT requests', function (done) {
     var options = {
       url: 'http://localhost:8012/api/cheeses/Cheddar',
-      json: true,
       body: { color: 'White' }
     };
     request.put(options, function (err, response, body) {
@@ -133,7 +128,6 @@ describe('Controllers', function () {
   it('should allow POSTing when fields are deselected (issue #67)', function (done) {
     var options = {
       url: 'http://localhost:8012/api/stores',
-      json: true,
       body: { name: "Lou's" }
     };
     request.post(options, function (err, response, body) {
@@ -148,8 +142,7 @@ describe('Controllers', function () {
 
   it('should support finding documents with custom findBy field', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/cheeses/Camembert',
-      json: true
+      url: 'http://localhost:8012/api/cheeses/Camembert'
     };
     request.get(options, function (err, response, body) {
       if (err) return done(err);
@@ -189,8 +182,7 @@ describe('Controllers', function () {
 
   it('should allow adding arbitrary routes', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/stores/info',
-      json: true
+      url: 'http://localhost:8012/api/stores/info'
     };
     request.get(options, function (err, response, body) {
       if (err) return done(err);
@@ -202,8 +194,7 @@ describe('Controllers', function () {
 
   it('should allow adding arbitrary routes with params', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/stores/XYZ/arbitrary',
-      json: true
+      url: 'http://localhost:8012/api/stores/XYZ/arbitrary'
     };
     request.get(options, function (err, response, body) {
       if (err) return done(err);
@@ -216,8 +207,7 @@ describe('Controllers', function () {
   it('should still allow using baucis routes when adding arbitrary routes', function (done) {
     var options = {
       url: 'http://localhost:8012/api/stores',
-      qs: { select: '-_id -__v', sort: 'name' },
-      json: true
+      qs: { select: '-_id -__v', sort: 'name' }
     };
     request.get(options, function (err, response, body) {
       if (err) return done(err);
@@ -229,8 +219,7 @@ describe('Controllers', function () {
 
   it('should allow using middleware', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/stores',
-      json: true
+      url: 'http://localhost:8012/api/stores'
     };
     request.del(options, function (error, response, body) {
       if (error) return done(error);
@@ -242,8 +231,7 @@ describe('Controllers', function () {
 
   it('should allow using middleware mounted at a path', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/stores/binfo',
-      json: true
+      url: 'http://localhost:8012/api/stores/binfo'
     };
     request.post(options, function (error, response, body) {
       if (error) return done(error);
@@ -312,13 +300,12 @@ describe('Controllers', function () {
     var options = {
       url: 'http://localhost:8012/api/stores/Westlake',
       headers: { 'Update-Operator': '$push' },
-      json: true,
       body: { molds: 'penicillium roqueforti', __v: 0 }
     };
     request.put(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: The requested update operator &quot;$push&quot; is not enabled for this resource (403).\n');
+      expect(body).to.have.property('message', 'The requested update operator "$push" is not enabled for this resource (403).');
       done();
     });
   });
@@ -327,13 +314,12 @@ describe('Controllers', function () {
     var options = {
       url: 'http://localhost:8012/api/cheeses/Huntsman',
       headers: { 'Update-Operator': '$push' },
-      json: true,
       body: { 'favorite nes game': 'bubble bobble' }
     };
     request.put(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: This update path is forbidden for the requested update operator &quot;$push&quot; (403).\n');
+      expect(body).to.have.property('message', 'This update path is forbidden for the requested update operator "$push" (403).');
       done();
     });
   });
@@ -342,7 +328,6 @@ describe('Controllers', function () {
     var options = {
       url: 'http://localhost:8012/api/cheeses/Huntsman?select=molds',
       headers: { 'Update-Operator': '$push' },
-      json: true,
       body: { molds: 'penicillium roqueforti' }
     };
     request.put(options, function (error, response, body) {
@@ -361,13 +346,12 @@ describe('Controllers', function () {
     var options = {
       url: 'http://localhost:8012/api/stores/Westlake',
       headers: { 'Update-Operator': '$pull' },
-      json: true,
       body: { molds: 'penicillium roqueforti', __v: 0 }
     };
     request.put(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: The requested update operator &quot;$pull&quot; is not enabled for this resource (403).\n');
+      expect(body).to.have.property('message', 'The requested update operator "$pull" is not enabled for this resource (403).');
       done();
     });
   });
@@ -376,13 +360,12 @@ describe('Controllers', function () {
     var options = {
       url: 'http://localhost:8012/api/cheeses/Huntsman',
       headers: { 'Update-Operator': '$pull' },
-      json: true,
       body: { 'favorite nes game': 'bubble bobble' }
     };
     request.put(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: This update path is forbidden for the requested update operator &quot;$pull&quot; (403).\n');
+      expect(body).to.have.property('message', 'This update path is forbidden for the requested update operator "$pull" (403).');
       done();
     });
   });
@@ -391,7 +374,6 @@ describe('Controllers', function () {
     var options = {
       url: 'http://localhost:8012/api/cheeses/Huntsman?select=molds',
       headers: { 'Update-Operator': '$push' },
-      json: true,
       body: { molds: 'penicillium roqueforti' }
     };
     request.put(options, function (error, response, body) {
@@ -421,13 +403,12 @@ describe('Controllers', function () {
     var options = {
       url: 'http://localhost:8012/api/stores/Westlake',
       headers: { 'Update-Operator': '$set' },
-      json: true,
       body: { molds: 'penicillium roqueforti', __v: 0 }
     };
     request.put(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: The requested update operator &quot;$set&quot; is not enabled for this resource (403).\n');
+      expect(body).to.have.property('message', 'The requested update operator "$set" is not enabled for this resource (403).');
       done();
     });
   });
@@ -436,13 +417,12 @@ describe('Controllers', function () {
     var options = {
       url: 'http://localhost:8012/api/cheeses/Huntsman',
       headers: { 'Update-Operator': '$set' },
-      json: true,
       body: { 'favorite nes game': 'bubble bobble' }
     };
     request.put(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: This update path is forbidden for the requested update operator &quot;$set&quot; (403).\n');
+      expect(body).to.have.property('message', 'This update path is forbidden for the requested update operator "$set" (403).');
       done();
     });
   });
@@ -451,7 +431,6 @@ describe('Controllers', function () {
     var options = {
       url: 'http://localhost:8012/api/cheeses/Huntsman?select=molds',
       headers: { 'Update-Operator': '$set' },
-      json: true,
       body: { molds: ['penicillium roqueforti'] }
     };
     request.put(options, function (error, response, body) {
@@ -470,7 +449,6 @@ describe('Controllers', function () {
     var options = {
       url: 'http://localhost:8012/api/cheeses/Camembert?select=arbitrary',
       headers: { 'Update-Operator': '$push' },
-      json: true,
       qs: { conditions: JSON.stringify({ 'arbitrary.goat': true }) },
       body: { 'arbitrary.$.llama': 5 }
     };
@@ -497,7 +475,6 @@ describe('Controllers', function () {
     var options = {
       url: 'http://localhost:8012/api/cheeses/Camembert?select=arbitrary',
       headers: { 'Update-Operator': '$set' },
-      json: true,
       qs: { conditions: JSON.stringify({ 'arbitrary.goat': false }) },
       body: { 'arbitrary.$.champagne': 'extra dry' }
     };
@@ -518,7 +495,6 @@ describe('Controllers', function () {
     var options = {
       url: 'http://localhost:8012/api/cheeses/Camembert?select=arbitrary',
       headers: { 'Update-Operator': '$pull' },
-      json: true,
       qs: { conditions: JSON.stringify({ 'arbitrary.goat': true }) },
       body: { 'arbitrary.$.llama': 3 }
     };
@@ -544,7 +520,7 @@ describe('Controllers', function () {
       if (error) return done(error);
       expect(response.statusCode).to.be(405);
       expect(response.headers).to.have.property('allow', 'HEAD,POST,PUT,DELETE');
-      expect(body).to.be('Method Not Allowed: The requested method has been disabled for this resource (405).\n');
+      expect(body).to.have.property('message', 'The requested method has been disabled for this resource (405).');
       done();
     });
   });
@@ -554,41 +530,38 @@ describe('Controllers', function () {
       if (error) return done(error);
       expect(response.statusCode).to.be(405);
       expect(response.headers).to.have.property('allow', 'HEAD,GET,POST,PUT');
-      expect(body).to.be('Method Not Allowed: The requested method has been disabled for this resource (405).\n');
+      expect(body).to.have.property('message', 'The requested method has been disabled for this resource (405).');
       done();
     });
   });
 
   it('should return a 400 when ID malformed (not ObjectID)', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/beans/bad',
-      json: true
+      url: 'http://localhost:8012/api/beans/bad'
     };
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(400);
-      expect(body).to.be('Bad Request: The requested document ID &quot;bad&quot; is not a valid document ID (400).\n');
+      expect(body).to.have.property('message', 'The requested document ID "bad" is not a valid document ID (400).');
       done();
     });
   });
 
   it('should return a 400 when ID malformed (not Number)', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/deans/0booze',
-      json: true
+      url: 'http://localhost:8012/api/deans/0booze'
     };
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(400);
-      expect(body).to.eql('Bad Request: The requested document ID &quot;0booze&quot; is not a valid document ID (400).\n');
+      expect(body).to.have.property('message', 'The requested document ID "0booze" is not a valid document ID (400).');
       done();
     });
   });
 
   it('should allow setting path different from model name', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/baloo/?sort=name',
-      json: true
+      url: 'http://localhost:8012/api/baloo/?sort=name'
     };
     request.get(options, function (error, response, body) {
       if (error) return done(error);
@@ -600,8 +573,7 @@ describe('Controllers', function () {
 
   it('should allow setting model independently of name', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/timeentries/Camembert',
-      json: true
+      url: 'http://localhost:8012/api/timeentries/Camembert'
     };
     request.get(options, function (err, response, body) {
       if (err) return done(err);
@@ -614,7 +586,6 @@ describe('Controllers', function () {
   it('should handle unique key error as a validation error', function (done) {
     var options = {
       url: 'http://localhost:8012/api/cheeses',
-      json: true,
       body: { name: 'Gorgonzola', color: 'Green' }
     };
     request.post(options, function (err, response, body) {
@@ -623,16 +594,18 @@ describe('Controllers', function () {
       request.post(options, function (err, response, body) {
         if (err) return done(err);
         expect(response.statusCode).to.be(422);
-        expect(body).to.have.property('name');
-        expect(body.name).to.have.property('message', 'Path `name` (Gorgonzola) must be unique.');
-        expect(body.name).to.have.property('originalMessage');
-        expect(body.name.originalMessage).to.match(/E11000 duplicate key/);
-        expect(body.name.originalMessage).to.match(/dup key/);
-        expect(body.name.originalMessage).to.match(/yYyBaUcIsTeStYyY[.]cheeses[.][$]name_1/);
-        expect(body.name).to.have.property('name', 'MongoError');
-        expect(body.name).to.have.property('path', 'name');
-        expect(body.name).to.have.property('type', 'unique');
-        expect(body.name).to.have.property('value', 'Gorgonzola');
+        expect(body).to.have.length(1);
+        expect(body[0]).to.have.property('name');
+        expect(body[0]).to.have.property('message', 'Path `name` (Gorgonzola) must be unique.');
+        expect(body[0]).to.have.property('path', 'name');
+        expect(body[0]).to.have.property('originalMessage');
+        expect(body[0].originalMessage).to.match(/E11000 duplicate key/);
+        expect(body[0].originalMessage).to.match(/dup key/);
+        expect(body[0].originalMessage).to.match(/yYyBaUcIsTeStYyY[.]cheeses[.][$]name_1/);
+        expect(body[0]).to.have.property('name', 'MongoError');
+        expect(body[0]).to.have.property('path', 'name');
+        expect(body[0]).to.have.property('type', 'unique');
+        expect(body[0]).to.have.property('value', 'Gorgonzola');
         done();
       });
     });
@@ -641,7 +614,6 @@ describe('Controllers', function () {
   it('should not handle errors if disabled', function (done) {
     var options = {
       url: 'http://localhost:8012/api-no-error-handler/geese',
-      json: true,
       body: { name: 'Gorgonzola', color: 'Green' }
     };
     request.post(options, function (err, response, body) {
@@ -651,7 +623,7 @@ describe('Controllers', function () {
         if (err) return done(err);
         expect(response.statusCode).to.be(422);
         expect(body).to.be.a('string');
-        expect(body).to.match(/MongoError/);
+        expect(body).to.be('Unprocessable Entity: The request entity could not be processed (422).\n');
         done();
       });
     });
@@ -659,8 +631,7 @@ describe('Controllers', function () {
 
   it('should allow setting path apart from plural', function (done) {
     var options = {
-      url: 'http://localhost:8012/api/linseed.oil',
-      json: true
+      url: 'http://localhost:8012/api/linseed.oil'
     };
     request.get(options, function (err, response, body) {
       if (err) return done(err);

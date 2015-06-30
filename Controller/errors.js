@@ -1,10 +1,12 @@
 // __Dependencies__
+var es = require('event-stream');
 var util = require('util');
 var mongoose = require('mongoose');
 var RestError = require('rest-error');
 
 // __Module Definition__
 var decorator = module.exports = function (options, protect) {
+  var baucis = require('..');
   var controller = this;
   // A controller property used to set what error status code
   // and response is sent when a query to a collection endpoint
@@ -15,43 +17,31 @@ var decorator = module.exports = function (options, protect) {
   protect.property('handleErrors', true, function (handle) {
     return handle ? true : false;
   });
-  // Handle mongo validation and unprocessable entity errors.
-  protect.use(function (error, request, response, next) {
-    if (!error) return next();
-    // Validation errors.
-    if (!((error instanceof mongoose.Error.ValidationError) || (error instanceof RestError.UnprocessableEntity))) {
-      next(error);
-      return;
-    }
-
-    response.status(422);
-    if (!controller.handleErrors()) return next(error);
-    if (Array.isArray(error.errors)) return response.json(error.errors);
-    response.json(Object.keys(error.errors).map(function (key) { return error.errors[key] }));
-  });
-  // Handle bad hint.
+  // If it's a Mongo bad hint error, convert to a bad request error.
   protect.use(function (error, request, response, next) {
     if (!error) return next();
     if (!error.message) return next(error);
+
+    var message = 'The requested query hint is invalid'
     // Bad Mongo query hint (2.x).
     if (error.message === 'bad hint') {
-      next(RestError.BadRequest('The requested query hint is invalid'));
+      next(RestError.BadRequest(message));
       return;
     }
     // Bad Mongo query hint (3.x).
     if (error.message.match('planner returned error: bad hint')) {
-      next(RestError.BadRequest('The requested query hint is invalid'));
+      next(RestError.BadRequest(message));
       return;
     }
     if (!error.$err) return next(error);
     // Mongoose 3
     if (error.$err.match('planner returned error: bad hint')) {
-      next(RestError.BadRequest('The requested query hint is invalid'));
+      next(RestError.BadRequest(message));
       return;
     }
     next(error);
   });
-  // Handle mongo duplicate key error.
+  // Convert Mongo duplicate key error to an unprocessible entity error
   protect.use(function (error, request, response, next) {
     if (!error) return next();
     if (!error.message) return next(error);
@@ -74,41 +64,81 @@ var decorator = module.exports = function (options, protect) {
       value: value
     };
 
-    response.status(422);
-    if (controller.handleErrors()) return response.json(body);
-    next(error);
-  });
-  // Handle not found.
-  protect.use('/:id?', function (error, request, response, next) {
-    if (!error) return next();
-    // Handle 404
-    if (!(error instanceof RestError.NotFound)) return next(error);
+    var translatedError = RestError.UnprocessableEntity();
+    translatedError.errors = body;
 
-    response.status(error.status);
-    if (!controller.handleErrors()) return next(error);
-    if (request.params.id) return next(error);
-    if (error.parentController === true) return next(error);
-    response.status(controller.emptyCollection());
-    if (controller.emptyCollection() === 200) return response.json([]);
-    if (controller.emptyCollection() === 204) return response.send();
-    next(error);
+    next(translatedError);
   });
-  // Set response status code for all baucis errors.
+  // Convert Mongo validation errors to unprocessable entity errors.
   protect.use(function (error, request, response, next) {
     if (!error) return next();
-    // Just set the status code for these errors.
-    if (!(error instanceof RestError)) return next(error);
-    response.status(error.status);
-    next(error);
+    if (!(error instanceof mongoose.Error.ValidationError)) return next(error);
+    var newError = RestError.UnprocessableEntity();
+    newError.errors = error.errors;
+    next(newError);
   });
-  // Handle mongoose version conflict error.
+  // Convert Mongoose version conflict error to LockConflict.
   protect.use(function (error, request, response, next) {
     if (!error) return next();
-    if (!(error instanceof mongoose.Error.VersionError)) {
-      next(error);
-      return;
+    if (!(error instanceof mongoose.Error.VersionError)) return next(error);
+    next(RestError.LockConflict());
+  });
+  // Translate other errors to internal server errors.
+  protect.use(function (error, request, response, next) {
+    if (!error) return next();
+    if (error instanceof RestError) return next(error);
+    var error2 = RestError.InternalServerError(error.message);
+    error2.stack = error.stack;
+    next(error2);
+  });
+  // Format the error based on the Accept header.
+  protect.use(function (error, request, response, next) {
+    if (!error) return next();
+
+    // Always set the status code if available.
+    if (error.status >= 100) {
+      response.status(error.status);
     }
-    response.status(409);
-    next(error);
+
+    if (!controller.handleErrors()) return next(error);
+
+    baucis.formatters(response, function (error2, formatter) {
+      if (error2) return next(error2);
+
+      var errors;
+
+      if (!error.errors) {
+        errors = [error];
+      }
+      else if (Array.isArray(error.errors) && error.errors.length !== 0) {
+        errors = error.errors;
+      }
+      else {
+        errors = Object.keys(error.errors).map(function (key) {
+          return error.errors[key]
+        });
+      }
+
+      if (errors.length === 0) {
+        errors = [error];
+      }
+
+      errors = errors.map(function (error3) {
+        var o = {};
+        Object.getOwnPropertyNames(error3).forEach(function(key) {
+          o[key] = error3[key];
+        });
+        delete o.domain;
+        delete o.domainEmitter;
+        delete o.domainThrown;
+        return o;
+      });
+
+      // TODO deprecated -- always send as single error in 2.0.0
+      var f = formatter(error instanceof RestError.UnprocessableEntity);
+      f.on('error', next);
+
+      es.readArray(errors).pipe(f).pipe(response);
+    });
   });
 };

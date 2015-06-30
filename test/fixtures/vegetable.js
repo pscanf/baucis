@@ -73,7 +73,7 @@ var fixture = module.exports = {
     veggies.relations(false).hints(true).comments(true);
 
     veggies.request(function (request, response, next) {
-      if (request.query.block === 'true') return response.send(401);
+      if (request.query.block === 'true') return response.sendStatus(401);
       next();
     });
 

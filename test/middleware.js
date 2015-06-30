@@ -116,7 +116,7 @@ describe('Middleware', function () {
     request.post(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: Bento box (403).\n')
+      expect(body).to.have.property('message', 'Bento box (403).');
       done();
     });
   });
@@ -132,7 +132,7 @@ describe('Middleware', function () {
     request.put(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: Bento box (403).\n');
+      expect(body).to.have.property('message', 'Bento box (403).');
       done();
     });
   });
@@ -147,7 +147,7 @@ describe('Middleware', function () {
     request.post(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: Bento box (403).\n');
+      expect(body).to.have.property('message', 'Bento box (403).');
       done();
     });
   });
@@ -161,7 +161,7 @@ describe('Middleware', function () {
     request.get(options, function (error, response, body) {
       if (error) return done(error);
       expect(response.statusCode).to.be(403);
-      expect(body).to.be('Forbidden: Bento box (403).\n');
+      expect(body).to.have.property('message', 'Bento box (403).');
       done();
     });
   });
