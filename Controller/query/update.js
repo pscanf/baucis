@@ -5,7 +5,7 @@ var es = require('event-stream');
 var RestError = require('rest-error');
 
 // __Private Module Members__
-var validOperators = [ '$set', '$push', '$pull' ];
+var validOperators = [ '$set', '$push', '$pull', '$addToSet', '$pop', '$pushAll', '$pullAll' ];
 
 // __Module Definition__
 var decorator = module.exports = function (options, protect) {
