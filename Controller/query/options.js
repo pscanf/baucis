@@ -50,6 +50,12 @@ var decorator = module.exports = function () {
       next();
     });
   });
+  // Apply controller sort options to the query.
+  this.query(function (request, response, next) {
+    var sort = controller.sort();
+    if (sort) request.baucis.query.sort(sort);
+    next();
+  });
   // Apply incoming request sort.
   this.query(function (request, response, next) {
     var sort = request.query.sort;
@@ -99,7 +105,7 @@ var decorator = module.exports = function () {
         // Don't allow selecting fields from client when populating
         if (field.select) {
 	  if (!allowPopulateSelect) return error = RestError.Forbidden('Selecting fields of populated documents is not permitted');
-	  console.warn('WARNING: Allowing populate with select is experimental and bypasses security.'); 
+	  console.warn('WARNING: Allowing populate with select is experimental and bypasses security.');
         }
 
         request.baucis.query.populate(field);

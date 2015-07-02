@@ -63,7 +63,8 @@ var fixture = module.exports = {
     fixture.removeCount = 0;
 
     baucis.rest('fungus').select('-hyphenated-field-name');
-    baucis.rest('mineral').relations(true);
+
+    baucis.rest('mineral').relations(true).sort('color');
 
     baucis.rest('animal').fragment('empty-array').emptyCollection(200);
     baucis.rest('animal').fragment('no-content').emptyCollection(204);

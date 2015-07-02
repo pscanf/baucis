@@ -66,7 +66,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should disallow selecting deselected fields', function (done) {
+  it('disallows selecting deselected fields', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables?select=species+lastModified',
       json: true
@@ -79,7 +79,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should disallow populating deselected fields 1', function (done) {
+  it('disallows populating deselected fields 1', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables?populate=species',
       json: true
@@ -92,7 +92,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should disallow populating deselected fields 2', function (done) {
+  it('disallows populating deselected fields 2', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables?populate={ "path": "species" }',
       json: true
@@ -118,7 +118,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should disallow using +fields with populate', function (done) {
+  it('disallows using +fields with populate', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables?populate={ "select": "%2Bboiler" }',
       json: true
@@ -131,7 +131,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should disallow using +fields with select', function (done) {
+  it('disallows using +fields with select', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables?select=%2Bboiler',
       json: true
@@ -144,7 +144,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should disallow selecting fields when populating', function (done) {
+  it('disallows selecting fields when populating', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables?populate={ "path": "a", "select": "arbitrary" }',
       json: true
@@ -170,7 +170,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should disallow selecting fields when populating', function (done) {
+  it('disallows selecting fields when populating', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables?populate={ "path": "a", "select": "arbitrary" }',
       json: true
@@ -183,7 +183,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should allow populating children', function (done) {
+  it('allows populating children', function (done) {
     var id = vegetables[0]._id;
     var options = {
       url: 'http://localhost:8012/api/vegetables/' + id + '/?populate=nutrients',
@@ -199,7 +199,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should allow default express query string format', function(done) {
+  it('allows default express query string format', function(done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables?conditions[name]=Radicchio',
       json: true
@@ -213,7 +213,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should allow selecting fields', function (done) {
+  it('allows selecting fields', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables?select=-_id lastModified',
       json: true
@@ -228,7 +228,41 @@ describe('Queries', function () {
     });
   });
 
-    it  ('should allow deselecting hyphenated field names', function (done) {
+  it('allows setting default sort', function (done) {
+    var options = {
+      url: 'http://localhost:8012/api/minerals',
+      json: true
+    };
+    request.get(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(200);
+      var lastMineral = '';
+      body.forEach(function (mineral) {
+        expect(mineral.color).to.be.above(lastMineral);
+        lastMineral = mineral.color;
+      });
+      done();
+    });
+  });
+
+  it('allows overriding default sort', function (done) {
+    var options = {
+      url: 'http://localhost:8012/api/minerals?sort=-color',
+      json: true
+    };
+    request.get(options, function (error, response, body) {
+      if (error) return done(error);
+      expect(response.statusCode).to.be(200);
+      var lastMineral = '';
+      body.forEach(function (mineral) {
+        if (lastMineral) expect(mineral.color).to.be.below(lastMineral);
+        lastMineral = mineral.color;
+      });
+      done();
+    });
+  });
+
+  it('allows deselecting hyphenated field names', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables?select=-hyphenated-field-name',
       json: true
@@ -371,7 +405,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should allow adding paging links', function(done) {
+  it('allows adding paging links', function(done) {
     var options = {
       url: 'http://localhost:8012/api/minerals?limit=2',
       json: true
@@ -415,7 +449,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should allow using relations: true with sorted queries', function (done) {
+  it('allows using relations: true with sorted queries', function (done) {
     var options = {
       url: 'http://localhost:8012/api/minerals?sort=color&limit=2&skip=2&select=-__v -_id -enables',
       json: true
@@ -505,7 +539,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should allow retrieving paging links next', function(done) {
+  it('allows retrieving paging links next', function(done) {
     var options = {
       url: 'http://localhost:8012/api/minerals?limit=2&skip=0',
       json: true
@@ -530,7 +564,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should allow retrieving paging links previous', function(done) {
+  it('allows retrieving paging links previous', function(done) {
     var options = {
       url: 'http://localhost:8012/api/minerals?limit=2&skip=2',
       json: true
@@ -552,7 +586,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should allow retrieving paging links last', function(done) {
+  it('allows retrieving paging links last', function(done) {
     var options = {
       url: 'http://localhost:8012/api/minerals?limit=2&skip=6',
       json: true
@@ -574,7 +608,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should allow retrieving paging links first', function(done) {
+  it('allows retrieving paging links first', function(done) {
     var options = {
       url: 'http://localhost:8012/api/minerals?limit=2&skip=0',
       json: true
@@ -596,7 +630,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should allow retrieving count instead of documents', function (done) {
+  it('allows retrieving count instead of documents', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables?count=true',
       json: true
@@ -648,7 +682,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should allow adding index hint', function (done) {
+  it('allows adding index hint', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables?hint={ "_id": 1 }',
       json: true
@@ -660,7 +694,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should allow adding index hint', function (done) {
+  it('allows adding index hint', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables?hint[_id]=1',
       json: true
@@ -685,7 +719,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should allow adding a query comment', function (done) {
+  it('allows adding a query comment', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables?comment=testing testing 123',
       json: true
@@ -723,7 +757,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should allow querying for distinct values', function (done) {
+  it('allows querying for distinct values', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables?distinct=name',
       json: true
@@ -745,7 +779,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should allow querying for distinct values restricted by conditions', function (done) {
+  it('allows querying for distinct values restricted by conditions', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables?distinct=name&conditions={ "name": "Carrot" }',
       json: true
@@ -772,7 +806,7 @@ describe('Queries', function () {
     });
   });
 
-  it('should allow using query operators with _id', function (done) {
+  it('allows using query operators with _id', function (done) {
     var options = {
       url: 'http://localhost:8012/api/vegetables?conditions={ "_id": { "$gt": "111111111111111111111111" } }',
       json: true

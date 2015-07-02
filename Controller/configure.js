@@ -16,6 +16,7 @@ var decorator = module.exports = function (model, protect) {
   protect.property('comments', false);
   protect.property('hints', false);
   protect.property('select', '');
+  protect.property('sort', '');
 
   protect.property('versions', '*', function (range) {
     if (semver.validRange(range)) return range;
