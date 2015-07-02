@@ -49,7 +49,7 @@
     "semver": "^4.3.4"
   },
   "peerDependencies": {
-    "mongoose": "3 - 4.0.4",
+    "mongoose": "3 - 4",
     "express": "^4.12.0"
   },
   "devDependencies": {
